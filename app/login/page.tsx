@@ -27,7 +27,29 @@ export default function LoginPage() {
     if (error) {
       alert(error.message);
     } else {
-      const role = data?.user?.user_metadata?.role;
+      // ✅ Force Supabase to persist session cookies for SSR routes
+      await supabase.auth.getSession();
+
+      const user = data?.user;
+
+      // ✅ Log new session in Supabase
+      if (user) {
+        try {
+          await supabase.from("user_sessions").insert([
+            {
+              user_id: user.id,
+              ip_address: window.location.hostname,
+              user_agent: navigator.userAgent,
+              logout_reason: null,
+            },
+          ]);
+        } catch (sessionError) {
+          console.error("Failed to log session:", sessionError);
+        }
+      }
+
+      // ✅ Determine role and redirect accordingly
+      const role = user?.user_metadata?.role;
       if (role === "CME") router.push("/dashboards/cme");
       else router.push("/dashboards/non-cme");
     }
