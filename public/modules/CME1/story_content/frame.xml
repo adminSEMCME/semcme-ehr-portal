@@ -1,0 +1,3568 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bwFrame xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" default_layout="npxnabnsnfns10111000001" textdirection="ltr" textengine="DirectWrite" device="false" fontscale="100" captionFontScale="100" kbshortcuts="false" skip_nav_enabled="true" chromeless="false" outputtype="undefined" theme="unified" themeAccentColor="0x4F81BD">
+  <layouts>
+    <layout name="npnxnanbsnfns10111000001" font="Lato" controllayout="npnxnanbsnfns10111000001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="pxabnsnfns10111000001" font="Lato" controllayout="pxabnsnfns10111000001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="npxnabnsnfns10111000001" font="Lato" controllayout="npxnabnsnfns10111000001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="npnxnanbnsnfns10111000001" font="Lato" controllayout="npnxnanbnsnfns10111000001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="pxabnsnfns10111000000" font="Lato" controllayout="pxabnsnfns10111000000" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="pnxanbnsnfns10111000001" font="Lato" controllayout="pnxanbnsnfns10111000001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+    <layout name="pxabnsnfns10110001001" font="Lato" controllayout="pxabnsnfns10110001001" colorscheme="npxnabnsnfns10111000001" string_table="npxnabnsnfns10111000001" />
+  </layouts>
+  <control_options>
+    <optiongroups>
+      <optiongroup name="sidebaroptions">
+        <options>
+          <option name="title_enabled" value="false">
+            <options>
+              <option name="title_text" value="cme-m1-intro-release-v1.0" />
+            </options>
+          </option>
+          <option name="logo_enabled" value="false">
+            <options />
+          </option>
+          <option name="sidebar_enabled" value="true">
+            <options>
+              <option name="sidebarpos" value="left" />
+              <option name="closed" value="true" />
+            </options>
+          </option>
+          <optionlist name="tabs">
+            <listitems>
+              <listitem name="resources" value="false" group="linkright" />
+              <listitem name="outline" value="true" group="sidebar" />
+              <listitem name="glossary" value="false" group="sidebar" />
+              <listitem name="transcript" value="true" group="sidebar" />
+            </listitems>
+          </optionlist>
+          <option name="time_enabled" value="false">
+            <options>
+              <option name="time_format" value="none" />
+            </options>
+          </option>
+          <option name="video_enabled" value="false">
+            <options>
+              <option name="height" value="135" />
+            </options>
+          </option>
+          <option name="logoAltText" />
+        </options>
+      </optiongroup>
+      <optiongroup name="menuoptions">
+        <options>
+          <option name="flow" value="free" />
+          <option name="wraplistitems" value="true" />
+          <option name="tooltips" value="true" />
+          <option name="autocollapse" value="true" />
+          <option name="autonumber" value="false" />
+          <option name="enableresultsicons" value="true" />
+        </options>
+      </optiongroup>
+      <optiongroup name="controls">
+        <options>
+          <option name="volume" value="false" />
+          <option name="seekbar" value="true">
+            <options>
+              <option name="readonly" value="false" />
+              <option name="readonlyOnce" value="false" />
+            </options>
+          </option>
+          <option name="pauseplay" value="true" />
+          <option name="replay" value="true" />
+          <option name="search" value="false" />
+          <option name="closed_captions" value="false" />
+          <option name="settings" value="false" />
+          <option name="fullScreenToggle" value="false" />
+          <option name="playbackSpeedControl" value="true" />
+        </options>
+      </optiongroup>
+      <optiongroup name="bottombaroptions">
+        <options>
+          <option name="bottombar_enabled" value="true" />
+        </options>
+      </optiongroup>
+      <optiongroup name="buttonoptions">
+        <options>
+          <option name="next" value="icon" />
+          <option name="previous" value="icon" />
+          <option name="submit" value="icon" />
+        </options>
+      </optiongroup>
+      <optiongroup name="ccOptions">
+        <options>
+          <option name="font" value="Lato" />
+          <option name="size" value="100" />
+          <option name="placement" value="100" />
+          <option name="backgroundColor" value="#000000FF" />
+          <option name="color" value="#FFFFFFFF" />
+        </options>
+      </optiongroup>
+    </optiongroups>
+  </control_options>
+  <control_layouts>
+    <control_layout name="npnxnanbsnfns10111000001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="false" />
+      <control name="next" enabled="false" />
+      <control name="swipeleft" enabled="false" />
+      <control name="swiperight" enabled="false" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="true" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+    <control_layout name="pxabnsnfns10111000001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="true" />
+      <control name="next" enabled="true" />
+      <control name="swipeleft" enabled="true" />
+      <control name="swiperight" enabled="true" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+    <control_layout name="npxnabnsnfns10111000001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="false" />
+      <control name="next" enabled="true" />
+      <control name="swipeleft" enabled="false" />
+      <control name="swiperight" enabled="true" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+    <control_layout name="npnxnanbnsnfns10111000001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="false" />
+      <control name="next" enabled="false" />
+      <control name="swipeleft" enabled="false" />
+      <control name="swiperight" enabled="false" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+    <control_layout name="pxabnsnfns10111000000">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="true" />
+      <control name="next" enabled="true" />
+      <control name="swipeleft" enabled="true" />
+      <control name="swiperight" enabled="true" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="false" />
+    </control_layout>
+    <control_layout name="pnxanbnsnfns10111000001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="true" />
+      <control name="next" enabled="false" />
+      <control name="swipeleft" enabled="true" />
+      <control name="swiperight" enabled="false" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="false" />
+      <control name="outline" enabled="true">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+    <control_layout name="pxabnsnfns10110001001">
+      <control name="volume" enabled="false" />
+      <control name="seekbar" enabled="true" />
+      <control name="replay" enabled="true" />
+      <control name="pauseplay" enabled="true" />
+      <control name="logo" enabled="false" />
+      <control name="previous" enabled="true" />
+      <control name="next" enabled="true" />
+      <control name="swipeleft" enabled="true" />
+      <control name="swiperight" enabled="true" />
+      <control name="fullScreenToggle" enabled="false" />
+      <control name="playbackSpeedControl" enabled="true" />
+      <control name="submit" enabled="false" />
+      <control name="finish" enabled="false" />
+      <control name="submitall" enabled="false" />
+      <control name="resources" enabled="false" />
+      <control name="glossary" enabled="false" />
+      <control name="transcript" enabled="true" />
+      <control name="outline" enabled="false">
+        <controls>
+          <control name="search" enabled="false" />
+        </controls>
+      </control>
+      <control name="close_btn" enabled="true" />
+    </control_layout>
+  </control_layouts>
+  <colorschemes>
+    <colorscheme name="npxnabnsnfns10111000001">
+      <color_group name="accessibility">
+        <group_colors>
+          <color name="focus_rect">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFF00" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="focus_rect_secondary">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x002060" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="HTML">
+        <group_colors>
+          <color name="htmlpage_bg_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x282828" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="preloader">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="infopanel">
+        <group_colors>
+          <color name="link_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="link_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="name_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x444444" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="title_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x999999" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="infopanelpopup">
+        <group_colors>
+          <color name="link_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFF0000" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="link_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="name_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bio_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="timer">
+        <group_colors>
+          <color name="duration">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x3C3C3C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="elapsed">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFEE347" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="stroke">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xC7C7C7" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="inner">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="window">
+        <group_colors>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="inner">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x316300" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="diva">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x4E4E4E" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divb">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x4E4E4E" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="20" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="separator">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="editor">
+        <group_colors>
+          <color name="slide_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xE2E2E2" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="html_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_text_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xD3D3D3" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x444444" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_down">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x444444" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x222222" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="listitem">
+        <group_colors>
+          <color name="scene_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected_text">
+            <fill type="linear" rotation="90" />
+          </color>
+          <color name="shadow">
+            <fill type="linear" rotation="90" />
+          </color>
+          <color name="selected">
+            <fill type="linear" rotation="90" />
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="viewed">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="6" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="lines">
+            <fill type="linear" rotation="90" />
+          </color>
+          <color name="selected_hover_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="glossary">
+        <group_colors>
+          <color name="selected_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="heading_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="diva">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divb">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divc">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="notes">
+        <group_colors>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="resource">
+        <group_colors>
+          <color name="separator">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="6" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="outline">
+        <group_colors>
+          <color name="search_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="search_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2D2D2D" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divc">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divb">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="diva">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="transcript">
+        <group_colors>
+          <color name="heading_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="div">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="tabs">
+        <group_colors>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="panel_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bottom_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="seekcontrol">
+        <group_colors>
+          <color name="btn_icon_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xB4B4B4" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="seek_position">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="60" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="seek_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="seek_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_icon_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_icon_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="searchinput">
+        <group_colors>
+          <color name="text_active">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg_active">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x292929" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="search_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="hover_glow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x457E13" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="button_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x3F8500" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="icon">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="outer_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="6" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg_in_tab">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x545454" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="scrollarea">
+        <group_colors>
+          <color name="detailb">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6AA242" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="detaila">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2A5400" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x275000" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="icons">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="button_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2A5500" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="button_inner">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x4B8A16" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="button_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xB3B4B3" alpha="75" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="button_bg_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xB3B4B3" alpha="75" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x479901" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="0">
+              <colors>
+                <color rgb="0x366F00" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="menu">
+        <group_colors>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="generic_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="94" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="right_shadow">
+            <fill type="linear" rotation="0">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+                <color rgb="0x000000" alpha="30" stop="255" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="logo">
+        <group_colors>
+          <color name="shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x254B00" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="checkbox">
+        <group_colors>
+          <color name="hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xAFDD82" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="check">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2BC400" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2A5300" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="button">
+        <group_colors>
+          <color name="btn_icon_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_text_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_down">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_glow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_on_dark_background">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="btn_on_dark_background_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="base">
+        <group_colors>
+          <color name="brandhighlight">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x4F81BD" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="brandhighlight_secondary">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text_hover">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="text_selected">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xF8F8F8" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="diva">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="divb">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="0" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="menu_shade">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x282828" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x282828" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="slide_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x282828" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="overlay_message">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="85" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="6" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="selected_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="separator">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="control_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="settings">
+        <group_colors>
+          <color name="panel_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="panel_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="35" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="toggle_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x7C7C7C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="toggle_thumb_off">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xA2A2A2" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="toggle_track_on">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x4F81BD" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="toggle_track_off">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="10" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="toggle_label">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xBABBBA" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="settings_border_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+      <color_group name="volume">
+        <group_colors>
+          <color name="panel_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x212121" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="thumb_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2B5500" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="thumb_inner">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x2B5500" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="thumb_bg">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0xFFFFFF" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="slider_border">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x428C01" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="slider_bg">
+            <fill type="linear" rotation="0">
+              <colors>
+                <color rgb="0x6C6C6C" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="slider_shadow">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x000000" alpha="40" stop="0" />
+              </colors>
+            </fill>
+          </color>
+          <color name="volume_border_color">
+            <fill type="linear" rotation="90">
+              <colors>
+                <color rgb="0x454545" alpha="100" stop="0" />
+              </colors>
+            </fill>
+          </color>
+        </group_colors>
+      </color_group>
+    </colorscheme>
+  </colorschemes>
+  <string_tables>
+    <string_table name="npxnabnsnfns10111000001">
+      <string id="three_image_progress_audio">progress</string>
+      <string id="three_image_audio">audio</string>
+      <string id="three_image_camera_down">camera moved down</string>
+      <string id="three_image_camera_left">camera moved left</string>
+      <string id="three_image_camera_right">camera moved right</string>
+      <string id="three_image_camera_up">camera moved up</string>
+      <string id="three_image_interaction_free">free exploration mode</string>
+      <string id="three_image_interaction_guided">guided tour mode</string>
+      <string id="three_image_hotspot">hotspot</string>
+      <string id="three_image_instructions">Use the w, a, s, and d keys to move around the 360 degree image. Press the tab key to jump to interactive markers and hotspots.</string>
+      <string id="three_image_interaction">360 degree image interaction</string>
+      <string id="three_image_label">label</string>
+      <string id="three_image_marker">marker</string>
+      <string id="three_image_items">items</string>
+      <string id="three_image_interaction_next">next</string>
+      <string id="three_image_pause_audio">pause audio</string>
+      <string id="three_image_pause_video">pause video</string>
+      <string id="three_image_play_audio">play audio</string>
+      <string id="three_image_play_video">play video</string>
+      <string id="three_image_interaction_prev">previous</string>
+      <string id="three_image_visited">visited</string>
+      <string id="three_image_of">of</string>
+      <string id="three_image_count_of_total">%count% of %total%</string>
+      <string id="acc_three_image_step_count_of_total">step %count% of %total%</string>
+      <string id="three_image_item">item</string>
+      <string id="three_image_interaction_step">step</string>
+      <string id="three_image_tooltip">tooltip</string>
+      <string id="three_image_total_items">%total% items</string>
+      <string id="three_image_total_item">%total% item</string>
+      <string id="three_image_progress_video">progress</string>
+      <string id="three_image_video">video</string>
+      <string id="three_image_video_volume">video volume</string>
+      <string id="acc_three_image_count_of_total_items_visited">%count% of %total% items visited</string>
+      <string id="acc_three_image_count_of_total_item_visited">%count% of %total% item visited</string>
+      <string id="three_image_count_of_total_visited">%count% of %total% visited</string>
+      <string id="accessible_text">Accessible text</string>
+      <string id="background_audio">Background audio</string>
+      <string id="keyboardshortcuts_lower">Keyboard shortcuts</string>
+      <string id="zoom_to_fit">Zoom to fit</string>
+      <string id="modern_video_settings_close">close video settings</string>
+      <string id="acc_modern_video_fullscreen">full-screen video</string>
+      <string id="modern_video_playback_settings">Video Playback Settings</string>
+      <string id="modern_video_captions_off">Off</string>
+      <string id="modern_video_captions_on">On</string>
+      <string id="modern_video_captions_label">Captions</string>
+      <string id="acc_modern_video_settings">video settings</string>
+      <string id="acc_modern_video_mute">mute video</string>
+      <string id="modern_video_normal_speed">Normal</string>
+      <string id="acc_modern_video_pause">pause video</string>
+      <string id="acc_modern_video_pip">picture-in-picture</string>
+      <string id="acc_modern_video_play">play video</string>
+      <string id="modern_video_playback_speed_title">Playback Speed</string>
+      <string id="acc_modern_video_captions">video captions</string>
+      <string id="acc_modern_video_playback_speed">playback speed</string>
+      <string id="acc_modern_video_volume">video volume</string>
+      <string id="acc_active">active</string>
+      <string id="alt_key">Alt</string>
+      <string id="check_include">Check to include</string>
+      <string id="clear">Clear and return to menu</string>
+      <string id="close">Close</string>
+      <string id="continue">Continue</string>
+      <string id="continueresponsive">Continue</string>
+      <string id="playback_speed_title">Playback Speed</string>
+      <string id="playback_speed_normal">Normal</string>
+      <string id="ctrl_key">Ctrl</string>
+      <string id="enable_keyboardshortcuts">Enable keyboard shortcuts</string>
+      <string id="enter_key">Enter</string>
+      <string id="exit">Exit</string>
+      <string id="filter">Filter</string>
+      <string id="finish">FINISH</string>
+      <string id="acc_finish">finish</string>
+      <string id="definition">Definition</string>
+      <string id="acc_definition">definition</string>
+      <string id="glossary">Glossary</string>
+      <string id="terms">Terms</string>
+      <string id="progress_hour">hour</string>
+      <string id="progress_hours">hours</string>
+      <string id="action">Action</string>
+      <string id="keyboardshortcuts">Keyboard Shortcuts</string>
+      <string id="shortcuthelp">List keyboard shortcuts</string>
+      <string id="mute_shortcut">Mute / unmute</string>
+      <string id="next_shortcut">Next</string>
+      <string id="playpause_shortcut">Play / pause</string>
+      <string id="previous_shortcut">Previous</string>
+      <string id="replay_shortcut">Replay</string>
+      <string id="shortcut">Shortcut</string>
+      <string id="submit_shortcut">Submit</string>
+      <string id="acctext_shortcut">Toggle accessible text</string>
+      <string id="background_audio_shortcut">Toggle background audio</string>
+      <string id="closedcaptions_shortcut">Toggle captions</string>
+      <string id="fullscreen_shortcut">Toggle full-screen</string>
+      <string id="togglezoom">Toggle zoom to fit</string>
+      <string id="outline">Menu</string>
+      <string id="disabled_orientation">Please rotate your device</string>
+      <string id="progress_minute">minute</string>
+      <string id="progress_minutes">minutes</string>
+      <string id="next">NEXT</string>
+      <string id="acc_next">Next (Ctrl+Alt+Period)</string>
+      <string id="transcript_chk">Notes</string>
+      <string id="transcript">Audio script</string>
+      <string id="bio">Bio</string>
+      <string id="more_info">More info</string>
+      <string id="closed_captions">Captions</string>
+      <string id="send_an_email">Send an email</string>
+      <string id="prev">PREV</string>
+      <string id="acc_previous">Previous (Ctrl+Alt+Comma)</string>
+      <string id="question_list">Question List</string>
+      <string id="resources">Resources</string>
+      <string id="acc_resources">resources</string>
+      <string id="restart">Restart</string>
+      <string id="resume">Resume</string>
+      <string id="acc_locked">locked</string>
+      <string id="acc_search_input">search</string>
+      <string id="sidebar_toggle">Sidebar Toggle</string>
+      <string id="acc_slide_progress">slide progress</string>
+      <string id="desktop_start">Start Course</string>
+      <string id="mobile_start">Start Course</string>
+      <string id="acc_visited">visited</string>
+      <string id="search">Search...</string>
+      <string id="search_in">Search in:</string>
+      <string id="search_results">Search Results</string>
+      <string id="progress_second">second</string>
+      <string id="progress_seconds">seconds</string>
+      <string id="shift_key">Shift</string>
+      <string id="acc_skipnavigation">Back to top</string>
+      <string id="slide_text_chk">Slide Text</string>
+      <string id="spacebar_key">Space</string>
+      <string id="streaming_video_local_playback_learn_more">Learn more...</string>
+      <string id="streaming_video_local_playback_republish">To preview this video, use the Preview functionality in Storyline, republish your course using standard MP4 video, or publish to Review 360.</string>
+      <string id="streaming_video_local_playback_title">Streaming video is unavailable for local playback.</string>
+      <string id="submitall">SUBMIT ALL</string>
+      <string id="acc_submitall">submit all</string>
+      <string id="submit">SUBMIT</string>
+      <string id="acc_cc_hide">Hide captions (Ctrl+Alt+C)</string>
+      <string id="acc_cc_show">Show captions (Ctrl+Alt+C)</string>
+      <string id="acc_enter_fullscreen">Enter full-screen (Ctrl+Alt+F)</string>
+      <string id="acc_exit_fullscreen">Exit full-screen (Ctrl+Alt+F)</string>
+      <string id="acc_mute">Mute (Ctrl+Alt+M)</string>
+      <string id="acc_next_visual">Next (Ctrl+Alt+.)</string>
+      <string id="acc_pause">Pause (Ctrl+Alt+P)</string>
+      <string id="acc_play">Play (Ctrl+Alt+P)</string>
+      <string id="acc_playback_speed">Playback speed</string>
+      <string id="acc_previous_visual">Previous (Ctrl+Alt+,)</string>
+      <string id="acc_replay">Replay (Ctrl+Alt+R)</string>
+      <string id="search_toggle">Search</string>
+      <string id="acc_settings">Settings</string>
+      <string id="acc_submit">Submit (Ctrl+Alt+S)</string>
+      <string id="acc_unmute">Unmute (Ctrl+Alt+M)</string>
+      <string id="transcript_auto_scroll">Autoscroll</string>
+      <string id="acc_window_close">Close</string>
+      <string id="acc_video_transcript_list">Transcipt</string>
+      <string id="acc_window_move">Move window</string>
+      <string id="acc_modern_video_transcript">Open</string>
+      <string id="acc_window_resize">Resize window</string>
+      <string id="video_transcript_resume_autoscroll">Resume autoscroll</string>
+      <string id="video_transcript_select_track">Select track</string>
+      <string id="transcript_show_timestamp">Show timestamps</string>
+      <string id="video_transcript_title">Transcripts</string>
+      <string id="acc_window_options">Options</string>
+    </string_table>
+  </string_tables>
+  <fonts>
+    <font name="Lato">
+      <files>
+        <file bold="true" italic="false" />
+        <file bold="false" italic="false" />
+      </files>
+    </font>
+  </fonts>
+  <sounds enabled="true" />
+  <nav_data>
+    <outline>
+      <links>
+        <slidelink slideid="_player.6GTgMb1WtDR.5ns9LdbtMJo" displaytext="Welcome" expand="false" type="slide" />
+        <slidelink slideid="_player.6GTgMb1WtDR.6kvRJLkri0n" displaytext="Efficiencies of Practice" expand="false" type="slide" />
+        <slidelink slideid="_player.6GTgMb1WtDR.6e5mFS9ud80" displaytext="Clinician Efficiencies" expand="false" type="slide" />
+        <slidelink slideid="_player.6GTgMb1WtDR.6BJk744hgQt" displaytext="Team Efficiencies" expand="false" type="slide" />
+        <slidelink slideid="_player.5wSoDOKrf3g.6YwxYd13iyr" displaytext="Quality Metrics" expand="false" type="slide" />
+        <slidelink slideid="_player.6pBs5ISLVoI.5dUmF8oBaoW" displaytext="Summary" expand="false" type="slide" />
+      </links>
+    </outline>
+  </nav_data>
+  <resource_data description="" />
+  <transcript_data>
+    <slidetranscripts>
+      <slidetranscript slideid="6GTgMb1WtDR.5ns9LdbtMJo" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="0">&lt;Document xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Start="1" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Welcome to this 10-minute module which will provide strategies to help prevent clinician burnout and improve patient satisfaction.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Start="1" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Start="1" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="After implementing the ideas here, you will become more efficient with your EHR use while also improving your quality metrics.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Start="1" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Start="1" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To get started, select the forward arrow."&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6kvRJLkri0n" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="1">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="This graph shows how many minutes per hour an average clinician spends  using various aspects of their EHR. Many work as much on their EHRs at 10pm as they did earlier that same afternoon.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Have you ever experienced a similar day – where EHR usage extends far beyond your standard hours? Select an answer here.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Yes]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="You’re not alone –  many doctors are burning out from the pressures of work and many complain of the burdens placed on them by their EHR. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="However, you can get to a schedule that looks more like this [image of the condensed day]  by implementing small changes, periodically reflecting on efficiencies and trying changes. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Here, you’ll learn what others have done to lighten the load and become not only more efficient but more effective with their EHR use- benefiting themselves and patients.  &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[no]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Great – it sounds like you’ve already worked out some efficient ways of working. Hopefully you schedule looks closer to this.  If not, continue watching this module.  We’ll present small changes you can make that can incrementally improve efficiencies.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Select the forward arrow to continue."&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.5dv7rbFYU98" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="2">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="To improve professional fulfillment, Stanford Medicine researched the key contributors and created the Stanford Model of Professional Fulfillment. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="This removes personal resilience as the single factor in achieving fulfillment and instead shows how organizations share responsibility. They can develop a ‘culture of wellness’ and be strategic in supporting ‘efficiencies of practice’.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Think for a moment about EHR usability – where might it fit within this model?  Select one of the 3 segments in the graphic.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Feedback for culture of wellness / personal resilience]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Actually…&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Feedback for Efficiency of Practice]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Yes - that’s right….&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Follow on feedback]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="EHR usability falls within efficiency of practice.  So, it may be comforting to know that EHRs are recognized as a contributor to professional fulfillment… and a contributor to burnout. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Improving how we choose to work with EHRs can guide efficiencies. Select the forward arrow to begin reviewing these.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text=""&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6Jz2A14pwjE" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="3">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Efficient use of an EHR is really a team effort – supported by agreed procedures. This not only streamlines workflows, but also clarifies expectations. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Select either doctor or the wider office team to review some efficiency tips for each.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[1 viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Now select the other button to see more efficiency tips.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[both viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="You’ve now seen efficiency tips for clinicians and the office. Select the forward arrow to move on."&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6e5mFS9ud80" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="4">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Some of the ways to make efficient use of EHRs are simply in patient management. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Can you think of what you might say at the end of an appointment to improve your efficiency?&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the speech bubbles here for our ideas.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[If "&gt;
+        &lt;Style FontSize="11" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="results are ok]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Set patients’ expectations about finding out their test results. Let them "&gt;
+        &lt;Style FontSize="11" FontIsBold="False" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="know you will NOT contact them if their test results are normal. This way, they know they won’t need to call to find out if their results are normal. This will reduce some interaction time. Alternatively, you can use smart phrases to send a short message to patients letting them know their results are normal.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Patient Portal Use Quote]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To minimize lengthy calls, p"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="rompt patients to use the patient portal rather than calling with questions. This way, you can deal with their question on the system rather than being drawn into a longer phone conversation. If a conversation is required, you can ask them to make an appointment.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[recap, refills]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="At the end of the visit, recap and double check they don’t need medication refills. It will save you time to deal with that while the patient’s record is up rather than dealing with it later when they ring in asking for a new prescription.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[all viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6S74hVuXju5" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="5">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To see tips for being more efficient while using the EHR, select each dot here.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Notes]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="At the end of an appointment, ensure you finish the notes as soon as possible that day.  It will take more time if you wait to do this later and you may be less accurate or thorough. Voice dictation systems make this more efficient. “"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="Even if you have an accent or have struggled with dictation in the past, new voice dictation systems have improved significantly and we encourage you to try using them again”"&gt;
+        &lt;Style FontSize="11" BackgroundColor="Yellow" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Note bloat]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g. labs, imaging.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Shortcuts] &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="If you have sections of text you type more than once use preconfigured notes, sometimes known as  ’dot phrases’ or ‘smart phrases’ . These are essentially short cuts – like “at PMH @ PSH @” – these allow you to copy over the information you’d written in that section.  This pulled data means you do not have to copy and paste and ensures data is the same within different areas of the record. To change the data, refer to the original section.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[messages]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g. tele visit, phone, face to face).&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[medications]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="For patients that receive routine medications, consider approving a year or more supply. This saves time refilling prescriptions.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Help/what does this do]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="If you’re unsure of what a button does – try it. Explore the system as you use it. Sometimes just hovering over a button will provide more information. For more specific training, try contacting your local informatics or EHR educators. You may be surprised by the wealth of free resources available to support your successful use of these systems. They NEED you to succeed.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[all viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6dQWFTaR4Sd" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="6">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Improving efficiency with EHR use is an ongoing practice. Commit to 15 minutes each week to adjust templates; or to make shortcuts for common orders instructions and processes; and actively seek out new tricks and share these with colleagues.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" ForegroundColor="#FF0000" BackgroundColor="#FFFF00" LinkColor="#FF0000" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="A summary of the tips reviewed here is shown."&gt;
+        &lt;Style FontSize="11" ForegroundColor="#FF0000" BackgroundColor="#FFFF00" LinkColor="#FF0000" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xD;&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6GTgMb1WtDR.6BJk744hgQt" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="7">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="The whole team can and should contribute to improving efficiencies. Select each of the tips shown for details.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[request information in advance ]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Use the patient portal to collect as much information pre-visit as per possible. If your patients are unable to do this on their personal devices, provide a kiosk or tablet in the waiting area.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Mature the message]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="As much as possible, anyone dealing with a patient in anyway should try to mature the patient’s question or message before it reaches you by seeking additional relevant information. For example, ensuring a medication refill has the correct pharmacy or ensuring  a referral request has the doctor’s name and a reason for the referral. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Who asks what]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Working with your team, establish who asks the patients which questions and when. This helps to avoid redundant questions and removes those that might not make sense to patients. This saves you time by only having to confirm the data – rather than having to discover it.  &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Focus the patient]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Prior to seeing you, a member of the team should speak with the patient to uncover and clarify all the reasons for their visit. Encourage the use of questionnaires so the patient can think it through before seeing the clinician. It can help to ask on your questionnaire, “what is your main reason for coming in today? If there is time, what else would you like to cover?”  Positioned this way, the patient is primed to discuss only their main concern and already has the expectation that they may not be able to discuss everything in this single visit.  This can help focus the patient and prioritize items for you. This may include forms to complete, refills required, referrals being requested, or results that need discussion.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Process maps ]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Process mapping common routines can help with efficiencies and can clarify responsibilities.  These maps should also include how the EHR is used in the tasks. "&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="Write these with your team to save save time in future and build useful sets of instructions for new staff. The more you do this, the more time you can save in the long term.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Click the icon to see a worked example. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[example]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Here, the clinical looked at improving the process for ordering standard blood work – moving it to a pre-visit step. This simple change saves time,  frees up the MA’s time, and improves the patient experience.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Once all are viewed - ‘you’]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Don’t forget that change is a two-way street and you may need to be open to changes your staff suggest for you to help their loads.  Ask open questions, give examples, and create an atmosphere where change is welcomed – even your own."&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="5wSoDOKrf3g.6YwxYd13iyr" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="8">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="So how can you impact change now to improve your quality metrics? We have four simple ideas for you - select each for details.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[1]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Let the EHR work for you – not the other way around. Learn how each quality metric is satisfied and keep up with changes. Learn to use shortcuts and reminders.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[2]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Keep the Chart “Clean” - delete resolved or redundant problems.  Ensure you document accurately the first time as it will save you time at future visits.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[3]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Address quality metrics mainly at physicals but also at other visits if time - we all need reminders.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[4]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Remember for Medicare patients, each year starts with 0 diagnoses. Be sure to add relevant information and address issues each visit to get credit for how complex your patients are.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text=""&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6pBs5ISLVoI.5dUmF8oBaoW" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="9">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="You’re now at the end of this module, which provided you with strategies to help prevent burnout, improve patient satisfaction, and quality metrics.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Implement the ideas you saw here to become more efficient with your EHR use while also improving your quality metrics and patient satisfaction.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="A PDF summary of these is available for download.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Arial"&gt;
+          &lt;BulletPicture Size="0x0" /&gt;
+        &lt;/ListStyle&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To close this module, select ‘exit’."&gt;
+        &lt;Style FontSize="12" FontIsItalic="False" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.6F1KCU0tdRM" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="4">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Some of the ways to make efficient use of EHRs are simply in patient management. &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Can you think of what you might say at the end of an appointment to improve your efficiency?&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the speech bubbles here for our ideas.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[If "&gt;
+        &lt;Style FontSize="11" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="results are ok]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Set patients’ expectations about finding out their test results. Let them "&gt;
+        &lt;Style FontSize="11" FontIsBold="False" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="know you will NOT contact them if their test results are normal. This way, they know they won’t need to call to find out if their results are normal. This will reduce some interaction time. Alternatively, you can use smart phrases to send a short message to patients letting them know their results are normal.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Patient Portal Use Quote]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To minimize lengthy calls, p"&gt;
+        &lt;Style FontSize="11" FontIsBold="True" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="rompt patients to use the patient portal rather than calling with questions. This way, you can deal with their question on the system rather than being drawn into a longer phone conversation. If a conversation is required, you can ask them to make an appointment.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[recap, refills]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="At the end of the visit, recap and double check they don’t need medication refills. It will save you time to deal with that while the patient’s record is up rather than dealing with it later when they ring in asking for a new prescription.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[all viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.6jzCts0S0st" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="10">&lt;Document xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="To see tips for being more efficient while using the EHR, select each dot here.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Notes]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="At the end of an appointment, ensure you finish the notes as soon as possible that day.  It will take more time if you wait to do this later and you may be less accurate or thorough. Voice dictation systems make this more efficient.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Note bloat]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g. labs, imaging.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Shortcuts] &amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="If you have sections of text you type more than once use preconfigured notes, sometimes known as  ’dot phrases’ or ‘smart phrases’ . These are essentially short cuts – like “at PMH @ PSH @” – these allow you to copy over the information you’d written in that section.  This pulled data means you do not have to copy and paste and ensures data is the same within different areas of the record. To change the data, refer to the original section.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[messages]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g. tele visit, phone, face to face).&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[medications]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="For patients that receive routine medications, consider approving a year or more supply. This saves time refilling prescriptions.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[Help/what does this do]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="If you’re unsure of what a button does – try it. Explore the system as you use it. Sometimes just hovering over a button will provide more information. For more specific training, try contacting your local informatics or EHR educators. You may be surprised by the wealth of free resources available to support your successful use of these systems. They NEED you to succeed.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[all viewed]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.5Zsb4NDYvE3" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="11">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Improving efficiency with EHR use is an ongoing practice. Commit to 15 minutes each week to adjust templates; or to make shortcuts for common orders instructions and processes; and actively seek out new tricks and share these with colleagues.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xD;&amp;#xA;"&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" ListLevel="0" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Plain" Color="#000000" BulletChar="·" BulletFont="Symbol" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Select the forward arrow to continue. "&gt;
+        &lt;Style FontSize="11" BackgroundColor="#000000,00" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.5oTdgIscWoa" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="7">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="The whole team can and should contribute to improving efficiencies. Select each of the tips shown for details.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[request information in advance ]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Use the patient portal to collect as much information pre-visit as per possible. If your patients are unable to do this on their personal devices, provide a kiosk or tablet in the waiting area.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Mature the message]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="As much as possible, anyone dealing with a patient in anyway should try to mature the patient’s question or message before it reaches you by seeking additional relevant information. For example, ensuring a medication refill has the correct pharmacy or ensuring  a referral request has the doctor’s name and a reason for the referral. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Who asks what]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Working with your team, establish who asks the patients which questions and when. This helps to avoid redundant questions and removes those that might not make sense to patients. This saves you time by only having to confirm the data – rather than having to discover it.  &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Focus the patient]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Prior to seeing you, a member of the team should speak with the patient to uncover and clarify all the reasons for their visit. Encourage the use of questionnaires so the patient can think it through before seeing the clinician. It can help to ask on your questionnaire, “what is your main reason for coming in today? If there is time, what else would you like to cover?”  Positioned this way, the patient is primed to discuss only their main concern and already has the expectation that they may not be able to discuss everything in this single visit.  This can help focus the patient and prioritize items for you. This may include forms to complete, refills required, referrals being requested, or results that need discussion.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Process maps ]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Process mapping common routines can help with efficiencies and can clarify responsibilities.  These maps should also include how the EHR is used in the tasks. "&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="Write these with your team to save save time in future and build useful sets of instructions for new staff. The more you do this, the more time you can save in the long term.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Click the icon to see a worked example. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[example]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Here, the clinical looked at improving the process for ordering standard blood work – moving it to a pre-visit step. This simple change saves time,  frees up the MA’s time, and improves the patient experience.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Once all are viewed - ‘you’]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Don’t forget that change is a two-way street and you may need to be open to changes your staff suggest for you to help their loads.  Ask open questions, give examples, and create an atmosphere where change is welcomed – even your own."&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.5i7d7FEAxmi" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="8">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="So how can you impact change now to improve your quality metrics? We have four simple ideas for you - select each for details.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[1]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Let the EHR work for you – not the other way around. Learn how each quality metric is satisfied and keep up with changes. Learn to use shortcuts and reminders.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[2]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Keep the Chart “Clean” - delete resolved or redundant problems.  Ensure you document accurately the first time as it will save you time at future visits.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[3]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Address quality metrics mainly at physicals but also at other visits if time - we all need reminders.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="[4]&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text="Remember for Medicare patients, each year starts with 0 diagnoses. Be sure to add relevant information and address issues each visit to get credit for how complex your patients are.&amp;#xA;"&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="6" SpacingAfter="0"&gt;
+        &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
+      &lt;/Style&gt;
+      &lt;Span Text=""&gt;
+        &lt;Style FontSize="11" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+      <slidetranscript slideid="6gaTC5K7wnP.6X6FfYBXxnY" slidebank="false" type="slide" noteswf="" notespng="" pathlib="Lib" pathindex="7">&lt;Document xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Content&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="The whole team can and should contribute to improving efficiencies. Select each of the tips shown for details.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[request information in advance ]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Use the patient portal to collect as much information pre-visit as per possible. If your patients are unable to do this on their personal devices, provide a kiosk or tablet in the waiting area.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Mature the message]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="As much as possible, anyone dealing with a patient in anyway should try to mature the patient’s question or message before it reaches you by seeking additional relevant information. For example, ensuring a medication refill has the correct pharmacy or ensuring  a referral request has the doctor’s name and a reason for the referral. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Who asks what]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Working with your team, establish who asks the patients which questions and when. This helps to avoid redundant questions and removes those that might not make sense to patients. This saves you time by only having to confirm the data – rather than having to discover it.  &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Focus the patient]"&gt;
+        &lt;Style FontSize="12" FontIsBold="True" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Prior to seeing you, a member of the team should speak with the patient to uncover and clarify all the reasons for their visit. Encourage the use of questionnaires so the patient can think it through before seeing the clinician. It can help to ask on your questionnaire, “what is your main reason for coming in today? If there is time, what else would you like to cover?”  Positioned this way, the patient is primed to discuss only their main concern and already has the expectation that they may not be able to discuss everything in this single visit.  This can help focus the patient and prioritize items for you. This may include forms to complete, refills required, referrals being requested, or results that need discussion.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Process maps ]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Process mapping common routines can help with efficiencies and can clarify responsibilities.  These maps should also include how the EHR is used in the tasks. "&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+      &lt;Span Text="Write these with your team to save save time in future and build useful sets of instructions for new staff. The more you do this, the more time you can save in the long term.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Click the icon to see a worked example. &amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[example]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Here, the clinical looked at improving the process for ordering standard blood work – moving it to a pre-visit step. This simple change saves time,  frees up the MA’s time, and improves the patient experience.&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="[Once all are viewed - ‘you’]&amp;#xA;"&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+    &lt;Block&gt;
+      &lt;Style /&gt;
+      &lt;Span Text="Don’t forget that change is a two-way street and you may need to be open to changes your staff suggest for you to help their loads.  Ask open questions, give examples, and create an atmosphere where change is welcomed – even your own."&gt;
+        &lt;Style FontSize="12" /&gt;
+      &lt;/Span&gt;
+    &lt;/Block&gt;
+  &lt;/Content&gt;
+&lt;/Document&gt;</slidetranscript>
+    </slidetranscripts>
+  </transcript_data>
+  <glossary_data />
+</bwFrame>

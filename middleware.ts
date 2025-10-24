@@ -5,8 +5,8 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
+  const { pathname, origin } = req.nextUrl;
 
-  // Initialize Supabase client with request + response cookies
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,19 +25,21 @@ export async function middleware(req: NextRequest) {
     }
   );
 
-  // Check the user's auth session
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getSession();
+  const session = data?.session;
 
-  if (error || !data?.user) {
-    // Not logged in → redirect to login
-    return NextResponse.redirect(new URL("/login", req.url));
+  // Redirect unauthenticated users trying to access dashboards
+  if (error || !session) {
+    if (pathname.startsWith("/dashboards")) {
+      return NextResponse.redirect(`${origin}/login`);
+    }
+    return res;
   }
 
-  // Authenticated → continue to the requested page
+  // Allow authenticated users through
   return res;
 }
 
-// Apply middleware only to dashboard routes
 export const config = {
   matcher: ["/dashboards/:path*"],
 };

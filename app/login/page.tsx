@@ -26,33 +26,36 @@ export default function LoginPage() {
 
     if (error) {
       alert(error.message);
-    } else {
-      // ✅ Force Supabase to persist session cookies for SSR routes
-      await supabase.auth.getSession();
-
-      const user = data?.user;
-
-      // ✅ Log new session in Supabase
-      if (user) {
-        try {
-          await supabase.from("user_sessions").insert([
-            {
-              user_id: user.id,
-              ip_address: window.location.hostname,
-              user_agent: navigator.userAgent,
-              logout_reason: null,
-            },
-          ]);
-        } catch (sessionError) {
-          console.error("Failed to log session:", sessionError);
-        }
-      }
-
-      // ✅ Determine role and redirect accordingly
-      const role = user?.user_metadata?.role;
-      if (role === "CME") router.push("/dashboards/cme");
-      else router.push("/dashboards/non-cme");
+      return;
     }
+
+    const user = data?.user;
+    if (!user) return;
+
+    // ✅ Persist Supabase session for SSR routes
+    await supabase.auth.getSession();
+
+    // ✅ Log session in Supabase
+    try {
+      await supabase.from("user_sessions").insert([
+        {
+          user_id: user.id,
+          ip_address: window.location.hostname,
+          user_agent: navigator.userAgent,
+          logout_reason: null,
+        },
+      ]);
+    } catch (sessionError) {
+      console.error("Failed to log session:", sessionError);
+    }
+
+    // ✅ Store role in localStorage for quick access (e.g. post-tests later)
+    if (user.user_metadata?.role) {
+      localStorage.setItem("user_role", user.user_metadata.role);
+    }
+
+    // ✅ Redirect all users to unified dashboard
+    router.push("/dashboards");
   };
 
   return (
