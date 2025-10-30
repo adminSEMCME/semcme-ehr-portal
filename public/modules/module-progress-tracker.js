@@ -1,89 +1,151 @@
 // public/modules/module-progress-tracker.js
-(async function () {
-  // Small delay to ensure Storyline initializes
-  await new Promise((r) => setTimeout(r, 3000));
+(function () {
+  // ————— helpers —————
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const moduleId =
+    (location.pathname.match(/\/modules\/([^/]+)\//) || [])[1] ||
+    "unknown_module";
 
-  function getModuleId() {
-    const pathParts = window.location.pathname.split("/");
-    const moduleFolder = pathParts[pathParts.indexOf("modules") + 1];
-    return moduleFolder || "unknown_module";
-  }
+  let lastSentPercent = -1;
+  let sending = false;
 
-  const moduleId = getModuleId();
-  console.log(`📘 Progress Tracker loaded for module: ${moduleId}`);
+  async function postProgress({ percent, completed }) {
+    // avoid duplicate sends
+    if (!completed && percent === lastSentPercent) return;
+    lastSentPercent = percent;
 
-  // Track percentage and completion status
-  let lastProgress = 0;
-  let hasCompleted = false;
+    const payload = {
+      module_id: moduleId,
+      progress_percent: Math.max(0, Math.min(100, Math.round(percent))),
+      status: completed ? "completed" : "in_progress",
+      ...(completed ? { date_completed: new Date().toISOString() } : {}),
+    };
 
-  // Helper function to send progress data to your API
-  async function updateProgress(status, progressPercent) {
     try {
+      sending = true;
       await fetch("/api/progress", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          module_id: moduleId,
-          status,
-          progress_percent: progressPercent,
-          date_completed:
-            status === "completed" ? new Date().toISOString() : null,
-        }),
+        body: JSON.stringify(payload),
+        keepalive: true, // survives tab close
       });
-      console.log(`✅ Progress updated: ${status} (${progressPercent}%)`);
-    } catch (err) {
-      console.error("❌ Failed to update progress", err);
+      // console.debug("Progress sent:", payload);
+    } catch (e) {
+      console.warn("Progress send failed:", e);
+    } finally {
+      sending = false;
     }
   }
 
-  // Poll Storyline every few seconds to check progress
-  const interval = setInterval(() => {
-    try {
-      // Storyline exposes progress in user.js via GetPlayer()
-      const player = window.GetPlayer?.();
-      if (!player) return;
+  function findOutlineEl() {
+    // Typical structure: <nav id="outline-content" class="cs-outline"> ... .cs-listitem ...
+    return (
+      document.querySelector("#outline-content") ||
+      document.querySelector("nav.cs-outline") ||
+      document.querySelector("#outline-panel nav")
+    );
+  }
 
-      // If the author set a "Progress" variable in Storyline (recommended)
-      const progress = Number(player.GetVar?.("Progress") || 0);
-      const slidesCompleted = player.GetVar?.("SlidesCompleted");
-      const totalSlides = player.GetVar?.("TotalSlides");
+  function countTotals(outlineEl) {
+    if (!outlineEl) return { visited: 0, total: 0, percent: 0 };
 
-      // Compute progress percentage if Storyline variables are available
-      let progressPercent = progress;
-      if (slidesCompleted && totalSlides) {
-        progressPercent = Math.round(
-          (Number(slidesCompleted) / Number(totalSlides)) * 100
-        );
-      }
+    // Every clickable item in menu
+    const allItems = outlineEl.querySelectorAll(".cs-listitem.listitem");
+    const total = allItems.length;
 
-      // Only send if progress changed
-      if (progressPercent > lastProgress && progressPercent <= 100) {
-        lastProgress = progressPercent;
-        updateProgress(
-          progressPercent >= 100 ? "completed" : "in_progress",
-          progressPercent
-        );
-      }
+    // Storyline marks visited with .cs-viewed
+    const visitedItems = outlineEl.querySelectorAll(
+      ".cs-listitem.listitem.cs-viewed"
+    );
+    const visited = visitedItems.length;
 
-      // Detect Exit button click (common in Storyline)
-      const exitButton =
-        document.querySelector(".cs-exit, #exit, button.exit") ||
-        document.querySelector("button[title*='Exit']");
+    const percent = total ? Math.round((visited / total) * 100) : 0;
+    return { visited, total, percent };
+  }
 
-      if (exitButton && !exitButton.dataset.tracked) {
-        exitButton.dataset.tracked = "true";
-        exitButton.addEventListener("click", async () => {
-          if (!hasCompleted) {
-            hasCompleted = true;
-            await updateProgress("completed", 100);
-          }
-        });
-      }
-    } catch (err) {
-      console.warn("Progress tracking loop error:", err);
+  // Debounce sends
+  let debounceTimer = null;
+  function scheduleSend({ percent, completed = false }, delay = 600) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(
+      () => postProgress({ percent, completed }),
+      delay
+    );
+  }
+
+  // ————— bootstrap —————
+  (async function init() {
+    // Give Storyline time to render the outline
+    for (let i = 0; i < 30; i++) {
+      if (findOutlineEl()) break;
+      await sleep(250);
     }
-  }, 5000); // check every 5 seconds
+    const outline = findOutlineEl();
+    if (!outline) {
+      console.warn("Module tracker: outline not found, will not compute %.");
+      return;
+    }
 
-  // Stop tracking after 2 hours just for safety
-  setTimeout(() => clearInterval(interval), 2 * 60 * 60 * 1000);
+    console.info("📘 Tracker active for module:", moduleId);
+
+    // Initial send
+    const first = countTotals(outline);
+    // console.info(`📑 Found ${first.total} tabs`);
+    scheduleSend({ percent: first.percent });
+
+    // Watch for visited/selected changes
+    const observer = new MutationObserver((mutations) => {
+      // Only react to class changes or node additions/removals
+      const changed = mutations.some(
+        (m) => m.type === "attributes" || m.type === "childList"
+      );
+      if (!changed || sending) return;
+
+      const { percent } = countTotals(outline);
+      scheduleSend({ percent });
+    });
+
+    observer.observe(outline, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["class", "aria-selected", "aria-expanded"],
+    });
+
+    // Detect Exit button -> Completed
+    function bindExitOnce() {
+      const exitBtn = Array.from(
+        document.querySelectorAll("button, a, div")
+      ).find((el) => {
+        const t = (el.textContent || "").toLowerCase();
+        const a = (el.getAttribute("aria-label") || "").toLowerCase();
+        return t.includes("exit") || a.includes("exit");
+      });
+      if (!exitBtn || exitBtn.dataset._progressBound) return false;
+      exitBtn.dataset._progressBound = "1";
+      exitBtn.addEventListener("click", () => {
+        // On explicit exit, force 100% + completed
+        scheduleSend({ percent: 100, completed: true }, 0);
+      });
+      return true;
+    }
+
+    // Try immediately & also keep trying for late renders
+    bindExitOnce();
+    const exitFinder = new MutationObserver(() => bindExitOnce());
+    exitFinder.observe(document.body, { childList: true, subtree: true });
+
+    // (Optional) If you ALSO want to auto-complete when all tabs are visited
+    // uncomment the block below.
+    /*
+    const autoCompleteObserver = new MutationObserver(() => {
+      const { visited, total } = countTotals(outline);
+      if (total > 0 && visited === total) {
+        scheduleSend({ percent: 100, completed: true }, 300);
+        autoCompleteObserver.disconnect();
+      }
+    });
+    autoCompleteObserver.observe(outline, { subtree: true, attributes: true, childList: true, attributeFilter: ["class"] });
+    */
+  })();
 })();
