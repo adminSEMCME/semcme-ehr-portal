@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import {
   Accordion,
@@ -32,6 +32,9 @@ interface Certificate {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const targetModule = searchParams.get("module");
+
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
@@ -86,6 +89,20 @@ export default function DashboardPage() {
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
+
+  // ✅ Scroll to target module after data loads
+  useEffect(() => {
+    if (!loading && targetModule) {
+      const el = document.getElementById(targetModule);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        el.classList.add("ring-4", "ring-semcmeBlue", "ring-opacity-50");
+        setTimeout(() => {
+          el.classList.remove("ring-4", "ring-semcmeBlue", "ring-opacity-50");
+        }, 3000);
+      }
+    }
+  }, [loading, targetModule]);
 
   const getStatus = (moduleId: string) =>
     progress.find((p) => p.module_id === moduleId)?.status || "not_started";
@@ -154,6 +171,7 @@ export default function DashboardPage() {
 
           return (
             <AccordionItem
+              id={module.id} // ✅ allows scrolling
               key={module.id}
               value={module.id}
               className="rounded-lg overflow-hidden shadow-lg border border-gray-200"

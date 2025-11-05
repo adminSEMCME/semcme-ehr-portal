@@ -1,4 +1,15 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+
 export default function ChooseRegistrationType() {
+  const searchParams = useSearchParams();
+  const moduleId = searchParams.get("module");
+
+  // Helper function to append ?module= to links if it exists
+  const withModuleParam = (basePath: string) =>
+    moduleId ? `${basePath}?module=${moduleId}` : basePath;
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-xl text-center">
@@ -11,15 +22,17 @@ export default function ChooseRegistrationType() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* CME Registration */}
           <a
-            href="/register/cme"
+            href={withModuleParam("/register/cme")}
             className="block w-full py-3 rounded-xl bg-semcmeBlue text-white font-semibold hover:bg-[#034f8c] transition"
           >
             Yes — CME Credit
           </a>
 
+          {/* Non-CME Registration */}
           <a
-            href="/register/non-cme"
+            href={withModuleParam("/register/non-cme")}
             className="block w-full py-3 rounded-xl border-2 border-semcmeBlue text-semcmeBlue font-semibold hover:bg-semcmeBlue hover:text-white transition"
           >
             No — Non-CME Credit
@@ -29,7 +42,7 @@ export default function ChooseRegistrationType() {
         <p className="text-gray-600 mt-6 text-sm">
           Already have an account?{" "}
           <a
-            href="/login"
+            href={withModuleParam("/login")}
             className="text-semcmeBlue font-semibold hover:underline"
           >
             Sign in

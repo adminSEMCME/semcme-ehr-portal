@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function CmeRegistration() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const moduleId = searchParams.get("module");
+
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -28,28 +31,36 @@ export default function CmeRegistration() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/login`,
-        data: { role: "CME", ...form },
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login${
+            moduleId ? `?module=${moduleId}` : ""
+          }`,
+          data: { role: "CME", ...form },
+        },
+      });
 
-    if (error) {
-      (window as any).showToast("Registration Failed", error.message);
-    } else {
-      (window as any).showToast(
-        "Registration Successful 🎉",
-        "Please check your email to verify your account before logging in."
-      );
+      if (error) {
+        alert("Registration Failed: " + error.message);
+      } else {
+        alert(
+          "Registration successful! Please check your email to verify your account before logging in."
+        );
 
-      // Small delay before redirect
-      setTimeout(() => router.push("/login"), 3000);
+        // Redirect after short delay
+        setTimeout(() => {
+          router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`);
+        }, 2500);
+      }
+    } catch (err) {
+      console.error("Error during registration:", err);
+      alert("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -88,6 +99,7 @@ export default function CmeRegistration() {
               name="firstName"
               placeholder="First Name"
               required
+              value={form.firstName}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -95,6 +107,7 @@ export default function CmeRegistration() {
               name="lastName"
               placeholder="Last Name"
               required
+              value={form.lastName}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -105,6 +118,7 @@ export default function CmeRegistration() {
               name="degree"
               placeholder="Degree"
               required
+              value={form.degree}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -112,6 +126,7 @@ export default function CmeRegistration() {
               name="institution"
               placeholder="Institution"
               required
+              value={form.institution}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -122,6 +137,7 @@ export default function CmeRegistration() {
               name="phone"
               placeholder="Phone Number"
               required
+              value={form.phone}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -129,6 +145,7 @@ export default function CmeRegistration() {
               name="department"
               placeholder="Department"
               required
+              value={form.department}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
@@ -138,6 +155,7 @@ export default function CmeRegistration() {
             name="title"
             placeholder="Title"
             required
+            value={form.title}
             onChange={handleChange}
             className="border p-3 rounded-lg w-full"
           />
@@ -146,6 +164,7 @@ export default function CmeRegistration() {
             name="medicalSchoolYear"
             placeholder="Medical School Year"
             required
+            value={form.medicalSchoolYear}
             onChange={handleChange}
             className="border p-3 rounded-lg w-full"
           />
@@ -162,7 +181,7 @@ export default function CmeRegistration() {
         <p className="text-gray-600 mt-6 text-sm text-center">
           Already have an account?{" "}
           <a
-            href="/login"
+            href={`/login${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
           >
             Sign in

@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const moduleId = searchParams.get("module");
+
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
@@ -17,45 +20,55 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: form.email,
-      password: form.password,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    const user = data?.user;
-    if (!user) return;
-
-    // ✅ Persist Supabase session for SSR routes
-    await supabase.auth.getSession();
-
-    // ✅ Log session in Supabase
     try {
-      await supabase.from("user_sessions").insert([
-        {
-          user_id: user.id,
-          ip_address: window.location.hostname,
-          user_agent: navigator.userAgent,
-          logout_reason: null,
-        },
-      ]);
-    } catch (sessionError) {
-      console.error("Failed to log session:", sessionError);
-    }
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+      });
 
-    // ✅ Store role in localStorage for quick access (e.g. post-tests later)
-    if (user.user_metadata?.role) {
-      localStorage.setItem("user_role", user.user_metadata.role);
-    }
+      setLoading(false);
 
-    // ✅ Redirect all users to unified dashboard
-    router.push("/dashboards");
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      const user = data?.user;
+      if (!user) return;
+
+      // Persist Supabase session for SSR routes
+      await supabase.auth.getSession();
+
+      // Optionally log session (kept from your original logic)
+      try {
+        await supabase.from("user_sessions").insert([
+          {
+            user_id: user.id,
+            ip_address: window.location.hostname,
+            user_agent: navigator.userAgent,
+            logout_reason: null,
+          },
+        ]);
+      } catch (sessionError) {
+        console.error("Failed to log session:", sessionError);
+      }
+
+      // Store role in localStorage (unchanged from your setup)
+      if (user.user_metadata?.role) {
+        localStorage.setItem("user_role", user.user_metadata.role);
+      }
+
+      // ✅ Redirect to dashboards, preserving module ID if present
+      const redirectUrl = moduleId
+        ? `/dashboards?module=${moduleId}`
+        : "/dashboards";
+
+      router.push(redirectUrl);
+    } catch (err) {
+      console.error("Unexpected login error:", err);
+      alert("An unexpected error occurred while signing in.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -95,9 +108,9 @@ export default function LoginPage() {
         </form>
 
         <p className="text-gray-600 mt-6 text-sm text-center">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a
-            href="/register/choose"
+            href={`/register/choose${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
           >
             Register here
