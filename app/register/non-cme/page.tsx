@@ -66,7 +66,7 @@ export default function NonCmeRegistration() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Non-CME Registration

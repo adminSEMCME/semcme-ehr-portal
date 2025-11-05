@@ -19,7 +19,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   // Animation variants for Framer Motion
-  const cardVariants = {
+  const cardVariants: any = {
     hidden: { opacity: 0, y: 30 },
     visible: (i: number) => ({
       opacity: 1,
@@ -30,7 +30,7 @@ export default function HomePage() {
         ease: "easeOut",
       },
     }),
-  };
+  } as const;
 
   useEffect(() => {
     async function loadModules() {
@@ -53,9 +53,9 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center min-h-screen bg-gray-50 text-gray-800 font-sans">
+    <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans">
       {/* HERO SECTION */}
-      <section className="w-full text-white py-16 text-center bg-semcmeBlue">
+      <section className="w-full text-white py-16 mt-16 text-center bg-transparent">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
         <p className="max-w-2xl mx-auto mb-8 text-md">
           Explore modules designed to improve your knowledge
@@ -82,7 +82,7 @@ export default function HomePage() {
 
       {/* MODULE LIST SECTION */}
       <section className="w-full max-w-5xl py-16 px-4 font-sans">
-        <h2 className="text-3xl font-semibold mb-10 text-semcmeBlue text-center">
+        <h2 className="text-3xl font-semibold mb-10 text-white text-center">
           Explore Available Modules
         </h2>
 
@@ -97,7 +97,7 @@ export default function HomePage() {
                 key={mod.id}
                 custom={i}
                 variants={cardVariants}
-                className="bg-gradient-to-b from-white to-gray-50 shadow-sm rounded-2xl border border-gray-200 p-8 
+                className="bg-linear-to-b from-white to-gray-50 shadow-sm rounded-2xl border border-gray-200 p-8 
                            hover:shadow-lg hover:-translate-y-1 transition-all duration-300 
                            flex flex-col items-center text-center"
               >

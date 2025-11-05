@@ -164,7 +164,20 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    /* === Global SEMCME Linear Background — Deep Blue Match + Smooth Gray Fade === */
+    background: linear-gradient(
+      180deg,
+      #013e7a 0%,
+      /* darker SEMCME blue to match hero perfectly */ #02519c 10%,
+      /* transition zone: your hero blue */ #2b6dad 25%,
+      /* softer mid blue */ #e4e8ee 80%,
+      /* light gray toward bottom */ #f6f8fa 100% /* very light gray finish */
+    );
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    @apply text-foreground antialiased;
     font-family: "Lato", sans-serif !important;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;

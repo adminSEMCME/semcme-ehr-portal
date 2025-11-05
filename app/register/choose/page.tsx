@@ -11,7 +11,7 @@ export default function ChooseRegistrationType() {
     moduleId ? `${basePath}?module=${moduleId}` : basePath;
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 font-sans">
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-xl text-center">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-4">
           Are you taking this course for CME credit?
