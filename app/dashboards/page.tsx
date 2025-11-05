@@ -24,18 +24,23 @@ interface ModuleProgress {
   progress_percent?: number;
 }
 
+interface Certificate {
+  module_id: string;
+  cert_url: string;
+  issued_at: string;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-
-        // ✅ Get active session
         const { data: sessionData } = await supabase.auth.getSession();
         const user = sessionData?.session?.user;
 
@@ -50,14 +55,21 @@ export default function DashboardPage() {
           .select("*")
           .order("id", { ascending: true });
 
-        // ✅ Fetch latest progress
+        // ✅ Fetch progress
         const { data: progressData } = await supabase
           .from("module_progress")
           .select("module_id, status, progress_percent")
           .eq("user_id", user.id);
 
+        // ✅ Fetch certificates
+        const { data: certData } = await supabase
+          .from("certificates")
+          .select("module_id, cert_url, issued_at")
+          .eq("user_id", user.id);
+
         setModules(modulesData || []);
         setProgress(progressData || []);
+        setCertificates(certData || []);
       } catch (err) {
         console.error("Error loading dashboard:", err);
       } finally {
@@ -65,31 +77,24 @@ export default function DashboardPage() {
       }
     }
 
-    // 👇 Run immediately when the page loads
     loadData();
 
-    // 👇 Run again automatically whenever user comes back to the tab
     const handleFocus = () => {
-      console.log("🔄 Refetching progress on tab focus...");
+      console.log("🔄 Refetching progress and certificates...");
       loadData();
     };
     window.addEventListener("focus", handleFocus);
-
-    // 🧹 Clean up listener when leaving page
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
+    return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
 
-  const getStatus = (moduleId: string) => {
-    const item = progress.find((p) => p.module_id === moduleId);
-    return item ? item.status : "not_started";
-  };
+  const getStatus = (moduleId: string) =>
+    progress.find((p) => p.module_id === moduleId)?.status || "not_started";
 
-  const getProgress = (moduleId: string) => {
-    const item = progress.find((p) => p.module_id === moduleId);
-    return item?.progress_percent ?? 0;
-  };
+  const getProgress = (moduleId: string) =>
+    progress.find((p) => p.module_id === moduleId)?.progress_percent ?? 0;
+
+  const getCertificate = (moduleId: string) =>
+    certificates.find((c) => c.module_id === moduleId);
 
   const handleStart = async (module: Module) => {
     try {
@@ -133,6 +138,7 @@ export default function DashboardPage() {
         {modules.map((module) => {
           const status = getStatus(module.id);
           const progressPercent = getProgress(module.id);
+          const cert = getCertificate(module.id);
 
           const statusColor =
             status === "completed"
@@ -152,14 +158,11 @@ export default function DashboardPage() {
               value={module.id}
               className="rounded-lg overflow-hidden shadow-lg border border-gray-200"
             >
-              {/* Accordion Header */}
               <AccordionTrigger className="bg-semcmeBlue text-white px-6 py-4 text-lg font-semibold flex flex-col md:flex-row md:items-center justify-between gap-4">
-                {/* Title */}
                 <span className="flex-1">{module.title}</span>
 
                 {/* Progress + Status */}
                 <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto md:justify-end">
-                  {/* Progress bar */}
                   <div className="flex items-center gap-3 w-full md:w-64">
                     <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
                       <div
@@ -173,19 +176,16 @@ export default function DashboardPage() {
                       {progressPercent}%
                     </span>
                   </div>
-
-                  {/* Status Badge */}
                   <span
-                    className={`text-xs px-3 py-1 rounded-full border ${statusColor} whitespace-nowrap`}
+                    className={`text-xs px-3 py-1 rounded-full border ${statusColor}`}
                   >
                     {status.replace("_", " ")}
                   </span>
                 </div>
               </AccordionTrigger>
 
-              {/* Accordion Body */}
+              {/* Body */}
               <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                {/* Thumbnail */}
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img
                     src={thumbnailPath}
@@ -198,23 +198,40 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                {/* Text + Button */}
                 <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-6">
                   <p className="text-gray-700 text-base leading-relaxed">
                     {module.description ||
                       "No description available for this module."}
                   </p>
 
-                  <Button
-                    onClick={() => handleStart(module)}
-                    className="bg-semcmeBlue text-white hover:bg-[#034f8c] transition rounded-lg px-6 py-2"
-                  >
-                    {status === "not_started"
-                      ? "Start Module"
-                      : status === "completed"
-                      ? "Review Module"
-                      : "Continue Module"}
-                  </Button>
+                  <div className="flex gap-4">
+                    <Button
+                      onClick={() => handleStart(module)}
+                      className="bg-semcmeBlue text-white hover:bg-[#034f8c] transition rounded-lg px-6 py-2"
+                    >
+                      {status === "not_started"
+                        ? "Start Module"
+                        : status === "completed"
+                        ? "Review Module"
+                        : "Continue Module"}
+                    </Button>
+
+                    {/* 🎓 Show certificate button if module completed */}
+                    {cert && status === "completed" && (
+                      <a
+                        href={cert.cert_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Button
+                          variant="outline"
+                          className="border-green-500 text-green-700 hover:bg-green-50 rounded-lg px-6 py-2"
+                        >
+                          🎓 Download Certificate
+                        </Button>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
