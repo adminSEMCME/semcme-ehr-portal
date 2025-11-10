@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,10 +37,8 @@ export default function LoginPage() {
       const user = data?.user;
       if (!user) return;
 
-      // Persist Supabase session for SSR routes
       await supabase.auth.getSession();
 
-      // Optionally log session (kept from your original logic)
       try {
         await supabase.from("user_sessions").insert([
           {
@@ -53,12 +52,10 @@ export default function LoginPage() {
         console.error("Failed to log session:", sessionError);
       }
 
-      // Store role in localStorage (unchanged from your setup)
       if (user.user_metadata?.role) {
         localStorage.setItem("user_role", user.user_metadata.role);
       }
 
-      // ✅ Redirect to dashboards, preserving module ID if present
       const redirectUrl = moduleId
         ? `/dashboards?module=${moduleId}`
         : "/dashboards";
@@ -72,7 +69,12 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans relative">
+      <button onClick={() => router.back()} className="back-btn">
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
@@ -101,7 +103,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-semcmeBlue text-white font-semibold hover:bg-[#034f8c] transition"
+            className="signin-submit-btn w-full py-3 rounded-xl font-semibold transition"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>

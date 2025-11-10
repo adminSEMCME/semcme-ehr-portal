@@ -164,21 +164,18 @@
   }
 
   body {
-    /* === Global SEMCME Linear Background — Deep Blue Match + Smooth Gray Fade === */
     background: linear-gradient(
       180deg,
       #013e7a 0%,
-      /* darker SEMCME blue to match hero perfectly */ #02519c 10%,
-      /* transition zone: your hero blue */ #2b6dad 25%,
-      /* softer mid blue */ #e4e8ee 80%,
-      /* light gray toward bottom */ #f6f8fa 100% /* very light gray finish */
+      #02519c 10%,
+      #2b6dad 25%,
+      #4b80b8 60%,
+      #6d9ac5 100%
     );
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
-
     @apply text-foreground antialiased;
-    font-family: "Lato", sans-serif !important;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -196,21 +193,103 @@
   textarea {
     font-family: "Lato", sans-serif !important;
   }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #4b5563 !important;
+    opacity: 1 !important;
+  }
+
+  button,
+  [role="button"],
+  a,
+  input[type="submit"],
+  input[type="button"] {
+    cursor: pointer !important;
+  }
+
+  /* === Universal Back Button (Top Right Corner) === */
+  .back-btn {
+    @apply inline-flex items-center gap-2 px-5 py-2 rounded-lg font-medium border bg-white shadow-sm hover:bg-[#e6eef6] hover:shadow-md hover:-translate-x-0.5 transition-all duration-200;
+    color: #02519c !important;
+    border-color: #02519c !important;
+    position: absolute !important;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 50;
+  }
 }
 
 /* ============================================================
-   UTILITIES (custom brand helpers)
+   UTILITIES (brand helpers & interactive buttons)
    ============================================================ */
 @layer utilities {
+  /* Brand */
   .bg-semcmeBlue {
     background-color: #02519c !important;
   }
-
   .text-semcmeBlue {
     color: #02519c !important;
   }
-
   .hover\:text-semcmeBlue:hover {
     color: #02519c !important;
+  }
+
+  /* Smooth transitions for all buttons */
+  button,
+  input[type="submit"],
+  input[type="button"],
+  .btn {
+    transition: background-color 0.25s ease, color 0.25s ease,
+      border-color 0.25s ease, transform 0.1s ease;
+  }
+
+  /* ===== Landing Page Buttons ===== */
+  .module-register-btn {
+    background-color: #02519c !important;
+    color: #fff !important;
+    border: 2px solid #02519c !important;
+  }
+  .module-register-btn:hover {
+    background-color: #fff !important;
+    color: #02519c !important;
+  }
+
+  .module-signin-btn {
+    background-color: #fff !important;
+    color: #02519c !important;
+    border: 2px solid #d3e3f5 !important;
+  }
+  .module-signin-btn:hover {
+    background-color: #e9f3ff !important;
+    border-color: #b7d4f8 !important;
+  }
+
+  /* ===== Auth / Registration ===== */
+  .signin-submit-btn,
+  .choose-cme-btn,
+  .register-submit-btn,
+  .module-start-btn {
+    background-color: #02519c !important;
+    color: #fff !important;
+    border: 2px solid #02519c !important;
+  }
+  .signin-submit-btn:hover,
+  .choose-cme-btn:hover,
+  .register-submit-btn:hover,
+  .module-start-btn:hover {
+    background-color: #fff !important;
+    color: #02519c !important;
+    transform: scale(1.02);
+  }
+
+  .choose-noncme-btn {
+    background-color: #fff !important;
+    color: #02519c !important;
+    border: 2px solid #d3e3f5 !important;
+  }
+  .choose-noncme-btn:hover {
+    background-color: #e9f3ff !important;
+    border-color: #b7d4f8 !important;
   }
 }

@@ -10,6 +10,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 interface Module {
   id: string;
@@ -52,19 +53,16 @@ export default function DashboardPage() {
           return;
         }
 
-        // ✅ Fetch modules
         const { data: modulesData } = await supabase
           .from("modules")
           .select("*")
           .order("id", { ascending: true });
 
-        // ✅ Fetch progress
         const { data: progressData } = await supabase
           .from("module_progress")
           .select("module_id, status, progress_percent")
           .eq("user_id", user.id);
 
-        // ✅ Fetch certificates
         const { data: certData } = await supabase
           .from("certificates")
           .select("module_id, cert_url, issued_at")
@@ -83,14 +81,12 @@ export default function DashboardPage() {
     loadData();
 
     const handleFocus = () => {
-      console.log("🔄 Refetching progress and certificates...");
       loadData();
     };
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
 
-  // ✅ Scroll to target module after data loads
   useEffect(() => {
     if (!loading && targetModule) {
       const el = document.getElementById(targetModule);
@@ -142,8 +138,13 @@ export default function DashboardPage() {
     );
 
   return (
-    <div className="flex flex-col items-center justify-start w-full py-10 px-6">
-      <h1 className="text-4xl font-bold text-semcmeBlue mb-8 text-center">
+    <div className="flex flex-col items-center justify-start w-full py-10 px-6 relative">
+      <button onClick={() => router.back()} className="back-btn">
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
+      <h1 className="text-4xl font-bold text-white mb-10 text-center">
         EHR Learning Dashboard
       </h1>
 
@@ -171,15 +172,13 @@ export default function DashboardPage() {
 
           return (
             <AccordionItem
-              id={module.id} // ✅ allows scrolling
+              id={module.id}
               key={module.id}
               value={module.id}
               className="rounded-lg overflow-hidden shadow-lg border border-gray-200"
             >
               <AccordionTrigger className="bg-semcmeBlue text-white px-6 py-4 text-lg font-semibold flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <span className="flex-1">{module.title}</span>
-
-                {/* Progress + Status */}
                 <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto md:justify-end">
                   <div className="flex items-center gap-3 w-full md:w-64">
                     <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
@@ -202,7 +201,6 @@ export default function DashboardPage() {
                 </div>
               </AccordionTrigger>
 
-              {/* Body */}
               <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img
@@ -225,7 +223,7 @@ export default function DashboardPage() {
                   <div className="flex gap-4">
                     <Button
                       onClick={() => handleStart(module)}
-                      className="bg-semcmeBlue text-white hover:bg-[#034f8c] transition rounded-lg px-6 py-2"
+                      className="module-start-btn px-6 py-2 rounded-lg font-semibold transition"
                     >
                       {status === "not_started"
                         ? "Start Module"
@@ -234,7 +232,6 @@ export default function DashboardPage() {
                         : "Continue Module"}
                     </Button>
 
-                    {/* 🎓 Show certificate button if module completed */}
                     {cert && status === "completed" && (
                       <a
                         href={cert.cert_url}

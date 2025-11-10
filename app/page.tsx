@@ -66,14 +66,14 @@ export default function HomePage() {
         <div className="mt-8 flex justify-center gap-8">
           {/* 🔐 Large Sign In Button */}
           <Link href="/login">
-            <button className="min-w-[200px] px-8 py-3 rounded-xl bg-white text-semcmeBlue font-semibold text-lg shadow-md border-2 border-white hover:bg-[#e6eef6] hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="module-signin-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Sign In
             </button>
           </Link>
 
           {/* 📝 Large Register Button */}
           <Link href="/register/choose">
-            <button className="min-w-[200px] px-8 py-3 rounded-xl bg-transparent text-white font-semibold text-lg border-2 border-white hover:bg-white hover:text-semcmeBlue hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="module-register-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Register
             </button>
           </Link>
@@ -87,9 +87,9 @@ export default function HomePage() {
         </h2>
 
         {loading ? (
-          <p className="text-center text-gray-500">Loading modules...</p>
+          <p className="text-center text-white">Loading modules...</p>
         ) : modules.length === 0 ? (
-          <p className="text-center text-gray-500">No modules available yet.</p>
+          <p className="text-center text-white">No modules available yet.</p>
         ) : (
           <motion.div initial="hidden" animate="visible" className="space-y-10">
             {modules.map((mod, i) => (
@@ -113,17 +113,19 @@ export default function HomePage() {
 
                 {/* Buttons (Sign In → Register order) */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  {/* Sign In */}
                   <Link href={`/login?module=${mod.id}`}>
                     <Button
                       variant="outline"
-                      className="border-semcmeBlue text-semcmeBlue hover:bg-semcmeBlue hover:text-white w-full sm:w-auto"
+                      className="module-signin-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg"
                     >
                       Sign In
                     </Button>
                   </Link>
 
+                  {/* Register */}
                   <Link href={`/register/choose?module=${mod.id}`}>
-                    <Button className="bg-semcmeBlue text-white hover:bg-[#034f8c] w-full sm:w-auto">
+                    <Button className="module-register-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg">
                       Register
                     </Button>
                   </Link>

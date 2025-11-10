@@ -1,48 +1,60 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
-export default function ChooseRegistrationType() {
+export default function ChooseRegistrationPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("module");
+  const [loading, setLoading] = useState(false);
 
-  // Helper function to append ?module= to links if it exists
-  const withModuleParam = (basePath: string) =>
-    moduleId ? `${basePath}?module=${moduleId}` : basePath;
+  const handleRedirect = (path: string) => {
+    setLoading(true);
+    const redirectUrl = moduleId ? `${path}?module=${moduleId}` : path;
+    router.push(redirectUrl);
+  };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-xl text-center">
-        <h1 className="text-3xl font-bold text-semcmeBlue mb-4">
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans relative">
+      <button onClick={() => router.back()} className="back-btn">
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
+      <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-2xl text-center">
+        <h1 className="text-3xl font-bold text-semcmeBlue mb-6">
           Are you taking this course for CME credit?
         </h1>
-        <p className="text-gray-600 mb-8">
-          Choose the option that applies to you. We'll tailor your registration
-          form accordingly.
+
+        <p className="text-gray-600 mb-10 text-lg">
+          Choose the option that applies to you. We&apos;ll tailor your
+          registration form accordingly.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* CME Registration */}
-          <a
-            href={withModuleParam("/register/cme")}
-            className="block w-full py-3 rounded-xl bg-semcmeBlue text-white font-semibold hover:bg-[#034f8c] transition"
+        <div className="flex flex-col sm:flex-row justify-center gap-6">
+          <button
+            onClick={() => handleRedirect("/register/cme")}
+            disabled={loading}
+            className="choose-cme-btn w-full sm:w-auto px-10 py-4 rounded-xl font-semibold text-lg transition"
           >
             Yes — CME Credit
-          </a>
+          </button>
 
-          {/* Non-CME Registration */}
-          <a
-            href={withModuleParam("/register/non-cme")}
-            className="block w-full py-3 rounded-xl border-2 border-semcmeBlue text-semcmeBlue font-semibold hover:bg-semcmeBlue hover:text-white transition"
+          <button
+            onClick={() => handleRedirect("/register/non-cme")}
+            disabled={loading}
+            className="choose-noncme-btn w-full sm:w-auto px-10 py-4 rounded-xl font-semibold text-lg transition"
           >
             No — Non-CME Credit
-          </a>
+          </button>
         </div>
 
-        <p className="text-gray-600 mt-6 text-sm">
+        <p className="text-gray-600 mt-10 text-sm">
           Already have an account?{" "}
           <a
-            href={withModuleParam("/login")}
+            href={`/login${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
           >
             Sign in

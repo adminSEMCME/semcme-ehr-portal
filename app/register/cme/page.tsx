@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import { ArrowLeft } from "lucide-react";
 
 export default function CmeRegistration() {
   const router = useRouter();
@@ -50,7 +51,6 @@ export default function CmeRegistration() {
           "Registration successful! Please check your email to verify your account before logging in."
         );
 
-        // Redirect after short delay
         setTimeout(() => {
           router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`);
         }, 2500);
@@ -64,14 +64,18 @@ export default function CmeRegistration() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans relative">
+      <button onClick={() => router.back()} className="back-btn">
+        <ArrowLeft size={18} />
+        Back
+      </button>
+
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           CME Registration
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email + Password */}
           <div className="grid md:grid-cols-2 gap-4">
             <input
               required
@@ -93,7 +97,6 @@ export default function CmeRegistration() {
             />
           </div>
 
-          {/* Basic Info */}
           <div className="grid md:grid-cols-2 gap-4">
             <input
               name="firstName"
@@ -172,7 +175,7 @@ export default function CmeRegistration() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-semcmeBlue text-white font-semibold hover:bg-[#034f8c] transition"
+            className="register-submit-btn w-full py-3 rounded-xl font-semibold transition"
           >
             {loading ? "Registering..." : "Register"}
           </button>
