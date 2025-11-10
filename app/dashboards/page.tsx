@@ -144,7 +144,7 @@ export default function DashboardPage() {
         Back
       </button>
 
-      <h1 className="text-4xl font-bold text-white mb-10 text-center">
+      <h1 className="text-4xl font-bold text-white pt-30 mb-15 text-center">
         EHR Learning Dashboard
       </h1>
 

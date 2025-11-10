@@ -3,7 +3,22 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { ArrowLeft } from "lucide-react";
+
+function BackButton() {
+  const router = useRouter();
+  return (
+    <button
+      onClick={() =>
+        window.history.length > 1 ? router.back() : router.push("/")
+      }
+      className="back-btn"
+      aria-label="Go back"
+      type="button"
+    >
+      ← Back
+    </button>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -59,7 +74,6 @@ export default function LoginPage() {
       const redirectUrl = moduleId
         ? `/dashboards?module=${moduleId}`
         : "/dashboards";
-
       router.push(redirectUrl);
     } catch (err) {
       console.error("Unexpected login error:", err);
@@ -69,12 +83,8 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans relative">
-      <button onClick={() => router.back()} className="back-btn">
-        <ArrowLeft size={18} />
-        Back
-      </button>
-
+    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
+      <BackButton />
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
@@ -100,6 +110,17 @@ export default function LoginPage() {
             className="border p-3 rounded-lg w-full"
           />
 
+          {/* Forgot password link */}
+          <div className="text-center -mt-2">
+            <a
+              href="/forgot-password"
+              className="text-sm text-semcmeBlue hover:underline"
+            >
+              Forgot your password?
+            </a>
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}

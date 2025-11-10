@@ -10,7 +10,7 @@ export default async function DashboardLayout({
   await protectRoute();
 
   return (
-    <main className="min-h-screen bg-transparent font-sans flex flex-col items-center justify-start pt-20 px-6 overflow-x-hidden">
+    <main className="min-h-screen bg-transparent font-sans flex flex-col items-center justify-start px-6 overflow-x-hidden">
       <SessionWatcher timeoutMinutes={30} />
       {children}
     </main>
