@@ -2,14 +2,14 @@
    GLOBALS — SEMCME EHR Website
    ============================================================ */
 
-/* ✅ Imports */
+/* Imports */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fontsource/lato/400.css";
 @import "@fontsource/lato/700.css";
 
 /* ============================================================
-   CUSTOM VARIANTS (for shadcn / dark mode)
+   CUSTOM VARIANTS
    ============================================================ */
 @custom-variant dark (&:is(.dark *));
 
@@ -19,8 +19,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
-  /* Sidebar and layout colors */
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -29,15 +27,11 @@
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
-
-  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-
-  /* General colors */
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -54,8 +48,6 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
-
-  /* Radii */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -67,18 +59,12 @@
    ============================================================ */
 :root {
   --radius: 0.625rem;
-
-  /* Background & Text */
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
-
-  /* Card / Popover */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-
-  /* ✅ SEMCME Brand Colors */
   --primary: #02519c;
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.968 0.007 247.896);
@@ -91,15 +77,11 @@
   --border: oklch(0.929 0.013 255.508);
   --input: oklch(0.929 0.013 255.508);
   --ring: #02519c;
-
-  /* Charts */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-
-  /* Sidebar */
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
   --sidebar-primary: #02519c;
@@ -108,8 +90,6 @@
   --sidebar-accent-foreground: #02519c;
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: #02519c;
-
-  /* ✅ Font */
   --font-sans: "Lato", sans-serif;
 }
 
@@ -119,12 +99,10 @@
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
-
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
   --popover-foreground: oklch(0.984 0.003 247.858);
-
   --primary: #02519c;
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.279 0.041 260.031);
@@ -137,13 +115,11 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: #02519c;
-
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-
   --sidebar: oklch(0.208 0.042 265.755);
   --sidebar-foreground: oklch(0.984 0.003 247.858);
   --sidebar-primary: #02519c;
@@ -155,12 +131,14 @@
 }
 
 /* ============================================================
-   BASE LAYER (site-wide defaults)
+   BASE LAYER
    ============================================================ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
     font-family: "Lato", sans-serif !important;
+    transition: background-color 0.25s ease, color 0.25s ease,
+      border-color 0.25s ease, transform 0.25s ease;
   }
 
   body {
@@ -172,31 +150,15 @@
       #6d9ac5 100%
     );
     background-attachment: fixed;
-    background-repeat: no-repeat;
     background-size: cover;
-    @apply text-foreground antialiased;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  button,
-  input,
-  textarea {
-    font-family: "Lato", sans-serif !important;
-  }
-
   input::placeholder,
   textarea::placeholder {
     color: #4b5563 !important;
-    opacity: 1 !important;
   }
 
   button,
@@ -207,9 +169,8 @@
     cursor: pointer !important;
   }
 
-  /* === Universal Back Button (Top Right Corner) === */
   .back-btn {
-    @apply inline-flex items-center gap-2 px-5 py-2 rounded-lg font-medium border bg-white shadow-sm hover:bg-[#e6eef6] hover:shadow-md hover:-translate-x-0.5 transition-all duration-200;
+    @apply inline-flex items-center gap-2 px-5 py-2 rounded-lg font-medium border bg-white shadow-sm;
     color: #02519c !important;
     border-color: #02519c !important;
     position: absolute !important;
@@ -220,30 +181,18 @@
 }
 
 /* ============================================================
-   UTILITIES (brand helpers & interactive buttons)
+   UTILITIES
    ============================================================ */
 @layer utilities {
-  /* Brand */
   .bg-semcmeBlue {
     background-color: #02519c !important;
   }
+
   .text-semcmeBlue {
     color: #02519c !important;
   }
-  .hover\:text-semcmeBlue:hover {
-    color: #02519c !important;
-  }
 
-  /* Smooth transitions for all buttons */
-  button,
-  input[type="submit"],
-  input[type="button"],
-  .btn {
-    transition: background-color 0.25s ease, color 0.25s ease,
-      border-color 0.25s ease, transform 0.1s ease;
-  }
-
-  /* ===== Auth / Registration Buttons (non-landing) ===== */
+  /* Auth / Form Buttons */
   .signin-submit-btn,
   .choose-cme-btn,
   .register-submit-btn,
@@ -271,26 +220,17 @@
     border-color: #b7d4f8 !important;
   }
 
-  /* Soft white glow effect */
+  /* Glow highlight */
   .glow-highlight {
-    position: relative;
-    z-index: 10;
-    transition: box-shadow 0.4s ease, transform 0.4s ease;
     box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.9);
     transform: scale(1.02);
-    border-radius: 20px; /* matches your cards */
+    border-radius: 20px;
   }
 
-  /* ============================================================
-     LANDING PAGE BUTTONS ONLY (extra classes)
-     ============================================================ */
-
-  /* Optional: landing-specific aliases if you use them anywhere */
+  /* Landing Page Buttons */
   .landing-signin-btn {
-    background-color: #ffffff !important;
+    background-color: #fff !important;
     color: #02519c !important;
-    border: 2px solid #02519c !important;
-    transition: all 0.25s ease;
   }
   .landing-signin-btn:hover {
     background-color: #e9f3ff !important;
@@ -301,45 +241,35 @@
   .landing-register-btn {
     background-color: #02519c !important;
     color: #ffffff !important;
-    border: 2px solid #ffffff !important;
-    transition: all 0.25s ease;
+    border-radius: 12px;
   }
+
   .landing-register-btn:hover {
     background-color: #ffffff !important;
     color: #02519c !important;
-    border-color: #02519c !important;
     transform: scale(1.04);
   }
 
-  /* ===== Landing Page Buttons — FINAL FIXED VERSION ===== */
-
-  /* SIGN IN BUTTON (white background, blue border, blue text) */
-  .module-signin-btn {
-    @apply transition-all duration-300 ease-out;
-    background-color: #ffffff !important;
-    color: #02519c !important;
-    border: 2px solid #02519c !important; /* fixed width */
-    border-radius: 12px;
-  }
-  .module-signin-btn:hover {
-    background-color: #e9f3ff !important;
-    color: #02519c !important;
-    border-color: #02519c !important; /* stays same width */
-    transform: scale(1.04); /* smooth grow */
-  }
-
-  /* REGISTER BUTTON (blue background, white text, invert on hover) */
   .module-register-btn {
-    @apply transition-all duration-300 ease-out;
     background-color: #02519c !important;
     color: #fff !important;
-    border: 2px solid #02519c !important; /* fixed width */
+    border: 2px solid #02519c !important;
     border-radius: 12px;
   }
   .module-register-btn:hover {
     background-color: #fff !important;
     color: #02519c !important;
-    border-color: #02519c !important; /* stays same width */
-    transform: scale(1.04); /* smooth grow */
+    transform: scale(1.04);
+  }
+
+  .module-signin-btn {
+    background-color: #fff !important;
+    color: #02519c !important;
+    border: 2px solid #02519c !important;
+    border-radius: 12px;
+  }
+  .module-signin-btn:hover {
+    background-color: #e9f3ff !important;
+    transform: scale(1.04);
   }
 }

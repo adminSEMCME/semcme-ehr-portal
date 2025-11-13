@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import {
   Accordion,
@@ -80,9 +82,7 @@ export default function DashboardPage() {
 
     loadData();
 
-    const handleFocus = () => {
-      loadData();
-    };
+    const handleFocus = () => loadData();
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
@@ -92,31 +92,27 @@ export default function DashboardPage() {
       const el = document.getElementById(targetModule);
       if (el) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
-        el.classList.add("ring-4", "ring-semcmeBlue", "ring-opacity-50");
-        setTimeout(() => {
-          el.classList.remove("ring-4", "ring-semcmeBlue", "ring-opacity-50");
-        }, 3000);
+        el.classList.add("glow-highlight");
+        setTimeout(() => el.classList.remove("glow-highlight"), 2000);
       }
     }
   }, [loading, targetModule]);
 
-  const getStatus = (moduleId: string) =>
-    progress.find((p) => p.module_id === moduleId)?.status || "not_started";
+  const getStatus = (id: string) =>
+    progress.find((p) => p.module_id === id)?.status || "not_started";
 
-  const getProgress = (moduleId: string) =>
-    progress.find((p) => p.module_id === moduleId)?.progress_percent ?? 0;
+  const getProgress = (id: string) =>
+    progress.find((p) => p.module_id === id)?.progress_percent ?? 0;
 
-  const getCertificate = (moduleId: string) =>
-    certificates.find((c) => c.module_id === moduleId);
+  const getCertificate = (id: string) =>
+    certificates.find((c) => c.module_id === id);
 
   const handleStart = async (module: Module) => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
-      if (!user) {
-        router.push("/login");
-        return;
-      }
+
+      if (!user) return router.push("/login");
 
       await supabase.from("module_progress").upsert({
         user_id: user.id,
@@ -132,25 +128,47 @@ export default function DashboardPage() {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <p className="text-center mt-10 text-gray-600">Loading dashboard...</p>
+      <p className="text-center mt-10 text-gray-200">Loading dashboard...</p>
     );
+  }
 
   return (
-    <div className="flex flex-col items-center justify-start w-full py-10 px-6 relative">
-      <button onClick={() => router.back()} className="back-btn">
-        <ArrowLeft size={18} />
-        Back
-      </button>
+    <main className="min-h-screen font-sans pb-20 bg-transparent flex flex-col items-center">
+      {/* ======================================================
+            HEADER — MATCHES HOMEPAGE EXACTLY
+      ======================================================= */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+        <Link href="/" className="flex items-center">
+          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="relative w-[170px] h-[45px]">
+              <Image
+                src="/logos/semcme_logo.jpg"
+                alt="SEMCME Logo"
+                fill
+                className="object-contain rounded-md"
+                priority
+              />
+            </div>
+          </div>
+        </Link>
 
-      <h1 className="text-4xl font-bold text-white pt-30 mb-15 text-center">
+        <button onClick={() => router.back()} className="back-btn ml-auto">
+          <ArrowLeft size={18} />
+          Back
+        </button>
+      </div>
+
+      {/* PAGE TITLE */}
+      <h1 className="text-4xl font-bold text-white mt-6 mb-10 text-center">
         EHR Learning Dashboard
       </h1>
 
+      {/* MODULE CARDS */}
       <Accordion
         type="multiple"
-        className="w-full max-w-5xl space-y-4"
+        className="w-full max-w-5xl space-y-6 px-4 md:px-0"
         defaultValue={modules.map((m) => m.id)}
       >
         {modules.map((module) => {
@@ -175,13 +193,22 @@ export default function DashboardPage() {
               id={module.id}
               key={module.id}
               value={module.id}
-              className="rounded-lg overflow-hidden shadow-lg border border-gray-200"
+              className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 bg-white"
             >
-              <AccordionTrigger className="bg-semcmeBlue text-white px-6 py-4 text-lg font-semibold flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <span className="flex-1">{module.title}</span>
-                <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto md:justify-end">
-                  <div className="flex items-center gap-3 w-full md:w-64">
-                    <div className="w-full bg-white/30 h-2 rounded-full overflow-hidden">
+              {/* ================= BLUE STRIP HEADER ================= */}
+              <AccordionTrigger className="bg-semcmeBlue px-6 py-4 text-white text-lg font-semibold hover:bg-semcmeBlue">
+                <div className="flex w-full items-center justify-between gap-6">
+                  {/* Title */}
+                  <span className="flex-1 text-left">{module.title}</span>
+
+                  {/* Progress bar + percent + status pill */}
+                  <div className="flex items-center gap-4">
+                    {/* Progress percent */}
+                    <span className="text-sm font-medium text-white">
+                      {progressPercent}%
+                    </span>
+
+                    <div className="w-40 bg-white/30 h-2 rounded-full overflow-hidden">
                       <div
                         className={`h-2 rounded-full transition-all duration-500 ${
                           status === "completed" ? "bg-green-400" : "bg-white"
@@ -189,19 +216,19 @@ export default function DashboardPage() {
                         style={{ width: `${progressPercent}%` }}
                       ></div>
                     </div>
-                    <span className="text-sm font-medium text-white">
-                      {progressPercent}%
+
+                    <span
+                      className={`text-xs px-3 py-1 rounded-full border ${statusColor}`}
+                    >
+                      {status.replace("_", " ")}
                     </span>
                   </div>
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full border ${statusColor}`}
-                  >
-                    {status.replace("_", " ")}
-                  </span>
                 </div>
               </AccordionTrigger>
 
+              {/* ================= WHITE CONTENT AREA ================= */}
               <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
+                {/* Thumbnail */}
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img
                     src={thumbnailPath}
@@ -214,6 +241,7 @@ export default function DashboardPage() {
                   />
                 </div>
 
+                {/* Details */}
                 <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-6">
                   <p className="text-gray-700 text-base leading-relaxed">
                     {module.description ||
@@ -253,6 +281,6 @@ export default function DashboardPage() {
           );
         })}
       </Accordion>
-    </div>
+    </main>
   );
 }

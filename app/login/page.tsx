@@ -2,23 +2,10 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-
-function BackButton() {
-  const router = useRouter();
-  return (
-    <button
-      onClick={() =>
-        window.history.length > 1 ? router.back() : router.push("/")
-      }
-      className="back-btn"
-      aria-label="Go back"
-      type="button"
-    >
-      ← Back
-    </button>
-  );
-}
+import { ArrowLeft } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,11 +15,10 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -42,50 +28,66 @@ export default function LoginPage() {
         password: form.password,
       });
 
-      setLoading(false);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
+      if (error) return alert(error.message);
 
       const user = data?.user;
       if (!user) return;
 
       await supabase.auth.getSession();
 
-      try {
-        await supabase.from("user_sessions").insert([
-          {
-            user_id: user.id,
-            ip_address: window.location.hostname,
-            user_agent: navigator.userAgent,
-            logout_reason: null,
-          },
-        ]);
-      } catch (sessionError) {
-        console.error("Failed to log session:", sessionError);
-      }
+      await supabase.from("user_sessions").insert([
+        {
+          user_id: user.id,
+          ip_address: window.location.hostname,
+          user_agent: navigator.userAgent,
+        },
+      ]);
 
-      if (user.user_metadata?.role) {
+      if (user.user_metadata?.role)
         localStorage.setItem("user_role", user.user_metadata.role);
-      }
 
       const redirectUrl = moduleId
         ? `/dashboards?module=${moduleId}`
         : "/dashboards";
+
       router.push(redirectUrl);
     } catch (err) {
-      console.error("Unexpected login error:", err);
-      alert("An unexpected error occurred while signing in.");
+      alert("Unexpected login error.");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
-      <BackButton />
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
+      {/* HEADER */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+        <Link href="/" className="flex items-center">
+          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="relative w-[170px] h-[45px]">
+              <Image
+                src="/logos/semcme_logo.jpg"
+                alt="SEMCME Logo"
+                fill
+                className="object-contain rounded-md"
+                priority
+              />
+            </div>
+          </div>
+        </Link>
+
+        <button
+          onClick={() =>
+            window.history.length > 1 ? router.back() : router.push("/")
+          }
+          className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+        >
+          <ArrowLeft size={18} /> Back
+        </button>
+      </div>
+
+      {/* CONTENT */}
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
         </h1>
@@ -100,6 +102,7 @@ export default function LoginPage() {
             onChange={handleChange}
             className="border p-3 rounded-lg w-full"
           />
+
           <input
             required
             name="password"
@@ -110,7 +113,6 @@ export default function LoginPage() {
             className="border p-3 rounded-lg w-full"
           />
 
-          {/* Forgot password link */}
           <div className="text-center -mt-2">
             <a
               href="/forgot-password"
@@ -120,7 +122,6 @@ export default function LoginPage() {
             </a>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -131,7 +132,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-gray-600 mt-6 text-sm text-center">
-          Don&apos;t have an account?{" "}
+          Don't have an account?{" "}
           <a
             href={`/register/choose${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"

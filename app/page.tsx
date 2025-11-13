@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -19,24 +20,21 @@ export default function HomePage() {
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Combobox state
+  // Combobox State
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  // Animation variants for Framer Motion
+  // Animation
   const cardVariants: any = {
     hidden: { opacity: 0, y: 30 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.4,
-        delay: i * 0.1,
-        ease: "easeOut",
-      },
+      transition: { duration: 0.4, delay: i * 0.1, ease: "easeOut" },
     }),
-  } as const;
+  };
 
+  // Load Modules
   useEffect(() => {
     async function loadModules() {
       try {
@@ -53,11 +51,9 @@ export default function HomePage() {
         setLoading(false);
       }
     }
-
     loadModules();
   }, []);
 
-  // Filtered modules for the combobox
   const filteredModules = modules.filter((mod) =>
     mod.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -66,90 +62,91 @@ export default function HomePage() {
     setIsOpen(false);
     setSearchTerm(moduleTitle);
 
-    // Scroll to module card and highlight it
     const el = document.getElementById(moduleId);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
-
       el.classList.add("glow-highlight");
-
-      setTimeout(() => {
-        el.classList.remove("glow-highlight");
-      }, 2000);
+      setTimeout(() => el.classList.remove("glow-highlight"), 2000);
     }
-  };
-
-  const handleInputFocus = () => {
-    setIsOpen(true);
-  };
-
-  const handleInputBlur = () => {
-    // Small delay so a click on an option still registers
-    setTimeout(() => {
-      setIsOpen(false);
-    }, 150);
   };
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
-      {/* TOP-RIGHT MODULE COMBOBOX */}
-      <div className="fixed top-4 right-4 z-40 w-[90%] max-w-md sm:w-auto">
-        <div className="relative">
-          {/* Input + toggle */}
-          <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
-            <Search className="w-4 h-4 text-semcmeBlue" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setIsOpen(true);
-              }}
-              onFocus={handleInputFocus}
-              onBlur={handleInputBlur}
-              placeholder="Search modules..."
-              className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400"
-            />
-            <button
-              type="button"
-              onClick={() => setIsOpen((prev) => !prev)}
-              className="p-1 rounded-md hover:bg-slate-100"
-            >
-              <ChevronDown
-                className={`w-4 h-4 text-semcmeBlue transition-transform ${
-                  isOpen ? "rotate-180" : ""
-                }`}
+      {/* ============================================================
+          TOP HEADER - NOT FIXED ANYMORE
+      ============================================================ */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+        {/* LOGO */}
+        <Link href="/" className="flex items-center">
+          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="relative w-[170px] h-[45px]">
+              <Image
+                src="/logos/semcme_logo.jpg"
+                alt="SEMCME Logo"
+                fill
+                className="object-contain rounded-md"
+                priority
               />
-            </button>
-          </div>
-
-          {/* Dropdown panel */}
-          {isOpen && (
-            <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
-              {filteredModules.length === 0 ? (
-                <div className="px-3 py-2 text-gray-500">
-                  No matching modules
-                </div>
-              ) : (
-                filteredModules.map((mod) => (
-                  <button
-                    key={mod.id}
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => handleSelectModule(mod.id, mod.title)}
-                    className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
-                  >
-                    {mod.title}
-                  </button>
-                ))
-              )}
             </div>
-          )}
+          </div>
+        </Link>
+
+        {/* SEARCH */}
+        <div className="w-[90%] max-w-md sm:w-auto">
+          <div className="relative">
+            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+              <Search className="w-4 h-4 text-semcmeBlue" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setIsOpen(true);
+                }}
+                onFocus={() => setIsOpen(true)}
+                onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                placeholder="Search modules..."
+                className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400"
+              />
+              <button
+                type="button"
+                onClick={() => setIsOpen((prev) => !prev)}
+                className="p-1 rounded-md hover:bg-slate-100"
+              >
+                <ChevronDown
+                  className={`w-4 h-4 text-semcmeBlue transition-transform ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+            </div>
+
+            {isOpen && (
+              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
+                {filteredModules.length === 0 ? (
+                  <div className="px-3 py-2 text-gray-500">
+                    No matching modules
+                  </div>
+                ) : (
+                  filteredModules.map((mod) => (
+                    <button
+                      key={mod.id}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handleSelectModule(mod.id, mod.title)}
+                      className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
+                    >
+                      {mod.title}
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* HERO SECTION */}
-      <section className="w-full text-white py-16 mt-16 text-center bg-transparent">
+      <section className="w-full text-white py-25 text-center bg-gray-400">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
         <p className="max-w-2xl mx-auto mb-8 text-md">
           Explore modules designed to improve your knowledge
@@ -158,14 +155,12 @@ export default function HomePage() {
         </p>
 
         <div className="mt-8 flex justify-center gap-8">
-          {/* 🔐 Large Sign In Button */}
           <Link href="/login">
             <button className="landing-signin-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Sign In
             </button>
           </Link>
 
-          {/* 📝 Large Register Button */}
           <Link href="/register/choose">
             <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Register
@@ -182,13 +177,11 @@ export default function HomePage() {
 
         {loading ? (
           <p className="text-center text-white">Loading modules...</p>
-        ) : modules.length === 0 ? (
-          <p className="text-center text-white">No modules available yet.</p>
         ) : (
           <motion.div initial="hidden" animate="visible" className="space-y-10">
             {modules.map((mod, i) => (
               <motion.div
-                id={mod.id} // 🔑 so we can scroll/highlight by ID
+                id={mod.id}
                 key={mod.id}
                 custom={i}
                 variants={cardVariants}
@@ -196,31 +189,26 @@ export default function HomePage() {
                            hover:shadow-lg hover:-translate-y-1 transition-all duration-300 
                            flex flex-col items-center text-center"
               >
-                {/* Title */}
                 <h3 className="text-2xl font-bold text-semcmeBlue mb-3 tracking-tight">
                   {mod.title}
                 </h3>
 
-                {/* Description */}
                 <p className="text-gray-600 mb-6 max-w-2xl leading-relaxed">
                   {mod.description}
                 </p>
 
-                {/* Buttons (Sign In → Register order) */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  {/* Sign In */}
                   <Link href={`/login?module=${mod.id}`}>
                     <Button
                       variant="outline"
-                      className="landing-signin-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg"
+                      className="module-signin-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg"
                     >
                       Sign In
                     </Button>
                   </Link>
 
-                  {/* Register */}
                   <Link href={`/register/choose?module=${mod.id}`}>
-                    <Button className="landing-register-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg">
+                    <Button className="module-register-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg">
                       Register
                     </Button>
                   </Link>

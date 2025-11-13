@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft } from "lucide-react";
 
@@ -26,11 +28,10 @@ export default function NonCmeRegistration() {
     medicalSchoolYear: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
@@ -46,33 +47,49 @@ export default function NonCmeRegistration() {
         },
       });
 
-      if (error) {
-        alert("Registration Failed: " + error.message);
-      } else {
-        alert(
-          "Registration successful! Please check your email to verify your account before logging in."
+      if (error) alert("Registration failed: " + error.message);
+      else {
+        alert("Registration successful! Verify your email before logging in.");
+        setTimeout(
+          () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
+          2500
         );
-
-        setTimeout(() => {
-          router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`);
-        }, 2500);
       }
-    } catch (err) {
-      console.error("Error during registration:", err);
-      alert("An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans relative">
-      <button onClick={() => router.back()} className="back-btn">
-        <ArrowLeft size={18} />
-        Back
-      </button>
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative">
+      {/* HEADER */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+        <Link href="/" className="flex items-center">
+          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="relative w-[170px] h-[45px]">
+              <Image
+                src="/logos/semcme_logo.jpg"
+                alt="SEMCME Logo"
+                fill
+                className="object-contain rounded-md"
+                priority
+              />
+            </div>
+          </div>
+        </Link>
 
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl">
+        <button
+          onClick={() =>
+            window.history.length > 1 ? router.back() : router.push("/")
+          }
+          className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+        >
+          <ArrowLeft size={18} /> Back
+        </button>
+      </div>
+
+      {/* CONTENT */}
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl mt-10">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Non-CME Registration
         </h1>
@@ -101,17 +118,17 @@ export default function NonCmeRegistration() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               name="firstName"
               placeholder="First Name"
-              required
               value={form.firstName}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
             <input
+              required
               name="lastName"
               placeholder="Last Name"
-              required
               value={form.lastName}
               onChange={handleChange}
               className="border p-3 rounded-lg"
@@ -120,17 +137,17 @@ export default function NonCmeRegistration() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               name="degree"
               placeholder="Degree"
-              required
               value={form.degree}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
             <input
+              required
               name="institution"
               placeholder="Institution"
-              required
               value={form.institution}
               onChange={handleChange}
               className="border p-3 rounded-lg"
@@ -139,17 +156,17 @@ export default function NonCmeRegistration() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               name="phone"
               placeholder="Phone Number"
-              required
               value={form.phone}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
             <input
+              required
               name="department"
               placeholder="Department"
-              required
               value={form.department}
               onChange={handleChange}
               className="border p-3 rounded-lg"
@@ -158,17 +175,17 @@ export default function NonCmeRegistration() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               name="title"
               placeholder="Title"
-              required
               value={form.title}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
             <input
+              required
               name="medicalId"
               placeholder="Medical ID #"
-              required
               value={form.medicalId}
               onChange={handleChange}
               className="border p-3 rounded-lg"
@@ -177,17 +194,17 @@ export default function NonCmeRegistration() {
 
           <div className="grid md:grid-cols-2 gap-4">
             <input
+              required
               name="pgyLevel"
               placeholder="PGY Level"
-              required
               value={form.pgyLevel}
               onChange={handleChange}
               className="border p-3 rounded-lg"
             />
             <input
+              required
               name="medicalSchoolYear"
               placeholder="Medical School Year"
-              required
               value={form.medicalSchoolYear}
               onChange={handleChange}
               className="border p-3 rounded-lg"

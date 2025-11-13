@@ -2,31 +2,19 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-
-function BackButton() {
-  const router = useRouter();
-  return (
-    <button
-      onClick={() =>
-        window.history.length > 1 ? router.back() : router.push("/")
-      }
-      className="back-btn"
-      aria-label="Go back"
-      type="button"
-    >
-      ← Back
-    </button>
-  );
-}
+import { ArrowLeft } from "lucide-react";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSubmitting(true);
     setErrorMsg(null);
@@ -41,23 +29,43 @@ export default function ForgotPasswordPage() {
         redirectTo,
       });
 
-      if (error) {
-        setErrorMsg(error.message);
-      } else {
-        setSent(true);
-      }
-    } catch (err: any) {
-      setErrorMsg("Something went wrong sending the reset email.");
-      console.error(err);
+      if (error) setErrorMsg(error.message);
+      else setSent(true);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
-      <BackButton />
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
+      {/* HEADER */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+        <Link href="/" className="flex items-center">
+          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="relative w-[170px] h-[45px]">
+              <Image
+                src="/logos/semcme_logo.jpg"
+                alt="SEMCME Logo"
+                fill
+                className="object-contain rounded-md"
+                priority
+              />
+            </div>
+          </div>
+        </Link>
+
+        <button
+          onClick={() =>
+            window.history.length > 1 ? router.back() : router.push("/")
+          }
+          className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+        >
+          <ArrowLeft size={18} /> Back
+        </button>
+      </div>
+
+      {/* CONTENT */}
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Forgot your password?
         </h1>
@@ -66,11 +74,11 @@ export default function ForgotPasswordPage() {
           <div className="text-center space-y-4">
             <p className="text-gray-700">
               If an account exists for{" "}
-              <span className="font-semibold">{email}</span>, we’ve sent a
-              password reset link. Please check your inbox (and spam).
+              <span className="font-semibold">{email}</span>, a password reset
+              link has been sent.
             </p>
             <p className="text-sm text-gray-500">
-              The link will bring you back here to securely set a new password.
+              Check your inbox and spam folder.
             </p>
           </div>
         ) : (
@@ -78,7 +86,6 @@ export default function ForgotPasswordPage() {
             <input
               required
               type="email"
-              name="email"
               placeholder="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -99,7 +106,7 @@ export default function ForgotPasswordPage() {
 
         {!sent && (
           <p className="text-gray-600 mt-6 text-sm text-center">
-            Remembered it?{" "}
+            Remembered your password?{" "}
             <a
               href="/login"
               className="text-semcmeBlue font-semibold hover:underline"
