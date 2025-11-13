@@ -56,7 +56,7 @@ export default function DashboardPage() {
         const { data: modulesData } = await supabase
           .from("modules")
           .select("*")
-          .order("id", { ascending: true });
+          .order("order_index", { ascending: true });
 
         const { data: progressData } = await supabase
           .from("module_progress")

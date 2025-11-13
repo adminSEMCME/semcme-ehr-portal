@@ -23,7 +23,7 @@ export default function RootLayout({
         {/* === Pinned Logo === */}
         <Link
           href="/"
-          className="fixed top-4 left-6 z-50 flex items-center hover:opacity-90 transition-opacity"
+          className="fixed top-0 left-0 z-50 flex items-center hover:opacity-80 transition-opacity"
         >
           <div className="relative w-[200px] h-[50px]">
             <Image
