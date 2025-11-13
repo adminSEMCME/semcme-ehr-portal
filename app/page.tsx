@@ -5,6 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Search, ChevronDown } from "lucide-react";
 
 interface Module {
   id: string;
@@ -17,6 +18,10 @@ interface Module {
 export default function HomePage() {
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Combobox state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   // Animation variants for Framer Motion
   const cardVariants: any = {
@@ -52,8 +57,97 @@ export default function HomePage() {
     loadModules();
   }, []);
 
+  // Filtered modules for the combobox
+  const filteredModules = modules.filter((mod) =>
+    mod.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSelectModule = (moduleId: string, moduleTitle: string) => {
+    setIsOpen(false);
+    setSearchTerm(moduleTitle);
+
+    // Scroll to module card and highlight it
+    const el = document.getElementById(moduleId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      el.classList.add("glow-highlight");
+
+      setTimeout(() => {
+        el.classList.remove("glow-highlight");
+      }, 2000);
+    }
+  };
+
+  const handleInputFocus = () => {
+    setIsOpen(true);
+  };
+
+  const handleInputBlur = () => {
+    // Small delay so a click on an option still registers
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
+  };
+
   return (
-    <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans">
+    <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
+      {/* TOP-RIGHT MODULE COMBOBOX */}
+      <div className="fixed top-4 right-4 z-40 w-[90%] max-w-md sm:w-auto">
+        <div className="relative">
+          {/* Input + toggle */}
+          <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <Search className="w-4 h-4 text-semcmeBlue" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setIsOpen(true);
+              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
+              placeholder="Search modules..."
+              className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400"
+            />
+            <button
+              type="button"
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="p-1 rounded-md hover:bg-slate-100"
+            >
+              <ChevronDown
+                className={`w-4 h-4 text-semcmeBlue transition-transform ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Dropdown panel */}
+          {isOpen && (
+            <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
+              {filteredModules.length === 0 ? (
+                <div className="px-3 py-2 text-gray-500">
+                  No matching modules
+                </div>
+              ) : (
+                filteredModules.map((mod) => (
+                  <button
+                    key={mod.id}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleSelectModule(mod.id, mod.title)}
+                    className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
+                  >
+                    {mod.title}
+                  </button>
+                ))
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* HERO SECTION */}
       <section className="w-full text-white py-16 mt-16 text-center bg-transparent">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
@@ -66,14 +160,14 @@ export default function HomePage() {
         <div className="mt-8 flex justify-center gap-8">
           {/* 🔐 Large Sign In Button */}
           <Link href="/login">
-            <button className="module-signin-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="landing-signin-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Sign In
             </button>
           </Link>
 
           {/* 📝 Large Register Button */}
           <Link href="/register/choose">
-            <button className="module-register-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Register
             </button>
           </Link>
@@ -94,6 +188,7 @@ export default function HomePage() {
           <motion.div initial="hidden" animate="visible" className="space-y-10">
             {modules.map((mod, i) => (
               <motion.div
+                id={mod.id} // 🔑 so we can scroll/highlight by ID
                 key={mod.id}
                 custom={i}
                 variants={cardVariants}
@@ -117,7 +212,7 @@ export default function HomePage() {
                   <Link href={`/login?module=${mod.id}`}>
                     <Button
                       variant="outline"
-                      className="module-signin-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg"
+                      className="landing-signin-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg"
                     >
                       Sign In
                     </Button>
@@ -125,7 +220,7 @@ export default function HomePage() {
 
                   {/* Register */}
                   <Link href={`/register/choose?module=${mod.id}`}>
-                    <Button className="module-register-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg">
+                    <Button className="landing-register-btn w-full sm:w-auto px-6 py-2 text-sm font-medium rounded-lg">
                       Register
                     </Button>
                   </Link>

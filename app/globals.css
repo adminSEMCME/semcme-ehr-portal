@@ -243,28 +243,7 @@
       border-color 0.25s ease, transform 0.1s ease;
   }
 
-  /* ===== Landing Page Buttons ===== */
-  .module-register-btn {
-    background-color: #02519c !important;
-    color: #fff !important;
-    border: 2px solid #02519c !important;
-  }
-  .module-register-btn:hover {
-    background-color: #fff !important;
-    color: #02519c !important;
-  }
-
-  .module-signin-btn {
-    background-color: #fff !important;
-    color: #02519c !important;
-    border: 2px solid #d3e3f5 !important;
-  }
-  .module-signin-btn:hover {
-    background-color: #e9f3ff !important;
-    border-color: #b7d4f8 !important;
-  }
-
-  /* ===== Auth / Registration ===== */
+  /* ===== Auth / Registration Buttons (non-landing) ===== */
   .signin-submit-btn,
   .choose-cme-btn,
   .register-submit-btn,
@@ -290,5 +269,77 @@
   .choose-noncme-btn:hover {
     background-color: #e9f3ff !important;
     border-color: #b7d4f8 !important;
+  }
+
+  /* Soft white glow effect */
+  .glow-highlight {
+    position: relative;
+    z-index: 10;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
+    box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.9);
+    transform: scale(1.02);
+    border-radius: 20px; /* matches your cards */
+  }
+
+  /* ============================================================
+     LANDING PAGE BUTTONS ONLY (extra classes)
+     ============================================================ */
+
+  /* Optional: landing-specific aliases if you use them anywhere */
+  .landing-signin-btn {
+    background-color: #ffffff !important;
+    color: #02519c !important;
+    border: 2px solid #02519c !important;
+    transition: all 0.25s ease;
+  }
+  .landing-signin-btn:hover {
+    background-color: #e9f3ff !important;
+    border-color: #013e7a !important;
+    transform: scale(1.04);
+  }
+
+  .landing-register-btn {
+    background-color: #02519c !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    transition: all 0.25s ease;
+  }
+  .landing-register-btn:hover {
+    background-color: #ffffff !important;
+    color: #02519c !important;
+    border-color: #02519c !important;
+    transform: scale(1.04);
+  }
+
+  /* ===== Landing Page Buttons — FINAL FIXED VERSION ===== */
+
+  /* SIGN IN BUTTON (white background, blue border, blue text) */
+  .module-signin-btn {
+    @apply transition-all duration-300 ease-out;
+    background-color: #ffffff !important;
+    color: #02519c !important;
+    border: 2px solid #02519c !important; /* fixed width */
+    border-radius: 12px;
+  }
+  .module-signin-btn:hover {
+    background-color: #e9f3ff !important;
+    color: #02519c !important;
+    border-color: #02519c !important; /* stays same width */
+    transform: scale(1.04); /* smooth grow */
+  }
+
+  /* REGISTER BUTTON (blue background, white text, invert on hover) */
+  .module-register-btn {
+    @apply transition-all duration-300 ease-out;
+    background-color: #02519c !important;
+    color: #fff !important;
+    border: 2px solid #02519c !important; /* fixed width */
+    border-radius: 12px;
+  }
+  .module-register-btn:hover {
+    background-color: #fff !important;
+    color: #02519c !important;
+    border-color: #02519c !important; /* stays same width */
+    transform: scale(1.04); /* smooth grow */
   }
 }
