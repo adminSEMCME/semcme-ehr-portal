@@ -272,4 +272,8 @@
     background-color: #e9f3ff !important;
     transform: scale(1.04);
   }
+
+  .admin-dashboard-search {
+    border: 2px solid #02519c !important;
+  }
 }

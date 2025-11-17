@@ -15,6 +15,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
+  // 🔐 Global admin password (you replace this!)
+  const GLOBAL_ADMIN_PASSWORD = "25Web25!";
+
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -23,12 +26,60 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      // =======================================================================
+      // 1️⃣ CHECK IF USER IS AN ADMIN (by matching email in admin_users table)
+      // =======================================================================
+      const { data: adminRow } = await supabase
+        .from("admin_users")
+        .select("auth_user_id, is_active")
+        .eq("email", form.email)
+        .maybeSingle();
+
+      const isAdmin = !!adminRow && adminRow.is_active;
+
+      // =======================================================================
+      // 2️⃣ IF ADMIN → validate global password, then sign in with Supabase Auth
+      // =======================================================================
+      if (isAdmin) {
+        if (form.password !== GLOBAL_ADMIN_PASSWORD) {
+          alert("Invalid admin credentials.");
+          setLoading(false);
+          return;
+        }
+
+        // Admin auth account MUST have this same password set manually in Supabase Auth
+        const { data: adminSession, error: adminErr } =
+          await supabase.auth.signInWithPassword({
+            email: form.email,
+            password: GLOBAL_ADMIN_PASSWORD,
+          });
+
+        if (adminErr || !adminSession?.user) {
+          alert("Admin authentication failed.");
+          setLoading(false);
+          return;
+        }
+
+        // Store an admin indicator cookie
+        document.cookie = `admin_session=1; path=/;`;
+
+        router.push("/admin-dashboard");
+        return;
+      }
+
+      // =======================================================================
+      // 3️⃣ If not admin → LEARNER LOGIN (regular Supabase Auth)
+      // =======================================================================
       const { data, error } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
       });
 
-      if (error) return alert(error.message);
+      if (error) {
+        alert(error.message);
+        setLoading(false);
+        return;
+      }
 
       const user = data?.user;
       if (!user) return;
@@ -43,8 +94,9 @@ export default function LoginPage() {
         },
       ]);
 
-      if (user.user_metadata?.role)
+      if (user.user_metadata?.role) {
         localStorage.setItem("user_role", user.user_metadata.role);
+      }
 
       const redirectUrl = moduleId
         ? `/dashboards?module=${moduleId}`
