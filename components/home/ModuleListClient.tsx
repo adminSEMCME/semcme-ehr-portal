@@ -27,7 +27,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
-      {/* ==== LOGO + SEARCH ==== */}
+      {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
           <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
@@ -43,7 +43,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </Link>
 
-        {/* SEARCH BOX */}
+        {/* SEARCH */}
         <div className="w-[90%] max-w-md sm:w-auto">
           <div className="relative">
             <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
@@ -97,7 +97,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
       </div>
 
       {/* HERO */}
-      <section className="w-full text-white py-25 text-center bg-gray-400">
+      <section className="w-full text-white py-30 text-center bg-gray-400">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
         <p className="max-w-2xl mx-auto mb-8 text-md">
           Explore modules designed to improve your knowledge
@@ -120,47 +120,62 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
       </section>
 
-      {/* MODULE LIST */}
-      <section className="w-full max-w-5xl py-16 px-4 font-sans">
-        <h2 className="text-3xl font-semibold mb-10 text-white text-center">
+      {/* MODULE GRID */}
+      <section className="w-full py-14 px-6">
+        <h2 className="text-3xl font-semibold mb-14 text-white text-center">
           Explore Available Modules
         </h2>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="space-y-8"
-        >
-          {modules.map((mod, i) => (
-            <motion.div
-              id={mod.id}
-              key={mod.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0, transition: { delay: i * 0.1 } }}
-              className="bg-linear-to-b from-white to-gray-50 shadow-sm rounded-2xl border border-gray-200 p-8 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center"
-            >
-              <h3 className="text-2xl font-bold text-semcmeBlue mb-3 tracking-tight">
-                {mod.title}
-              </h3>
+        <div className="w-full max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="
+              grid 
+              grid-cols-1 
+              sm:grid-cols-2 
+              xl:grid-cols-3 
+              gap-8 
+              w-full
+            "
+          >
+            {modules.map((mod, i) => (
+              <motion.div
+                id={mod.id}
+                key={mod.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
+                className="
+                  bg-white shadow-sm rounded-xl border border-gray-200 
+                  p-6 flex flex-col 
+                  text-center hover:shadow-lg hover:-translate-y-1 
+                  transition-all duration-300 
+                  h-[240px]
+                "
+              >
+                {/* TITLE */}
+                <h3 className="text-lg font-bold text-semcmeBlue">
+                  {mod.title}
+                </h3>
 
-              <p className="text-gray-600 mb-6 max-w-2xl leading-relaxed">
-                {mod.description}
-              </p>
+                {/* CENTERED DESCRIPTION */}
+                <p className="text-gray-600 text-sm flex-grow flex items-center justify-center leading-relaxed px-2">
+                  {mod.description}
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                {/* BUTTON */}
                 <Link href={`/login?module=${mod.id}`}>
-                  <Button variant="outline" className="module-signin-btn">
-                    Sign In
+                  <Button
+                    variant="outline"
+                    className="module-signin-btn mx-auto px-3 py-1 text-xs"
+                  >
+                    View Module
                   </Button>
                 </Link>
-
-                <Link href={`/register/choose?module=${mod.id}`}>
-                  <Button className="module-register-btn">Register</Button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
     </main>
   );

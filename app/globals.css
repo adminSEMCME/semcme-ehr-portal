@@ -250,23 +250,11 @@
     transform: scale(1.04);
   }
 
-  .module-register-btn {
-    background-color: #02519c !important;
-    color: #fff !important;
-    border: 2px solid #02519c !important;
-    border-radius: 12px;
-  }
-  .module-register-btn:hover {
-    background-color: #fff !important;
-    color: #02519c !important;
-    transform: scale(1.04);
-  }
-
   .module-signin-btn {
     background-color: #fff !important;
     color: #02519c !important;
-    border: 2px solid #02519c !important;
-    border-radius: 12px;
+    border: 1.5px solid #02519c !important;
+    border-radius: 8px;
   }
   .module-signin-btn:hover {
     background-color: #e9f3ff !important;
