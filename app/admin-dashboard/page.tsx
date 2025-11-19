@@ -52,17 +52,19 @@ export default function AdminDashboardPage() {
       {/* TITLE */}
       <h1 className="text-4xl font-bold text-semcmeBlue">Admin Dashboard</h1>
       {/* SEARCH */}
-        <input
-          placeholder="Search users..."
-          className="admin-dashboard-search px-4 py-2 rounded-lg w-80 text-gray-800"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <input
+        placeholder="Search users..."
+        className="admin-dashboard-search px-4 py-2 rounded-lg w-80 text-gray-800"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       {/* ================= USERS TABLE ================= */}
       {!loading && (
         <>
           <section>
-            <h2 className="text-2xl font-semibold mb-4 text-semcmeBlue">Users</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-semcmeBlue">
+              Users
+            </h2>
 
             <div className="overflow-x-auto border rounded-xl shadow-sm bg-white">
               <table className="min-w-full text-sm">
@@ -102,7 +104,9 @@ export default function AdminDashboardPage() {
 
           {/* ================= MODULE PROGRESS TABLE ================= */}
           <section>
-            <h2 className="text-2xl font-semibold mb-4 text-semcmeBlue">Module Progress</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-semcmeBlue">
+              Module Progress
+            </h2>
 
             <div className="overflow-x-auto border rounded-xl shadow-sm bg-white">
               <table className="min-w-full text-sm">
@@ -117,9 +121,9 @@ export default function AdminDashboardPage() {
 
                 <tbody>
                   {progress.map((p) => {
-                    const module = modules.find((m) => m.id === p.module_id) as
-                      | AnyRow
-                      | undefined;
+                    const currentModule = modules.find(
+                      (m) => m.id === p.module_id
+                    ) as AnyRow | undefined;
 
                     return (
                       <tr
@@ -128,7 +132,7 @@ export default function AdminDashboardPage() {
                       >
                         <td className="p-3">{p.user_id}</td>
                         <td className="p-3">
-                          {module ? module.title : p.module_id}
+                          {currentModule ? currentModule.title : p.module_id}
                         </td>
                         <td className="p-3">{p.status}</td>
                         <td className="p-3">{p.progress_percent ?? 0}%</td>
