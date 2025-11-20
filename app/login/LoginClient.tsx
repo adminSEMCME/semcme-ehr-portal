@@ -15,8 +15,6 @@ export default function LoginClient() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
-  const GLOBAL_ADMIN_PASSWORD = "25Web25!";
-
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -25,71 +23,36 @@ export default function LoginClient() {
     setLoading(true);
 
     try {
-      const { data: adminRow } = await supabase
-        .from("admin_users")
-        .select("auth_user_id, is_active")
-        .eq("email", form.email)
-        .maybeSingle();
-
-      const isAdmin = !!adminRow && adminRow.is_active;
-
-      if (isAdmin) {
-        if (form.password !== GLOBAL_ADMIN_PASSWORD) {
-          alert("Invalid admin credentials.");
-          setLoading(false);
-          return;
-        }
-
-        const { data: adminSession, error: adminErr } =
-          await supabase.auth.signInWithPassword({
-            email: form.email,
-            password: GLOBAL_ADMIN_PASSWORD,
-          });
-
-        if (adminErr || !adminSession?.user) {
-          alert("Admin authentication failed.");
-          setLoading(false);
-          return;
-        }
-
-        document.cookie = `admin_session=1; path=/;`;
-        router.push("/admin-dashboard");
-        return;
-      }
-
+      // 1️⃣ Attempt login using Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
       });
 
-      if (error) {
-        alert(error.message);
+      if (error || !data?.user) {
+        alert("Incorrect email or password.");
         setLoading(false);
         return;
       }
 
-      const user = data?.user;
-      if (!user) return;
+      const role = data.user.user_metadata?.role;
 
-      await supabase.auth.getSession();
-
-      await supabase.from("user_sessions").insert([
-        {
-          user_id: user.id,
-          ip_address: window.location.hostname,
-          user_agent: navigator.userAgent,
-        },
-      ]);
-
-      if (user.user_metadata?.role) {
-        localStorage.setItem("user_role", user.user_metadata.role);
+      if (!role) {
+        alert("This account has no assigned role.");
+        setLoading(false);
+        return;
       }
 
-      const redirectUrl = moduleId
-        ? `/dashboards?module=${moduleId}`
-        : "/dashboards";
-
-      router.push(redirectUrl);
+      // 2️⃣ Redirect based on role
+      if (role === "admin") {
+        router.push("/admin-dashboard");
+      } else if (role === "user") {
+        router.push(
+          moduleId ? `/dashboards?module=${moduleId}` : "/dashboards"
+        );
+      } else {
+        alert("Invalid user role.");
+      }
     } catch (err) {
       alert("Unexpected login error.");
     } finally {
@@ -124,7 +87,7 @@ export default function LoginClient() {
         </button>
       </div>
 
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10">
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-20 lg:mt-60">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
         </h1>

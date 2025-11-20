@@ -27,11 +27,13 @@ export async function POST(request: Request) {
   const reason = url.searchParams.get("reason") || "manual_logout";
 
   try {
+    // Make sure the user exists first
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
     if (user) {
+      // Update last session row
       await supabase
         .from("user_sessions")
         .update({
@@ -42,11 +44,14 @@ export async function POST(request: Request) {
         .is("logout_time", null);
     }
 
+    // Actually sign out
     await supabase.auth.signOut();
 
-    return NextResponse.json({ message: "Signed out successfully" });
+    // ⭐ NEW — redirect to homepage after logout
+    return NextResponse.redirect(new URL("/", request.url));
   } catch (error) {
     console.error("Logout error:", error);
+
     return NextResponse.json(
       { error: "Logout failed", details: String(error) },
       { status: 500 }

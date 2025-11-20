@@ -18,6 +18,7 @@ interface Module {
   id: string;
   title: string;
   description?: string;
+  objective_description?: string; // ← NEW FIELD
   url: string;
 }
 
@@ -43,10 +44,14 @@ export default function DashboardPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /* ======================================================
+      LOAD DATA
+  ====================================================== */
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
+
         const { data: sessionData } = await supabase.auth.getSession();
         const user = sessionData?.session?.user;
 
@@ -55,6 +60,7 @@ export default function DashboardPage() {
           return;
         }
 
+        // >>> includes objective_description now <<<
         const { data: modulesData } = await supabase
           .from("modules")
           .select("*")
@@ -87,6 +93,9 @@ export default function DashboardPage() {
     return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
 
+  /* ======================================================
+      SCROLL TO TARGET MODULE AFTER LOGIN
+  ====================================================== */
   useEffect(() => {
     if (!loading && targetModule) {
       const el = document.getElementById(targetModule);
@@ -98,6 +107,9 @@ export default function DashboardPage() {
     }
   }, [loading, targetModule]);
 
+  /* ======================================================
+      HELPERS
+  ====================================================== */
   const getStatus = (id: string) =>
     progress.find((p) => p.module_id === id)?.status || "not_started";
 
@@ -111,7 +123,6 @@ export default function DashboardPage() {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
-
       if (!user) return router.push("/login");
 
       await supabase.from("module_progress").upsert({
@@ -134,11 +145,12 @@ export default function DashboardPage() {
     );
   }
 
+  /* ======================================================
+      RENDER
+  ====================================================== */
   return (
     <main className="min-h-screen font-sans pb-20 bg-transparent flex flex-col items-center">
-      {/* ======================================================
-            HEADER — MATCHES HOMEPAGE EXACTLY
-      ======================================================= */}
+      {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
           <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
@@ -160,12 +172,12 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* PAGE TITLE */}
-      <h1 className="text-4xl font-bold text-white mt-6 mb-10 text-center">
+      {/* TITLE */}
+      <h1 className="text-4xl font-bold text-white mt-20 mb-10 text-center">
         EHR Learning Dashboard
       </h1>
 
-      {/* MODULE CARDS */}
+      {/* MODULE LIST */}
       <Accordion
         type="multiple"
         className="w-full max-w-5xl space-y-6 px-4 md:px-0"
@@ -188,6 +200,13 @@ export default function DashboardPage() {
             "/story_content/thumbnail.jpg"
           );
 
+          /* -----------------------------------------------
+             FORMAT BULLET OBJECTIVES (split by newline)
+          ------------------------------------------------ */
+          const objectives = module.objective_description
+            ? module.objective_description.split("\n").filter(Boolean)
+            : [];
+
           return (
             <AccordionItem
               id={module.id}
@@ -195,15 +214,12 @@ export default function DashboardPage() {
               value={module.id}
               className="rounded-lg overflow-hidden shadow-lg border border-gray-200 bg-white"
             >
-              {/* ================= BLUE STRIP HEADER ================= */}
+              {/* BLUE HEADER */}
               <AccordionTrigger className="bg-semcmeBlue px-6 py-4 text-white text-lg font-semibold hover:bg-semcmeBlue">
                 <div className="flex w-full items-center justify-between gap-6">
-                  {/* Title */}
                   <span className="flex-1 text-left">{module.title}</span>
 
-                  {/* Progress bar + percent + status pill */}
                   <div className="flex items-center gap-4">
-                    {/* Progress percent */}
                     <span className="text-sm font-medium text-white">
                       {progressPercent}%
                     </span>
@@ -226,9 +242,9 @@ export default function DashboardPage() {
                 </div>
               </AccordionTrigger>
 
-              {/* ================= WHITE CONTENT AREA ================= */}
+              {/* WHITE CONTENT */}
               <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                {/* Thumbnail */}
+                {/* THUMBNAIL */}
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img
                     src={thumbnailPath}
@@ -241,12 +257,20 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                {/* Details */}
+                {/* INFO */}
                 <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-6">
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    {module.description ||
-                      "No description available for this module."}
-                  </p>
+                  {/* OBJECTIVES OR FALLBACK */}
+                  {objectives.length > 0 ? (
+                    <ul className="text-gray-700 text-base leading-relaxed list-disc pl-5 space-y-2">
+                      {objectives.map((line, idx) => (
+                        <li key={idx}>{line}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-700 text-base leading-relaxed">
+                      No objectives available for this module.
+                    </p>
+                  )}
 
                   <div className="flex gap-4">
                     <Button

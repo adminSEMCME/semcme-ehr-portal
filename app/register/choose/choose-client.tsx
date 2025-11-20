@@ -47,7 +47,7 @@ export default function ChooseClient() {
       </div>
 
       {/* CONTENT */}
-      <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-2xl text-center mt-10">
+      <div className="bg-white p-10 rounded-2xl shadow-md w-full max-w-2xl text-center mt-20 lg:mt-60">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6">
           Are you taking this course for CME credit?
         </h1>

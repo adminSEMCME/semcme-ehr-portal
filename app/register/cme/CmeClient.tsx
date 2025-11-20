@@ -85,7 +85,7 @@ export default function CmeClient() {
         </button>
       </div>
 
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl mt-10">
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-2xl mt-20 lg:mt-50">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           CME Registration
         </h1>

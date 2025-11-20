@@ -133,7 +133,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           Explore Available Modules
         </h2>
 
-        <div className="w-full max-w-6xl mx-auto">
+        <div className="w-full max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -142,7 +142,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               grid-cols-1 
               sm:grid-cols-2 
               xl:grid-cols-3 
-              gap-8 
+              gap-4 
               w-full
             "
           >
@@ -154,14 +154,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
                 className="
                   bg-white shadow-sm rounded-md border border-gray-200 
-                  p-6 flex flex-col 
+                  p-2 flex flex-col 
                   text-center hover:shadow-lg hover:-translate-y-1 
                   transition-all duration-300 
                   h-60
                 "
               >
                 {/* TITLE */}
-                <h3 className="text-lg font-bold text-semcmeBlue">
+                <h3 className="text-lg font-bold text-semcmeBlue mt-2">
                   {mod.title}
                 </h3>
 
@@ -174,7 +174,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 <Link href={`/login?module=${mod.id}`}>
                   <Button
                     variant="outline"
-                    className="module-signin-btn mx-auto px-3 py-1 text-xs"
+                    className="module-signin-btn mx-auto px-3 py-1 mb-2 text-xs"
                   >
                     View Module
                   </Button>

@@ -11,9 +11,7 @@ export default async function AdminDashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  // -------------------------------------------------------
-  // 1️⃣ Get cookies (must be awaited in Next.js 15)
-  // -------------------------------------------------------
+  // Get cookies for Supabase SSR
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -28,39 +26,25 @@ export default async function AdminDashboardLayout({
     }
   );
 
-  // -------------------------------------------------------
-  // 2️⃣ Get the session securely
-  // -------------------------------------------------------
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  // 🔒 1️⃣ AUTHENTICATED CHECK — USE getUser() TO REMOVE WARNING
+  const { data: userData, error: userError } = await supabase.auth.getUser();
 
-  if (!session?.user) {
+  if (userError || !userData?.user) {
     redirect("/login");
   }
 
-  // -------------------------------------------------------
-  // 3️⃣ Ensure user is an admin
-  // -------------------------------------------------------
-  const userId = session.user.id;
+  const user = userData.user;
 
-  const { data: adminRecord } = await supabase
-    .from("admin_users")
-    .select("id")
-    .eq("auth_user_id", userId)
-    .eq("is_active", true)
-    .maybeSingle();
+  // 🔒 2️⃣ ROLE CHECK (admin only)
+  const role = user.user_metadata?.role;
 
-  if (!adminRecord) {
+  if (role !== "admin") {
     redirect("/login");
   }
 
-  // -------------------------------------------------------
-  // 4️⃣ Return ONLY the inner layout (no html/body!)
-  // -------------------------------------------------------
+  // 3️⃣ RENDER ADMIN LAYOUT
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
-      {/* HEADER */}
       <header className="w-full bg-white shadow-sm py-4 px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <div className="relative w-[170px] h-[45px]">
@@ -74,7 +58,7 @@ export default async function AdminDashboardLayout({
         </Link>
 
         <nav className="flex items-center gap-4">
-          <form action="/logout" method="post">
+          <form action="/api/logout" method="post">
             <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
               Log Out
             </button>
@@ -82,7 +66,6 @@ export default async function AdminDashboardLayout({
         </nav>
       </header>
 
-      {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto py-10 px-6">{children}</main>
     </div>
   );
