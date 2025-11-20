@@ -30,7 +30,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -46,7 +46,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         {/* SEARCH */}
         <div className="w-[90%] max-w-md sm:w-auto">
           <div className="relative">
-            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
               <Search className="w-4 h-4 text-semcmeBlue" />
               <input
                 value={searchTerm}
@@ -97,7 +97,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
       </div>
 
       {/* HERO */}
-      <section className="w-full text-white py-30 text-center bg-gray-400">
+      <section className="w-full text-white py-15 text-center bg-gray-400">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
         <p className="max-w-2xl mx-auto mb-8 text-md">
           Explore modules designed to improve your knowledge
@@ -107,17 +107,24 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
         <div className="mt-8 flex justify-center gap-8">
           <Link href="/login">
-            <button className="landing-signin-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="landing-signin-btn min-w-[200px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Sign In
             </button>
           </Link>
 
           <Link href="/register/choose">
-            <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-xl text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+            <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Register
             </button>
           </Link>
         </div>
+
+        {/* NEW NOTE UNDER BUTTONS */}
+        <p className="mt-10 max-w-2xl mx-auto text-sm font-bold text-slate-200 px-4">
+          You only need to register once. After registering, please use the Sign
+          In button above to access all modules, or use the View Module buttons
+          below to sign in and be directed to a specific module.
+        </p>
       </section>
 
       {/* MODULE GRID */}
@@ -146,11 +153,11 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
                 className="
-                  bg-white shadow-sm rounded-xl border border-gray-200 
+                  bg-white shadow-sm rounded-md border border-gray-200 
                   p-6 flex flex-col 
                   text-center hover:shadow-lg hover:-translate-y-1 
                   transition-all duration-300 
-                  h-[240px]
+                  h-60
                 "
               >
                 {/* TITLE */}
@@ -159,7 +166,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 </h3>
 
                 {/* CENTERED DESCRIPTION */}
-                <p className="text-gray-600 text-sm flex-grow flex items-center justify-center leading-relaxed px-2">
+                <p className="text-gray-600 text-sm grow flex items-center justify-center leading-relaxed px-2">
                   {mod.description}
                 </p>
 

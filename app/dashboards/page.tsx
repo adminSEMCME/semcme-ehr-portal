@@ -141,7 +141,7 @@ export default function DashboardPage() {
       ======================================================= */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -193,7 +193,7 @@ export default function DashboardPage() {
               id={module.id}
               key={module.id}
               value={module.id}
-              className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 bg-white"
+              className="rounded-lg overflow-hidden shadow-lg border border-gray-200 bg-white"
             >
               {/* ================= BLUE STRIP HEADER ================= */}
               <AccordionTrigger className="bg-semcmeBlue px-6 py-4 text-white text-lg font-semibold hover:bg-semcmeBlue">
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                   <div className="flex gap-4">
                     <Button
                       onClick={() => handleStart(module)}
-                      className="module-start-btn px-6 py-2 rounded-lg font-semibold transition"
+                      className="module-start-btn px-6 py-2 rounded-sm font-semibold transition"
                     >
                       {status === "not_started"
                         ? "Start Module"
@@ -268,7 +268,7 @@ export default function DashboardPage() {
                       >
                         <Button
                           variant="outline"
-                          className="border-green-500 text-green-700 hover:bg-green-50 rounded-lg px-6 py-2"
+                          className="border-green-500 text-green-700 hover:bg-green-50 rounded-sm px-6 py-2"
                         >
                           🎓 Download Certificate
                         </Button>

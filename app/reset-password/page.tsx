@@ -147,7 +147,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={setting}
-              className="signin-submit-btn w-full py-3 rounded-xl font-semibold transition"
+              className="signin-submit-btn w-full py-3 rounded-md font-semibold transition"
             >
               {setting ? "Updating..." : "Update Password"}
             </button>

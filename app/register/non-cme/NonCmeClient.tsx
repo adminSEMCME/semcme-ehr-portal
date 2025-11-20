@@ -64,7 +64,7 @@ export default function NonCmeClient() {
     <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative">
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -81,7 +81,7 @@ export default function NonCmeClient() {
           onClick={() =>
             window.history.length > 1 ? router.back() : router.push("/")
           }
-          className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+          className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
         >
           <ArrowLeft size={18} /> Back
         </button>
@@ -212,7 +212,7 @@ export default function NonCmeClient() {
           <button
             type="submit"
             disabled={loading}
-            className="register-submit-btn w-full py-3 rounded-xl font-semibold transition"
+            className="register-submit-btn w-full py-3 rounded-md font-semibold transition"
           >
             {loading ? "Registering..." : "Register"}
           </button>

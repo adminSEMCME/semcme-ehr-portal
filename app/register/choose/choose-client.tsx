@@ -23,7 +23,7 @@ export default function ChooseClient() {
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-3 py-2">
+          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -40,7 +40,7 @@ export default function ChooseClient() {
           onClick={() =>
             window.history.length > 1 ? router.back() : router.push("/")
           }
-          className="bg-white border-2 border-semcmeBlue rounded-xl shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+          className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
         >
           <ArrowLeft size={18} /> Back
         </button>
@@ -61,7 +61,7 @@ export default function ChooseClient() {
           <button
             onClick={() => handleRedirect("/register/cme")}
             disabled={loading}
-            className="choose-cme-btn w-full sm:w-auto px-10 py-4 rounded-xl font-semibold text-lg transition"
+            className="choose-cme-btn w-full sm:w-auto px-10 py-4 rounded-md font-semibold text-lg transition"
           >
             Yes — CME Credit
           </button>
@@ -69,7 +69,7 @@ export default function ChooseClient() {
           <button
             onClick={() => handleRedirect("/register/non-cme")}
             disabled={loading}
-            className="choose-noncme-btn w-full sm:w-auto px-10 py-4 rounded-xl font-semibold text-lg transition"
+            className="choose-noncme-btn w-full sm:w-auto px-10 py-4 rounded-md font-semibold text-lg transition"
           >
             No — Non-CME Credit
           </button>

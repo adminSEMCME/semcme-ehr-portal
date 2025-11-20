@@ -170,7 +170,7 @@
   }
 
   .back-btn {
-    @apply inline-flex items-center gap-2 px-5 py-2 rounded-lg font-medium border bg-white shadow-sm;
+    @apply inline-flex items-center gap-2 px-5 py-2 rounded-md font-medium border bg-white shadow-sm;
     color: #02519c !important;
     border-color: #02519c !important;
     position: absolute !important;
@@ -241,7 +241,6 @@
   .landing-register-btn {
     background-color: #02519c !important;
     color: #ffffff !important;
-    border-radius: 12px;
   }
 
   .landing-register-btn:hover {
