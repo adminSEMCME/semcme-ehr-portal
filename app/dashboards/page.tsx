@@ -18,7 +18,7 @@ interface Module {
   id: string;
   title: string;
   description?: string;
-  objective_description?: string; // ← NEW FIELD
+  objective_description?: string;
   url: string;
 }
 
@@ -60,7 +60,6 @@ export default function DashboardPage() {
           return;
         }
 
-        // >>> includes objective_description now <<<
         const { data: modulesData } = await supabase
           .from("modules")
           .select("*")
@@ -139,6 +138,14 @@ export default function DashboardPage() {
     }
   };
 
+  /* ======================================================
+      LOGOUT HANDLER
+  ====================================================== */
+  const handleLogout = async () => {
+    await fetch("/api/logout?reason=manual_logout", { method: "POST" });
+    router.push("/");
+  };
+
   if (loading) {
     return (
       <p className="text-center mt-10 text-gray-200">Loading dashboard...</p>
@@ -166,9 +173,12 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        <button onClick={() => router.back()} className="back-btn ml-auto">
-          <ArrowLeft size={18} />
-          Back
+        {/* 🔴 LOGOUT BUTTON (same as admin dashboard) */}
+        <button
+          onClick={handleLogout}
+          className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold"
+        >
+          Log Out
         </button>
       </div>
 
@@ -200,9 +210,6 @@ export default function DashboardPage() {
             "/story_content/thumbnail.jpg"
           );
 
-          /* -----------------------------------------------
-             FORMAT BULLET OBJECTIVES (split by newline)
-          ------------------------------------------------ */
           const objectives = module.objective_description
             ? module.objective_description.split("\n").filter(Boolean)
             : [];
@@ -214,7 +221,6 @@ export default function DashboardPage() {
               value={module.id}
               className="rounded-lg overflow-hidden shadow-lg border border-gray-200 bg-white"
             >
-              {/* BLUE HEADER */}
               <AccordionTrigger className="bg-semcmeBlue px-6 py-4 text-white text-lg font-semibold hover:bg-semcmeBlue">
                 <div className="flex w-full items-center justify-between gap-6">
                   <span className="flex-1 text-left">{module.title}</span>
@@ -242,9 +248,7 @@ export default function DashboardPage() {
                 </div>
               </AccordionTrigger>
 
-              {/* WHITE CONTENT */}
               <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                {/* THUMBNAIL */}
                 <div className="w-full md:w-1/2 flex justify-center">
                   <img
                     src={thumbnailPath}
@@ -257,9 +261,7 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                {/* INFO */}
                 <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-6">
-                  {/* OBJECTIVES OR FALLBACK */}
                   {objectives.length > 0 ? (
                     <ul className="text-gray-700 text-base leading-relaxed list-disc pl-5 space-y-2">
                       {objectives.map((line, idx) => (
