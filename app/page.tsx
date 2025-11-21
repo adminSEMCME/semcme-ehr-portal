@@ -11,14 +11,16 @@ export default async function HomePage() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value ?? "";
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll() {
+          // ❌ Do NOT modify cookies in a server component
         },
       },
     }
   );
 
-  // SERVER fetch — no client delay
   const { data: modules } = await supabase
     .from("modules")
     .select("id, title, description, url, order_index")

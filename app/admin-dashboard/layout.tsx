@@ -11,7 +11,6 @@ export default async function AdminDashboardLayout({
 }: {
   children: ReactNode;
 }) {
-  // Get cookies for Supabase SSR
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -19,30 +18,23 @@ export default async function AdminDashboardLayout({
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value ?? "";
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll() {
+          // ❌ server component cannot modify cookies
         },
       },
     }
   );
 
-  // 🔒 1️⃣ AUTHENTICATED CHECK — USE getUser() TO REMOVE WARNING
-  const { data: userData, error: userError } = await supabase.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
 
-  if (userError || !userData?.user) {
-    redirect("/login");
-  }
+  if (!userData?.user) redirect("/login");
 
-  const user = userData.user;
+  const role = userData.user.user_metadata?.role;
+  if (role !== "admin") redirect("/login");
 
-  // 🔒 2️⃣ ROLE CHECK (admin only)
-  const role = user.user_metadata?.role;
-
-  if (role !== "admin") {
-    redirect("/login");
-  }
-
-  // 3️⃣ RENDER ADMIN LAYOUT
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
       <header className="w-full bg-white shadow-sm py-4 px-6 flex items-center justify-between">

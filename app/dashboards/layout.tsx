@@ -4,11 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import SessionWatcher from "@/components/SessionWatcher";
 import { redirect } from "next/navigation";
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function DashboardLayout({ children }: any) {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -16,21 +12,22 @@ export default async function DashboardLayout({
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value ?? "";
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll() {
+          // ❌ server component cannot modify cookies
         },
       },
     }
   );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getUser();
+  const user = data?.user;
 
-  if (!session?.user) redirect("/login");
+  if (!user) redirect("/login");
 
-  const role = session.user.user_metadata?.role;
-
+  const role = user.user_metadata?.role;
   if (role !== "user") redirect("/login");
 
   return (

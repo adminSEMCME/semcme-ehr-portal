@@ -4,42 +4,45 @@ import { createServerClient } from "@supabase/ssr";
 import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const { pathname, origin } = req.nextUrl;
+  let res = NextResponse.next();
 
+  // Required new cookie API
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name) {
-          return req.cookies.get(name)?.value;
+        getAll() {
+          return req.cookies.getAll();
         },
-        set(name, value, options) {
-          res.cookies.set({ name, value, ...options });
-        },
-        remove(name, options) {
-          res.cookies.set({ name, value: "", ...options });
+        setAll(cookies) {
+          cookies.forEach(({ name, value, options }) => {
+            res.cookies.set(name, value, options);
+          });
         },
       },
     }
   );
 
-  const { data, error } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getSession();
   const session = data?.session;
 
-  // Redirect unauthenticated users trying to access dashboards
-  if (error || !session) {
-    if (pathname.startsWith("/dashboards")) {
-      return NextResponse.redirect(`${origin}/login`);
-    }
-    return res;
+  const pathname = req.nextUrl.pathname;
+  const origin = req.nextUrl.origin;
+
+  // Protect learner dashboard
+  if (!session && pathname.startsWith("/dashboards")) {
+    return NextResponse.redirect(`${origin}/login`);
   }
 
-  // Allow authenticated users through
+  // Protect admin dashboard
+  if (!session && pathname.startsWith("/admin-dashboard")) {
+    return NextResponse.redirect(`${origin}/login`);
+  }
+
   return res;
 }
 
 export const config = {
-  matcher: ["/dashboards/:path*"],
+  matcher: ["/dashboards/:path*", "/admin-dashboard/:path*"],
 };
