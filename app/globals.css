@@ -145,8 +145,8 @@
     background: linear-gradient(
       180deg,
       #013e7a 0%,
-      #02519c 20%,
-      #4b80b8 60%,
+      #02519c 60%,
+      #4b80b8 90%,
       #6d9ac5 100%
     );
     background-attachment: fixed;

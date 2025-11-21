@@ -173,7 +173,7 @@ export default function DashboardPage() {
       </div>
 
       {/* TITLE */}
-      <h1 className="text-4xl font-bold text-white mt-20 mb-10 text-center">
+      <h1 className="text-4xl font-bold text-white my-10 text-center">
         EHR Learning Dashboard
       </h1>
 

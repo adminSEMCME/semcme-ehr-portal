@@ -87,7 +87,7 @@ export default function LoginClient() {
         </button>
       </div>
 
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-20 lg:mt-60">
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10 lg:mt-20">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
         </h1>

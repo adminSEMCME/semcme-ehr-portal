@@ -120,7 +120,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
 
         {/* NEW NOTE UNDER BUTTONS */}
-        <p className="mt-10 max-w-2xl mx-auto text-sm font-bold text-slate-200 px-4">
+        <p className="mt-10 max-w-2xl mx-auto text-sm font-bold text-white px-4">
           You only need to register once. After registering, please use the Sign
           In button above to access all modules, or use the View Module buttons
           below to sign in and be directed to a specific module.
