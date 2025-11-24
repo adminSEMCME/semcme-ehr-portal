@@ -44,8 +44,19 @@ export async function GET(request: Request) {
     );
   }
 
+  // ALL MODULES (for filters + "not started")
+  const { data: modules, error: modulesErr } = await supabase
+    .from("modules")
+    .select("id, title, order_index")
+    .order("order_index", { ascending: true });
+
+  if (modulesErr) {
+    console.error("modules error:", modulesErr);
+  }
+
   // RETURN RESULT
   return NextResponse.json({
     userModules: userModules ?? [],
+    modules: modules ?? [],
   });
 }
