@@ -3,6 +3,46 @@
 import { useEffect, useMemo, useState } from "react";
 import React from "react";
 
+/* ---------------- CSV EXPORT HELPER ---------------- */
+
+function exportCSV(filename: string, rows: Record<string, any>[]) {
+  if (!rows || rows.length === 0) {
+    alert("No data to export.");
+    return;
+  }
+
+  const escape = (val: any) => {
+    if (val == null) return "";
+    const str = String(val);
+    if (str.includes('"') || str.includes(",") || str.includes("\n")) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
+
+  const headers = Object.keys(rows[0]).join(",");
+
+  const data = rows
+    .map((row) => Object.values(row).map(escape).join(","))
+    .join("\n");
+
+  const csvContent = "\uFEFF" + headers + "\n" + data;
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+/* --------------------------------------------------- */
+/* ---------------- ORIGINAL TYPES ------------------- */
+/* --------------------------------------------------- */
+
 type UserModuleRow = {
   user_id: string;
   first_name: string | null;
@@ -64,6 +104,10 @@ type InstitutionSummary = {
   perModule: Record<string, number>;
 };
 
+/* --------------------------------------------------- */
+/* ---------------- COMPONENT START ------------------- */
+/* --------------------------------------------------- */
+
 export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +125,8 @@ export default function AdminDashboardPage() {
   const [filterInstitution, setFilterInstitution] = useState<string | "all">(
     "all"
   );
+
+  /* ------------------- LOAD ANALYTICS ------------------- */
 
   useEffect(() => {
     async function load() {
@@ -101,6 +147,8 @@ export default function AdminDashboardPage() {
     }
     load();
   }, []);
+
+  /* ------------------- DATA PROCESSING ------------------- */
 
   const {
     users,
@@ -157,8 +205,6 @@ export default function AdminDashboardPage() {
 
       if (row.module_id) {
         const m = moduleMap.get(row.module_id);
-
-        // Skip rows that reference unknown modules
         if (!m) continue;
 
         u.modules.push(row);
@@ -255,6 +301,8 @@ export default function AdminDashboardPage() {
     };
   }, [analytics]);
 
+  /* -------------------- FILTER USERS -------------------- */
+
   const filteredUsers = useMemo(() => {
     let list = [...users];
 
@@ -283,6 +331,10 @@ export default function AdminDashboardPage() {
     return list;
   }, [users, search, filterInstitution, filterModuleId]);
 
+  /* --------------------------------------------------- */
+  /* -------------------- LOADING ---------------------- */
+  /* --------------------------------------------------- */
+
   if (loading)
     return (
       <div className="text-center py-10">
@@ -290,6 +342,62 @@ export default function AdminDashboardPage() {
         <p className="text-gray-500">Loading…</p>
       </div>
     );
+
+  /* --------------------------------------------------- */
+  /* ------------------ EXPORT BUTTONS ----------------- */
+  /* --------------------------------------------------- */
+
+  const exportUsers = () => {
+    const rows = filteredUsers.map((u) => ({
+      user_id: u.user_id,
+      name: u.name,
+      email: u.email,
+      institution: u.institution,
+      account_created: u.createdAt,
+      completed_count: u.completedCount,
+      in_progress_count: u.inProgressCount,
+    }));
+    exportCSV("users.csv", rows);
+  };
+
+  const exportModules = () => {
+    const rows = modules.map((m) => ({
+      module_id: m.module_id,
+      title: m.title,
+      order_index: m.order_index,
+      attempts: m.attempts,
+      completions: m.completions,
+      avg_progress: m.avgProgress,
+      users_completed: m.usersCompleted,
+      users_in_progress: m.usersInProgress,
+      users_not_started: m.usersNotStarted,
+    }));
+    exportCSV("modules.csv", rows);
+  };
+
+  const exportInstitutions = () => {
+    const rows: any[] = [];
+
+    for (const inst of institutions) {
+      for (const moduleId of Object.keys(inst.perModule)) {
+        rows.push({
+          institution: inst.institution,
+          user_count: inst.userCount,
+          total_completions: inst.totalCompletions,
+          module_id: moduleId,
+          module_title:
+            allModules.find((m) => m.id === moduleId)?.title ?? moduleId,
+          completion_count: inst.perModule[moduleId],
+        });
+      }
+    }
+
+    exportCSV("institutions.csv", rows);
+  };
+
+  /* --------------------------------------------------- */
+  /* --------------------- RENDER ---------------------- */
+  /* --------------------------------------------------- */
 
   return (
     <div className="space-y-8">
@@ -322,16 +430,14 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
+      {/* ---------------- USERS TAB ---------------- */}
       {tab === "users" && (
         <>
-          <p className="text-center text-sm text-gray-500 mb-1">
-            Click a user row to expand their full module history.
-          </p>
-
-          <section className="flex flex-wrap gap-3 items-center justify-center">
+          {/* FILTER BAR — EQUAL WIDTH + RESPONSIVE STACK */}
+          <section className="flex flex-col md:flex-row items-center justify-center gap-4 mb-3 w-full max-w-5xl mx-auto">
             <input
               placeholder="Search by User/Email/Institution…"
-              className="px-4 py-2 rounded-lg border w-full sm:w-80"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -343,7 +449,7 @@ export default function AdminDashboardPage() {
                   e.target.value === "all" ? "all" : e.target.value
                 )
               }
-              className="px-3 py-2 rounded-lg border"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
             >
               <option value="all">All modules</option>
               {moduleOptions.map((m) => (
@@ -360,7 +466,7 @@ export default function AdminDashboardPage() {
                   e.target.value === "all" ? "all" : e.target.value
                 )
               }
-              className="px-3 py-2 rounded-lg border"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
             >
               <option value="all">All institutions</option>
               {institutionOptions.map((i) => (
@@ -371,6 +477,21 @@ export default function AdminDashboardPage() {
             </select>
           </section>
 
+          {/* EXPORT BUTTON — RIGHT ABOVE TABLE */}
+          <div className="flex justify-end mb-2 pr-1">
+            <button
+              onClick={exportUsers}
+              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+            >
+              Export Users CSV
+            </button>
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mb-1">
+            Click a user row to expand their full module history.
+          </p>
+
+          {/* TABLE */}
           <div className="overflow-x-auto border rounded-xl shadow-sm bg-white">
             <table className="min-w-full text-sm">
               <thead className="bg-semcmeBlue text-white">
@@ -382,7 +503,6 @@ export default function AdminDashboardPage() {
                   <th className="p-3 text-left">In Progress</th>
                 </tr>
               </thead>
-
               <tbody>
                 {filteredUsers.map((u) => (
                   <React.Fragment key={u.user_id}>
@@ -416,94 +536,123 @@ export default function AdminDashboardPage() {
         </>
       )}
 
+      {/* ---------------- MODULES TAB ---------------- */}
       {tab === "modules" && (
-        <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
-          <table className="min-w-full text-sm">
-            <thead className="bg-semcmeBlue text-white">
-              <tr>
-                <th className="p-3 text-left">Module</th>
-                <th className="p-3 text-left">Attempts</th>
-                <th className="p-3 text-left">Completions</th>
-              </tr>
-            </thead>
+        <>
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={exportModules}
+              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+            >
+              Export Modules CSV
+            </button>
+          </div>
 
-            <tbody>
-              {modules.map((m) => (
-                <React.Fragment key={m.module_id}>
-                  <tr
-                    onClick={() =>
-                      setSelectedModuleId(
-                        selectedModuleId === m.module_id ? null : m.module_id
-                      )
-                    }
-                    className="border-b hover:bg-gray-100 cursor-pointer"
-                  >
-                    <td className="p-3">{m.title}</td>
-                    <td className="p-3">{m.attempts}</td>
-                    <td className="p-3">{m.completions}</td>
-                  </tr>
+          <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
+            <table className="min-w-full text-sm">
+              <thead className="bg-semcmeBlue text-white">
+                <tr>
+                  <th className="p-3 text-left">Module</th>
+                  <th className="p-3 text-left">Attempts</th>
+                  <th className="p-3 text-left">Completions</th>
+                </tr>
+              </thead>
 
-                  {selectedModuleId === m.module_id && (
-                    <tr className="bg-gray-50 border-b">
-                      <td colSpan={3} className="p-4">
-                        <ModuleDetailPanel module={m} />
-                      </td>
+              <tbody>
+                {modules.map((m) => (
+                  <React.Fragment key={m.module_id}>
+                    <tr
+                      onClick={() =>
+                        setSelectedModuleId(
+                          selectedModuleId === m.module_id ? null : m.module_id
+                        )
+                      }
+                      className="border-b hover:bg-gray-100 cursor-pointer"
+                    >
+                      <td className="p-3">{m.title}</td>
+                      <td className="p-3">{m.attempts}</td>
+                      <td className="p-3">{m.completions}</td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </section>
+
+                    {selectedModuleId === m.module_id && (
+                      <tr className="bg-gray-50 border-b">
+                        <td colSpan={3} className="p-4">
+                          <ModuleDetailPanel module={m} />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        </>
       )}
 
+      {/* ---------------- INSTITUTIONS TAB ---------------- */}
       {tab === "institutions" && (
-        <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
-          <table className="min-w-full text-sm">
-            <thead className="bg-semcmeBlue text-white">
-              <tr>
-                <th className="p-3 text-left">Institution</th>
-                <th className="p-3 text-left">Users</th>
-                <th className="p-3 text-left">Total Completions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {institutions.map((inst) => (
-                <React.Fragment key={inst.institution}>
-                  <tr
-                    onClick={() =>
-                      setSelectedInstitution(
-                        selectedInstitution === inst.institution
-                          ? null
-                          : inst.institution
-                      )
-                    }
-                    className="border-b hover:bg-gray-100 cursor-pointer"
-                  >
-                    <td className="p-3">{inst.institution}</td>
-                    <td className="p-3">{inst.userCount}</td>
-                    <td className="p-3">{inst.totalCompletions}</td>
-                  </tr>
+        <>
+          <div className="flex justify-end mb-2">
+            <button
+              onClick={exportInstitutions}
+              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+            >
+              Export Institutions CSV
+            </button>
+          </div>
 
-                  {selectedInstitution === inst.institution && (
-                    <tr className="bg-gray-50 border-b">
-                      <td colSpan={3} className="p-4">
-                        <InstitutionDetailPanel
-                          institution={inst}
-                          allModules={allModules}
-                        />
-                      </td>
+          <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
+            <table className="min-w-full text-sm">
+              <thead className="bg-semcmeBlue text-white">
+                <tr>
+                  <th className="p-3 text-left">Institution</th>
+                  <th className="p-3 text-left">Users</th>
+                  <th className="p-3 text-left">Total Completions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {institutions.map((inst) => (
+                  <React.Fragment key={inst.institution}>
+                    <tr
+                      onClick={() =>
+                        setSelectedInstitution(
+                          selectedInstitution === inst.institution
+                            ? null
+                            : inst.institution
+                        )
+                      }
+                      className="border-b hover:bg-gray-100 cursor-pointer"
+                    >
+                      <td className="p-3">{inst.institution}</td>
+                      <td className="p-3">{inst.userCount}</td>
+                      <td className="p-3">{inst.totalCompletions}</td>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </section>
+
+                    {selectedInstitution === inst.institution && (
+                      <tr className="bg-gray-50 border-b">
+                        <td colSpan={3} className="p-4">
+                          <InstitutionDetailPanel
+                            institution={inst}
+                            allModules={allModules}
+                          />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        </>
       )}
     </div>
   );
 }
+
+/* --------------------------------------------------- */
+/* ---------------- SUB-COMPONENTS ------------------- */
+/* --------------------------------------------------- */
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (

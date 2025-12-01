@@ -112,7 +112,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             </button>
           </Link>
 
-          <Link href="/register/choose">
+          <Link href="/register">
             <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
               Register
             </button>

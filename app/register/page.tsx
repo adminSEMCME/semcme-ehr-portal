@@ -1,12 +1,12 @@
 "use client";
 
 import { Suspense } from "react";
-import ChooseClient from "./choose-client";
+import RegisterClient from "./RegisterClient";
 
-export default function ChooseRegistrationPage() {
+export default function RegisterPage() {
   return (
     <Suspense fallback={<div className="text-white p-10">Loading...</div>}>
-      <ChooseClient />
+      <RegisterClient />
     </Suspense>
   );
 }

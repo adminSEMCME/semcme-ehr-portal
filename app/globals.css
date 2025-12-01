@@ -263,4 +263,10 @@
   .admin-dashboard-search {
     border: 2px solid #02519c !important;
   }
+
+  select option {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+  }
 }
+
