@@ -7,8 +7,10 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft } from "lucide-react";
 
-// ----------------------- TYPES -----------------------
-type FormState = {
+/* ============================================================
+   TYPE FIX — ALLOWS form[field] WITHOUT TS ERRORS
+   ============================================================ */
+type FormData = {
   role: string;
   profession: string;
   email: string;
@@ -23,15 +25,17 @@ type FormState = {
   medicalId: string;
   pgyLevel: string;
   medicalSchoolYear: string;
-};
+} & { [key: string]: string }; // index signature
 
 export default function RegisterClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("module");
 
-  // ----------------------- FIELD GROUPS -----------------------
-  const roleFieldMap: Record<string, (keyof FormState)[]> = {
+  /* ============================================================
+     FIELD GROUPS
+     ============================================================ */
+  const roleFieldMap: Record<string, string[]> = {
     "Medical Student": [
       "email",
       "password",
@@ -95,8 +99,10 @@ export default function RegisterClient() {
     ],
   };
 
-  // ----------------------- FORM DEFAULT -----------------------
-  const defaultForm: FormState = {
+  /* ============================================================
+     STATE
+     ============================================================ */
+  const defaultForm: FormData = {
     role: "",
     profession: "",
     email: "",
@@ -113,34 +119,56 @@ export default function RegisterClient() {
     medicalSchoolYear: "",
   };
 
-  const [form, setForm] = useState<FormState>(defaultForm);
+  const [form, setForm] = useState<FormData>(defaultForm);
   const [loading, setLoading] = useState(false);
 
-  // ----------------------- HANDLE CHANGE -----------------------
+  /* ============================================================
+     HANDLE CHANGE
+     ============================================================ */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
 
+    // When role changes → reset fields dynamically
     if (name === "role") {
       const allowed = roleFieldMap[value] || [];
+      const updated: FormData = { ...defaultForm, role: value };
 
-      const resetForm: FormState = { ...defaultForm, role: value };
-
-      allowed.forEach((field) => {
-        resetForm[field] = form[field] || "";
+      allowed.forEach((f) => {
+        updated[f] = form[f] || "";
       });
 
-      setForm(resetForm);
+      setForm(updated);
       return;
     }
 
     setForm({ ...form, [name]: value });
   };
 
-  // ----------------------- SUBMIT -----------------------
+  /* ============================================================
+     VALIDATION BEFORE SUBMIT
+     ============================================================ */
+  const validateRequiredFields = () => {
+    const required = roleFieldMap[form.role] || [];
+
+    for (const field of required) {
+      if (!form[field] || form[field].trim() === "") {
+        alert("Please fill in all required fields.");
+        return false;
+      }
+    }
+    return true;
+  };
+
+  /* ============================================================
+     SUBMIT
+     ============================================================ */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateRequiredFields()) return;
+
     setLoading(true);
 
     try {
@@ -175,7 +203,7 @@ export default function RegisterClient() {
         alert("Registration successful! Please verify your email.");
         setTimeout(
           () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
-          1500
+          2000
         );
       }
     } finally {
@@ -183,20 +211,34 @@ export default function RegisterClient() {
     }
   };
 
-  const showField = (field: keyof FormState) =>
-    roleFieldMap[form.role]?.includes(field);
+  /* ============================================================
+     RENDER HELPERS
+     ============================================================ */
+  const showField = (field: string) => roleFieldMap[form.role]?.includes(field);
 
-  // ----------------------- STYLES -----------------------
-  const inputClass =
-    "w-full p-3 rounded-lg bg-gray-50 border border-gray-300 " +
-    "focus:bg-white focus:border-[#02519c] focus:border-2 " +
-    "focus:ring-0 outline-none transition-all duration-100";
+  const inputClass = `
+    w-full p-3 rounded-lg
+    border border-gray-300 
+    bg-gray-50 
+    focus:bg-white 
+    focus:border-2 
+    focus:border-semcmeBlue 
+    focus:outline-none 
+    focus:ring-0
+    transition-all duration-200
+  `;
 
-  const labelClass = "block text-sm font-semibold text-gray-700 mb-1";
+  const labelRequired = `
+    block text-sm font-semibold text-gray-700 mb-1 
+  `;
 
-  // ----------------------- RENDER -----------------------
+  const requiredStar = `text-red-500`;
+
+  /* ============================================================
+     UI
+     ============================================================ */
   return (
-    <main className="min-h-screen flex flex-col items-center font-sans">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative">
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center">
@@ -207,6 +249,7 @@ export default function RegisterClient() {
                 alt="SEMCME Logo"
                 fill
                 className="object-contain rounded-md"
+                priority
               />
             </div>
           </div>
@@ -216,14 +259,18 @@ export default function RegisterClient() {
           onClick={() =>
             window.history.length > 1 ? router.back() : router.push("/")
           }
-          className="bg-white border border-semcmeBlue rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+          className="
+            bg-white border border-semcmeBlue rounded-md shadow-sm 
+            px-4 py-2 flex items-center gap-2 text-semcmeBlue 
+            font-semibold hover:bg-slate-100 transition
+          "
         >
           <ArrowLeft size={18} /> Back
         </button>
       </div>
 
       {/* FORM */}
-      <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mt-5 mb-20 border border-gray-200">
+      <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mt-5 mb-20 lg:mt-10 border border-gray-200">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           EHR Account Registration
         </h1>
@@ -231,8 +278,8 @@ export default function RegisterClient() {
         <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
           {/* ROLE */}
           <div>
-            <label className={labelClass}>
-              Select Your Group <span className="text-red-500">*</span>
+            <label className={labelRequired}>
+              Select Your Group <span className={requiredStar}>*</span>
             </label>
             <select
               required
@@ -252,76 +299,64 @@ export default function RegisterClient() {
             </select>
           </div>
 
-          {/* PROFESSION */}
+          {/* RENDER FIELDS */}
           {showField("profession") && (
-            <div>
-              <label className={labelClass}>Your Profession *</label>
-              <input
-                name="profession"
-                value={form.profession}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="Your Profession"
+              required
+              name="profession"
+              value={form.profession}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
-          {/* EMAIL */}
           {showField("email") && (
-            <div>
-              <label className={labelClass}>Institutional Email *</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="Institutional Email"
+              required
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
-          {/* PASSWORD */}
           {showField("password") && (
-            <div>
-              <label className={labelClass}>Password *</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="Password"
+              required
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
           {/* NAME FIELDS */}
           {(showField("firstName") || showField("lastName")) && (
             <div className="grid md:grid-cols-2 gap-4">
               {showField("firstName") && (
-                <div>
-                  <label className={labelClass}>First Name *</label>
-                  <input
-                    name="firstName"
-                    value={form.firstName}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="First Name"
+                  required
+                  name="firstName"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
               {showField("lastName") && (
-                <div>
-                  <label className={labelClass}>Last Name *</label>
-                  <input
-                    name="lastName"
-                    value={form.lastName}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="Last Name"
+                  required
+                  name="lastName"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
             </div>
           )}
@@ -330,112 +365,96 @@ export default function RegisterClient() {
           {(showField("degree") || showField("title")) && (
             <div className="grid md:grid-cols-2 gap-4">
               {showField("degree") && (
-                <div>
-                  <label className={labelClass}>Degree *</label>
-                  <input
-                    name="degree"
-                    value={form.degree}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="Degree"
+                  required
+                  name="degree"
+                  value={form.degree}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
               {showField("title") && (
-                <div>
-                  <label className={labelClass}>Title *</label>
-                  <input
-                    name="title"
-                    value={form.title}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="Title"
+                  required
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
             </div>
           )}
 
-          {/* NPI */}
           {showField("medicalId") && (
-            <div>
-              <label className={labelClass}>NPI #</label>
-              <input
-                name="medicalId"
-                value={form.medicalId}
-                onChange={handleChange}
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="NPI #"
+              required={false}
+              name="medicalId"
+              value={form.medicalId}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
-          {/* INSTITUTION + DEPARTMENT */}
           {(showField("institution") || showField("department")) && (
             <div className="grid md:grid-cols-2 gap-4">
               {showField("institution") && (
-                <div>
-                  <label className={labelClass}>Institution *</label>
-                  <input
-                    name="institution"
-                    value={form.institution}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="Institution"
+                  required
+                  name="institution"
+                  value={form.institution}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
               {showField("department") && (
-                <div>
-                  <label className={labelClass}>Department *</label>
-                  <input
-                    name="department"
-                    value={form.department}
-                    onChange={handleChange}
-                    required
-                    className={inputClass}
-                  />
-                </div>
+                <FieldInput
+                  label="Department"
+                  required
+                  name="department"
+                  value={form.department}
+                  onChange={handleChange}
+                  inputClass={inputClass}
+                />
               )}
             </div>
           )}
 
-          {/* PHONE */}
           {showField("phone") && (
-            <div>
-              <label className={labelClass}>Phone Number *</label>
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="Phone Number"
+              required
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
-          {/* PGY */}
           {showField("pgyLevel") && (
-            <div>
-              <label className={labelClass}>PGY Level *</label>
-              <input
-                name="pgyLevel"
-                value={form.pgyLevel}
-                onChange={handleChange}
-                required
-                className={inputClass}
-              />
-            </div>
+            <FieldInput
+              label="PGY Level"
+              required
+              name="pgyLevel"
+              value={form.pgyLevel}
+              onChange={handleChange}
+              inputClass={inputClass}
+            />
           )}
 
-          {/* MEDICAL SCHOOL YEAR */}
           {showField("medicalSchoolYear") && (
             <div>
-              <label className={labelClass}>Medical School Year *</label>
+              <label className={labelRequired}>
+                Medical School Year <span className={requiredStar}>*</span>
+              </label>
               <select
+                required
                 name="medicalSchoolYear"
                 value={form.medicalSchoolYear}
                 onChange={handleChange}
-                required
                 className={inputClass}
               >
                 <option value="">Select year</option>
@@ -447,17 +466,18 @@ export default function RegisterClient() {
             </div>
           )}
 
-          {/* SUBMIT */}
+          {/* SUBMIT BUTTON */}
           <button
             type="submit"
             disabled={loading}
             className="
-            register-submit-btn 
-            w-full py-3 mt-4 rounded-lg font-semibold 
-            shadow-md hover:shadow-lg 
-            active:scale-[0.98]
-            transition-all duration-200
-          "
+              w-full py-3 mt-4 rounded-lg font-semibold 
+              bg-semcmeBlue text-white 
+              shadow-md hover:shadow-lg 
+              hover:bg-white hover:text-semcmeBlue hover:border-semcmeBlue border-2 
+              active:scale-[0.98]
+              transition-all duration-200
+            "
           >
             {loading ? "Registering..." : "Register"}
           </button>
@@ -474,5 +494,34 @@ export default function RegisterClient() {
         </p>
       </div>
     </main>
+  );
+}
+
+/* ============================================================
+   SMALL REUSABLE FIELD COMPONENT
+   ============================================================ */
+function FieldInput({
+  label,
+  required = true,
+  name,
+  value,
+  type = "text",
+  onChange,
+  inputClass,
+}: any) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-gray-700 mb-1">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        required={required}
+        name={name}
+        value={value}
+        type={type}
+        onChange={onChange}
+        className={inputClass}
+      />
+    </div>
   );
 }
