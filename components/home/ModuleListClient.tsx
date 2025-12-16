@@ -7,12 +7,12 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
 
-// Color map for skill-level dots
-const dotColor: Record<string, string> = {
-  all: "#3B82F6", // Blue
-  novice: "#FACC15", // Yellow
-  intermediate: "#22C55E", // Green
-  advanced: "#EF4444", // Red
+// Background colors for entire card based on skill level
+const cardBgColor: Record<string, string> = {
+  all: "bg-blue-50",
+  novice: "bg-yellow-50",
+  intermediate: "bg-green-50",
+  advanced: "bg-red-50",
 };
 
 export default function ModuleListClient({ modules }: { modules: any[] }) {
@@ -39,14 +39,15 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
-        <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
-            <div className="relative w-[170px] h-[45px]">
+        {/* LOGO */}
+        <Link href="/" className="flex items-center logo-container">
+          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 logo-container">
+            <div className="relative w-[170px] h-[45px] logo-container">
               <Image
                 src="/logos/semcme_logo.jpg"
                 alt="SEMCME Logo"
                 fill
-                className="object-contain rounded-md"
+                className="object-contain rounded-md logo-container"
                 priority
               />
             </div>
@@ -54,9 +55,9 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </Link>
 
         {/* SEARCH BAR */}
-        <div className="w-[90%] max-w-md sm:w-auto">
+        <div className="search-bar w-[90%] max-w-md sm:w-auto">
           <div className="relative">
-            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
+            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 search-bar">
               <Search className="w-4 h-4 text-semcmeBlue" />
 
               <input
@@ -68,7 +69,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 onFocus={() => setIsOpen(true)}
                 onBlur={() => setTimeout(() => setIsOpen(false), 150)}
                 placeholder="Search modules..."
-                className="flex-1 bg-transparent outline-none text-sm text-gray-800"
+                className="search-input flex-1 bg-transparent text-sm text-gray-800"
               />
 
               <button
@@ -84,7 +85,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </button>
             </div>
 
-            {/* DROPDOWN */}
             {isOpen && (
               <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
                 {filtered.length === 0 ? (
@@ -150,63 +150,51 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="
-              grid 
-              grid-cols-1 
-              sm:grid-cols-2 
-              xl:grid-cols-3 
-              gap-4 
-              w-full
-            "
+            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full"
           >
-            {modules.map((mod, i) => (
-              <motion.div
-                id={mod.id}
-                key={mod.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
-                className="
-                  relative
-                  bg-white shadow-sm rounded-md border border-gray-200 
-                  px-3 py-7 flex flex-col 
-                  text-start hover:shadow-lg hover:-translate-y-1 
-                  transition-all duration-300 
-                  h-90
-                "
-              >
-                {/* SKILL DOT */}
-                <div
-                  className="absolute top-3 left-3 rounded-full"
-                  style={{
-                    height: "10px",
-                    width: "10px",
-                    backgroundColor:
-                      dotColor[(mod.skill_level || "").toLowerCase()] ??
-                      "#9CA3AF",
+            {modules.map((mod, i) => {
+              const bgClass =
+                cardBgColor[(mod.skill_level || "").toLowerCase()] ||
+                "bg-white";
+
+              return (
+                <motion.div
+                  id={mod.id}
+                  key={mod.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    transition: { delay: i * 0.05 },
                   }}
-                ></div>
+                  className={`
+                    ${bgClass}
+                    shadow-sm rounded-md border border-gray-200 
+                    px-3 py-7 flex flex-col 
+                    text-start hover:shadow-lg hover:-translate-y-1 
+                    transition-all duration-300 
+                    h-90
+                  `}
+                >
+                  <h3 className="text-lg font-bold text-semcmeBlue mt-1 px-5">
+                    {mod.title}
+                  </h3>
 
-                {/* TITLE */}
-                <h3 className="text-lg font-bold text-semcmeBlue mt-1 px-5">
-                  {mod.title}
-                </h3>
+                  <p className="text-gray-600 text-sm grow flex items-center leading-relaxed px-5">
+                    {mod.description}
+                  </p>
 
-                {/* DESCRIPTION */}
-                <p className="text-gray-600 text-sm grow flex items-center leading-relaxed px-5">
-                  {mod.description}
-                </p>
-
-                {/* BUTTON — FIXED ALIGNMENT */}
-                <Link href={`/login?module=${mod.id}`}>
-                  <Button
-                    variant="outline"
-                    className="module-signin-btn ml-5 px-3 py-1 mb-2 text-xs"
-                  >
-                    View Module
-                  </Button>
-                </Link>
-              </motion.div>
-            ))}
+                  <Link href={`/login?module=${mod.id}`}>
+                    <Button
+                      variant="outline"
+                      className="module-signin-btn ml-5 px-3 py-1 mb-2 text-xs"
+                    >
+                      View Module
+                    </Button>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>

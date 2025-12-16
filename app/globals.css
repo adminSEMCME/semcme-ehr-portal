@@ -138,7 +138,7 @@
     font-family: "Lato", sans-serif !important;
     transition: background-color 0.25s ease, color 0.25s ease,
       border-color 0.25s ease, transform 0.25s ease;
-    outline: none; /* ← FIXED */
+    outline: none;
   }
 
   body {
@@ -156,36 +156,17 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Universal Placeholder Styling */
   input::placeholder,
   textarea::placeholder {
     color: #4b5563 !important;
   }
 
-  /* Cursor behavior */
   button,
   [role="button"],
   a,
   input[type="submit"],
   input[type="button"] {
     cursor: pointer !important;
-  }
-
-  /* NEW FORM FIX: Ensure default input borders behave correctly */
-  input,
-  select,
-  textarea {
-    border: 1px solid var(--input) !important;
-    background-color: #f9fafb; /* Tailwind gray-50 */
-  }
-
-  input:focus,
-  select:focus,
-  textarea:focus {
-    border-color: #02519c !important;
-    border-width: 2px !important;
-    outline: none !important;
-    box-shadow: none !important;
   }
 
   .back-btn {
@@ -211,7 +192,6 @@
     color: #02519c !important;
   }
 
-  /* Auth / Form Buttons */
   .signin-submit-btn,
   .choose-cme-btn,
   .register-submit-btn,
@@ -220,6 +200,7 @@
     color: #fff !important;
     border: 2px solid #02519c !important;
   }
+
   .signin-submit-btn:hover,
   .choose-cme-btn:hover,
   .register-submit-btn:hover,
@@ -234,23 +215,23 @@
     color: #02519c !important;
     border: 2px solid #d3e3f5 !important;
   }
+
   .choose-noncme-btn:hover {
     background-color: #e9f3ff !important;
     border-color: #b7d4f8 !important;
   }
 
-  /* Glow highlight */
   .glow-highlight {
     box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.9);
     transform: scale(1.02);
     border-radius: 20px;
   }
 
-  /* Landing Page Buttons */
   .landing-signin-btn {
     background-color: #fff !important;
     color: #02519c !important;
   }
+
   .landing-signin-btn:hover {
     background-color: #e9f3ff !important;
     border-color: #013e7a !important;
@@ -274,6 +255,7 @@
     border: 1.5px solid #02519c !important;
     border-radius: 8px;
   }
+
   .module-signin-btn:hover {
     background-color: #e9f3ff !important;
     transform: scale(1.04);
@@ -287,4 +269,50 @@
     white-space: normal !important;
     word-wrap: break-word !important;
   }
+}
+
+/* ============================================================
+   SEARCH BAR FIX — REMOVE BLUE OUTLINE + INTERNAL BORDER
+   ============================================================ */
+.search-bar input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.search-bar input:focus {
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* REMOVE BLACK BORDER AROUND LOGO + SEARCH CONTAINER */
+.search-bar,
+.search-bar *,
+.logo-container,
+.logo-container * {
+  outline: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+a:focus,
+a:focus-visible,
+a:active,
+a:visited,
+a:hover {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+.logo-container,
+.logo-container * {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-focus-ring-color: transparent !important;
 }
