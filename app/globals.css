@@ -135,11 +135,10 @@
    ============================================================ */
 @layer base {
   * {
-    /* Removed border-border because it forced gray borders on ALL elements */
-    @apply outline-ring/50;
     font-family: "Lato", sans-serif !important;
     transition: background-color 0.25s ease, color 0.25s ease,
       border-color 0.25s ease, transform 0.25s ease;
+    outline: none; /* ← FIXED */
   }
 
   body {

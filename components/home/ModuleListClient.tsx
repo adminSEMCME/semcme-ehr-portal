@@ -168,13 +168,13 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 className="
                   relative
                   bg-white shadow-sm rounded-md border border-gray-200 
-                  px-3 py-5 flex flex-col 
-                  text-center hover:shadow-lg hover:-translate-y-1 
+                  px-3 py-7 flex flex-col 
+                  text-start hover:shadow-lg hover:-translate-y-1 
                   transition-all duration-300 
                   h-90
                 "
               >
-                {/* SKILL DOT (ABSOLUTELY POSITIONED) */}
+                {/* SKILL DOT */}
                 <div
                   className="absolute top-3 left-3 rounded-full"
                   style={{
@@ -192,15 +192,15 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 </h3>
 
                 {/* DESCRIPTION */}
-                <p className="text-gray-600 text-sm grow flex items-center justify-center leading-relaxed px-5">
+                <p className="text-gray-600 text-sm grow flex items-center leading-relaxed px-5">
                   {mod.description}
                 </p>
 
-                {/* BUTTON */}
+                {/* BUTTON — FIXED ALIGNMENT */}
                 <Link href={`/login?module=${mod.id}`}>
                   <Button
                     variant="outline"
-                    className="module-signin-btn mx-auto px-3 py-1 mb-2 text-xs"
+                    className="module-signin-btn ml-5 px-3 py-1 mb-2 text-xs"
                   >
                     View Module
                   </Button>

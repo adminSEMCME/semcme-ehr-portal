@@ -5,14 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 
 interface Module {
   id: string;
@@ -44,9 +37,7 @@ export default function DashboardPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
 
-  /* ======================================================
-      LOAD DATA
-  ====================================================== */
+  /* LOAD DATA */
   useEffect(() => {
     async function loadData() {
       try {
@@ -86,29 +77,9 @@ export default function DashboardPage() {
     }
 
     loadData();
-
-    const handleFocus = () => loadData();
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
   }, [router]);
 
-  /* ======================================================
-      SCROLL TO TARGET MODULE AFTER LOGIN
-  ====================================================== */
-  useEffect(() => {
-    if (!loading && targetModule) {
-      const el = document.getElementById(targetModule);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        el.classList.add("glow-highlight");
-        setTimeout(() => el.classList.remove("glow-highlight"), 2000);
-      }
-    }
-  }, [loading, targetModule]);
-
-  /* ======================================================
-      HELPERS
-  ====================================================== */
+  /* HELPERS */
   const getStatus = (id: string) =>
     progress.find((p) => p.module_id === id)?.status || "not_started";
 
@@ -138,9 +109,7 @@ export default function DashboardPage() {
     }
   };
 
-  /* ======================================================
-      LOGOUT HANDLER
-  ====================================================== */
+  /* LOGOUT */
   const handleLogout = async () => {
     await fetch("/api/logout?reason=manual_logout", { method: "POST" });
     router.push("/");
@@ -152,13 +121,10 @@ export default function DashboardPage() {
     );
   }
 
-  /* ======================================================
-      RENDER
-  ====================================================== */
   return (
-    <main className="min-h-screen font-sans pb-20 bg-transparent flex flex-col items-center">
+    <main className="min-h-screen pb-20 bg-transparent flex flex-col items-center font-sans">
       {/* HEADER */}
-      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+      <div className="w-full flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center">
           <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
@@ -173,7 +139,6 @@ export default function DashboardPage() {
           </div>
         </Link>
 
-        {/* 🔴 LOGOUT BUTTON (same as admin dashboard) */}
         <button
           onClick={handleLogout}
           className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold"
@@ -182,28 +147,27 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* TITLE */}
+      {/* PAGE TITLE */}
       <h1 className="text-4xl font-bold text-white my-10 text-center">
         EHR Learning Dashboard
       </h1>
 
-      {/* MODULE LIST */}
-      <Accordion
-        type="multiple"
-        className="w-full max-w-5xl space-y-6 px-4 md:px-0"
-        defaultValue={modules.map((m) => m.id)}
+      {/* GRID OF MODULE CARDS */}
+      <div
+        className="
+          w-full max-w-7xl 
+          grid 
+          grid-cols-1 
+          md:grid-cols-2 
+          xl:grid-cols-3 
+          gap-6 
+          px-4
+        "
       >
         {modules.map((module) => {
           const status = getStatus(module.id);
           const progressPercent = getProgress(module.id);
           const cert = getCertificate(module.id);
-
-          const statusColor =
-            status === "completed"
-              ? "bg-green-100 text-green-700 border-green-400"
-              : status === "in_progress"
-              ? "bg-blue-100 text-blue-700 border-blue-400"
-              : "bg-gray-100 text-gray-700 border-gray-300";
 
           const thumbnailPath = module.url.replace(
             "/story.html",
@@ -215,98 +179,114 @@ export default function DashboardPage() {
             : [];
 
           return (
-            <AccordionItem
-              id={module.id}
+            <div
               key={module.id}
-              value={module.id}
-              className="rounded-lg overflow-hidden shadow-lg border border-gray-200 bg-white"
+              className="
+                bg-white 
+                rounded-lg 
+                overflow-hidden 
+                shadow-lg 
+                border border-gray-200
+                flex flex-col
+              "
             >
-              <AccordionTrigger className="bg-semcmeBlue px-6 py-4 text-white text-lg font-semibold hover:bg-semcmeBlue">
-                <div className="flex w-full items-center justify-between gap-6">
-                  <span className="flex-1 text-left">{module.title}</span>
+              {/* HEADER BAR */}
+              <div className="bg-semcmeBlue text-white px-4 py-3">
+                <div className="text-center">
+                  <h2 className="font-semibold leading-tight text-[clamp(1rem,2vw,1.25rem)]">
+                    {module.title}
+                  </h2>
+                </div>
 
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-white">
-                      {progressPercent}%
-                    </span>
+                {/* PROGRESS ROW */}
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-sm">{progressPercent}%</span>
 
-                    <div className="w-40 bg-white/30 h-2 rounded-full overflow-hidden">
-                      <div
-                        className={`h-2 rounded-full transition-all duration-500 ${
-                          status === "completed" ? "bg-green-400" : "bg-white"
-                        }`}
-                        style={{ width: `${progressPercent}%` }}
-                      ></div>
-                    </div>
-
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full border ${statusColor}`}
-                    >
-                      {status.replace("_", " ")}
-                    </span>
+                  <div className="flex-1 bg-white/30 h-2 rounded-full overflow-hidden">
+                    <div
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        status === "completed" ? "bg-green-400" : "bg-white"
+                      }`}
+                      style={{ width: `${progressPercent}%` }}
+                    ></div>
                   </div>
+
+                  <span
+                    className={`
+                      text-xs px-3 py-1 rounded-full border 
+                      ${
+                        status === "completed"
+                          ? "bg-green-100 text-green-700 border-green-400"
+                          : status === "in_progress"
+                          ? "bg-blue-100 text-blue-700 border-blue-400"
+                          : "bg-gray-100 text-gray-700 border-gray-300"
+                      }
+                    `}
+                  >
+                    {status.replace("_", " ")}
+                  </span>
                 </div>
-              </AccordionTrigger>
+              </div>
 
-              <AccordionContent className="bg-white px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div className="w-full md:w-1/2 flex justify-center">
-                  <img
-                    src={thumbnailPath}
-                    alt={`${module.title} thumbnail`}
-                    className="w-[90%] h-auto rounded-lg border shadow-md object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "/images/default-thumbnail.jpg";
-                    }}
-                  />
-                </div>
+              {/* IMAGE */}
+              <img
+                src={thumbnailPath}
+                alt={`${module.title} thumbnail`}
+                className="w-full h-auto object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "/images/default-thumbnail.jpg";
+                }}
+              />
 
-                <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-6">
-                  {objectives.length > 0 ? (
-                    <ul className="text-gray-700 text-base leading-relaxed list-disc pl-5 space-y-2">
-                      {objectives.map((line, idx) => (
-                        <li key={idx}>{line}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="text-gray-700 text-base leading-relaxed">
-                      No objectives available for this module.
-                    </p>
-                  )}
+              {/* CONTENT SECTION (UPDATED WITH mt-auto FIX) */}
+              <div className="p-6 flex flex-col gap-4 grow">
+                {objectives.length > 0 ? (
+                  <ul className="text-gray-700 text-base leading-relaxed list-disc pl-5 space-y-2">
+                    {objectives.map((line, idx) => (
+                      <li key={idx}>{line}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-gray-700 text-base leading-relaxed">
+                    No objectives available for this module.
+                  </p>
+                )}
 
-                  <div className="flex gap-4">
-                    <Button
-                      onClick={() => handleStart(module)}
-                      className="module-start-btn px-6 py-2 rounded-sm font-semibold transition"
+                {/* BUTTONS STICK TO BOTTOM */}
+                <div className="mt-auto flex flex-col gap-2">
+                  <Button
+                    onClick={() => handleStart(module)}
+                    className="module-start-btn px-6 py-2 rounded-sm font-semibold self-start"
+                  >
+                    {status === "not_started"
+                      ? "Start Module"
+                      : status === "completed"
+                      ? "Review Module"
+                      : "Continue Module"}
+                  </Button>
+
+                  {cert && status === "completed" && (
+                    <a
+                      href={cert.cert_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="self-start"
                     >
-                      {status === "not_started"
-                        ? "Start Module"
-                        : status === "completed"
-                        ? "Review Module"
-                        : "Continue Module"}
-                    </Button>
-
-                    {cert && status === "completed" && (
-                      <a
-                        href={cert.cert_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Button
+                        variant="outline"
+                        className="border-green-500 text-green-700 hover:bg-green-50 rounded-sm px-6 py-2"
                       >
-                        <Button
-                          variant="outline"
-                          className="border-green-500 text-green-700 hover:bg-green-50 rounded-sm px-6 py-2"
-                        >
-                          🎓 Download Certificate
-                        </Button>
-                      </a>
-                    )}
-                  </div>
+                        🎓 Download Certificate
+                      </Button>
+                    </a>
+                  )}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
+              </div>
+            </div>
           );
         })}
-      </Accordion>
+      </div>
     </main>
   );
 }
