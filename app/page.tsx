@@ -23,7 +23,7 @@ export default async function HomePage() {
 
   const { data: modules } = await supabase
     .from("modules")
-    .select("id, title, description, url, order_index")
+    .select("id, title, description, url, order_index, skill_level")
     .order("order_index", { ascending: true });
 
   return <ModuleListClient modules={modules || []} />;

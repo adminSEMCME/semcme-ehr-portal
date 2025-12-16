@@ -7,6 +7,14 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
 
+// Color map for skill-level dots
+const dotColor: Record<string, string> = {
+  all: "#3B82F6", // Blue
+  novice: "#FACC15", // Yellow
+  intermediate: "#22C55E", // Green
+  advanced: "#EF4444", // Red
+};
+
 export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -18,8 +26,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const handleSelect = (id: string, title: string) => {
     setSearchTerm(title);
     setIsOpen(false);
+
     const el = document.getElementById(id);
     if (!el) return;
+
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     el.classList.add("glow-highlight");
     setTimeout(() => el.classList.remove("glow-highlight"), 2000);
@@ -43,11 +53,12 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </Link>
 
-        {/* SEARCH */}
+        {/* SEARCH BAR */}
         <div className="w-[90%] max-w-md sm:w-auto">
           <div className="relative">
             <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
               <Search className="w-4 h-4 text-semcmeBlue" />
+
               <input
                 value={searchTerm}
                 onChange={(e) => {
@@ -59,6 +70,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 placeholder="Search modules..."
                 className="flex-1 bg-transparent outline-none text-sm text-gray-800"
               />
+
               <button
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
@@ -72,6 +84,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </button>
             </div>
 
+            {/* DROPDOWN */}
             {isOpen && (
               <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
                 {filtered.length === 0 ? (
@@ -96,9 +109,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
       </div>
 
-      {/* HERO */}
+      {/* HERO SECTION */}
       <section className="w-full text-white py-15 text-center bg-gray-400">
         <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
+
         <p className="max-w-2xl mx-auto mb-8 text-md">
           Explore modules designed to improve your knowledge
           <br />
@@ -119,7 +133,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </Link>
         </div>
 
-        {/* NEW NOTE UNDER BUTTONS */}
         <p className="mt-10 max-w-2xl mx-auto text-sm font-bold text-white px-4">
           You only need to register once. After registering, please use the Sign
           In button above to access all modules, or use the View Module buttons
@@ -153,20 +166,33 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0, transition: { delay: i * 0.05 } }}
                 className="
+                  relative
                   bg-white shadow-sm rounded-md border border-gray-200 
-                  p-2 flex flex-col 
+                  px-3 py-5 flex flex-col 
                   text-center hover:shadow-lg hover:-translate-y-1 
                   transition-all duration-300 
-                  h-60
+                  h-90
                 "
               >
+                {/* SKILL DOT (ABSOLUTELY POSITIONED) */}
+                <div
+                  className="absolute top-3 left-3 rounded-full"
+                  style={{
+                    height: "10px",
+                    width: "10px",
+                    backgroundColor:
+                      dotColor[(mod.skill_level || "").toLowerCase()] ??
+                      "#9CA3AF",
+                  }}
+                ></div>
+
                 {/* TITLE */}
-                <h3 className="text-lg font-bold text-semcmeBlue mt-2">
+                <h3 className="text-lg font-bold text-semcmeBlue mt-1 px-5">
                   {mod.title}
                 </h3>
 
-                {/* CENTERED DESCRIPTION */}
-                <p className="text-gray-600 text-sm grow flex items-center justify-center leading-relaxed px-2">
+                {/* DESCRIPTION */}
+                <p className="text-gray-600 text-sm grow flex items-center justify-center leading-relaxed px-5">
                   {mod.description}
                 </p>
 
