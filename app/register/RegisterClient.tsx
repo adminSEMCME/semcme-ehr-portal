@@ -41,9 +41,7 @@ export default function RegisterClient() {
       "password",
       "firstName",
       "lastName",
-      "degree",
       "title",
-      "medicalId",
       "institution",
       "department",
       "phone",
@@ -363,28 +361,53 @@ export default function RegisterClient() {
 
           {/* DEGREE + TITLE */}
           {(showField("degree") || showField("title")) && (
-            <div className="grid md:grid-cols-2 gap-4">
-              {showField("degree") && (
-                <FieldInput
-                  label="Degree"
-                  required
-                  name="degree"
-                  value={form.degree}
-                  onChange={handleChange}
-                  inputClass={inputClass}
-                />
+            <>
+              {/* If both exist → 2-column grid */}
+              {showField("degree") && showField("title") ? (
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FieldInput
+                    label="Degree"
+                    required
+                    name="degree"
+                    value={form.degree}
+                    onChange={handleChange}
+                    inputClass={inputClass}
+                  />
+                  <FieldInput
+                    label="Title"
+                    required
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    inputClass={inputClass}
+                  />
+                </div>
+              ) : (
+                /* If only one exists → normal single-row field */
+                <>
+                  {showField("degree") && (
+                    <FieldInput
+                      label="Degree"
+                      required
+                      name="degree"
+                      value={form.degree}
+                      onChange={handleChange}
+                      inputClass={inputClass}
+                    />
+                  )}
+                  {showField("title") && (
+                    <FieldInput
+                      label="Title"
+                      required
+                      name="title"
+                      value={form.title}
+                      onChange={handleChange}
+                      inputClass={inputClass}
+                    />
+                  )}
+                </>
               )}
-              {showField("title") && (
-                <FieldInput
-                  label="Title"
-                  required
-                  name="title"
-                  value={form.title}
-                  onChange={handleChange}
-                  inputClass={inputClass}
-                />
-              )}
-            </div>
+            </>
           )}
 
           {showField("medicalId") && (
@@ -462,6 +485,10 @@ export default function RegisterClient() {
                 <option value="M2">M2</option>
                 <option value="M3">M3</option>
                 <option value="M4">M4</option>
+                <option value="M5">M5</option>
+                <option value="M6">M6</option>
+                <option value="M7">M7</option>
+                <option value="M8">M8</option>
               </select>
             </div>
           )}
