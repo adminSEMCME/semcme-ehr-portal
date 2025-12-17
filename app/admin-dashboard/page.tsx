@@ -21,13 +21,11 @@ function exportCSV(filename: string, rows: Record<string, any>[]) {
   };
 
   const headers = Object.keys(rows[0]).join(",");
-
   const data = rows
     .map((row) => Object.values(row).map(escape).join(","))
     .join("\n");
 
   const csvContent = "\uFEFF" + headers + "\n" + data;
-
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
@@ -35,13 +33,10 @@ function exportCSV(filename: string, rows: Record<string, any>[]) {
   a.href = url;
   a.download = filename;
   a.click();
-
   URL.revokeObjectURL(url);
 }
 
-/* --------------------------------------------------- */
-/* ---------------- ORIGINAL TYPES ------------------- */
-/* --------------------------------------------------- */
+/* ---------------- ORIGINAL TYPES ---------------- */
 
 type UserModuleRow = {
   user_id: string;
@@ -91,7 +86,6 @@ type ModuleSummary = {
   completions: number;
   avgProgress: number;
   order_index: number | null;
-
   usersCompleted: number;
   usersInProgress: number;
   usersNotStarted: number;
@@ -104,9 +98,7 @@ type InstitutionSummary = {
   perModule: Record<string, number>;
 };
 
-/* --------------------------------------------------- */
-/* ---------------- COMPONENT START ------------------- */
-/* --------------------------------------------------- */
+/* ---------------- COMPONENT START ---------------- */
 
 export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
@@ -148,7 +140,7 @@ export default function AdminDashboardPage() {
     load();
   }, []);
 
-  /* ------------------- DATA PROCESSING ------------------- */
+  /* ------------------- PROCESS ANALYTICS ------------------- */
 
   const {
     users,
@@ -174,7 +166,6 @@ export default function AdminDashboardPage() {
         completions: 0,
         avgProgress: 0,
         order_index: mod.order_index ?? 0,
-
         usersCompleted: 0,
         usersInProgress: 0,
         usersNotStarted: 0,
@@ -261,7 +252,6 @@ export default function AdminDashboardPage() {
     }
 
     const kpiUsers = usersMap.size;
-
     const kpiCompletions = Array.from(usersMap.values()).reduce(
       (sum, u) => sum + u.completedCount,
       0
@@ -331,9 +321,7 @@ export default function AdminDashboardPage() {
     return list;
   }, [users, search, filterInstitution, filterModuleId]);
 
-  /* --------------------------------------------------- */
-  /* -------------------- LOADING ---------------------- */
-  /* --------------------------------------------------- */
+  /* ------------------- LOADING ------------------- */
 
   if (loading)
     return (
@@ -343,9 +331,7 @@ export default function AdminDashboardPage() {
       </div>
     );
 
-  /* --------------------------------------------------- */
-  /* ------------------ EXPORT BUTTONS ----------------- */
-  /* --------------------------------------------------- */
+  /* ------------------- EXPORT BUTTONS ------------------- */
 
   const exportUsers = () => {
     const rows = filteredUsers.map((u) => ({
@@ -377,7 +363,6 @@ export default function AdminDashboardPage() {
 
   const exportInstitutions = () => {
     const rows: any[] = [];
-
     for (const inst of institutions) {
       for (const moduleId of Object.keys(inst.perModule)) {
         rows.push({
@@ -391,13 +376,10 @@ export default function AdminDashboardPage() {
         });
       }
     }
-
     exportCSV("institutions.csv", rows);
   };
 
-  /* --------------------------------------------------- */
-  /* --------------------- RENDER ---------------------- */
-  /* --------------------------------------------------- */
+  /* ------------------- RENDER ------------------- */
 
   return (
     <div className="space-y-8">
@@ -405,6 +387,7 @@ export default function AdminDashboardPage() {
         Admin Dashboard
       </h1>
 
+      {/* KPI CARDS */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <KpiCard label="Total Users" value={kpis.totalUsers} />
         <KpiCard
@@ -414,6 +397,7 @@ export default function AdminDashboardPage() {
         <KpiCard label="Avg Progress %" value={`${kpis.avgProgress}%`} />
       </section>
 
+      {/* TABS */}
       <div className="flex gap-2 justify-center">
         {["users", "modules", "institutions"].map((t) => (
           <button
@@ -430,14 +414,14 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* ---------------- USERS TAB ---------------- */}
+      {/* USERS TAB */}
       {tab === "users" && (
         <>
-          {/* FILTER BAR — EQUAL WIDTH + RESPONSIVE STACK */}
+          {/* FILTER BAR */}
           <section className="flex flex-col md:flex-row items-center justify-center gap-4 mb-3 w-full max-w-5xl mx-auto">
             <input
               placeholder="Search by User/Email/Institution…"
-              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -449,7 +433,7 @@ export default function AdminDashboardPage() {
                   e.target.value === "all" ? "all" : e.target.value
                 )
               }
-              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
             >
               <option value="all">All modules</option>
               {moduleOptions.map((m) => (
@@ -466,7 +450,7 @@ export default function AdminDashboardPage() {
                   e.target.value === "all" ? "all" : e.target.value
                 )
               }
-              className="flex-1 px-3 py-2 rounded-md border border-gray-400 w-full"
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
             >
               <option value="all">All institutions</option>
               {institutionOptions.map((i) => (
@@ -477,7 +461,7 @@ export default function AdminDashboardPage() {
             </select>
           </section>
 
-          {/* EXPORT BUTTON — RIGHT ABOVE TABLE */}
+          {/* EXPORT BUTTON */}
           <div className="flex justify-end mb-2 pr-1">
             <button
               onClick={exportUsers}
@@ -491,8 +475,8 @@ export default function AdminDashboardPage() {
             Click a user row to expand their full module history.
           </p>
 
-          {/* TABLE */}
-          <div className="overflow-x-auto border rounded-xl shadow-sm bg-white">
+          {/* TABLE WRAPPER (BORDER FIXED HERE) */}
+          <div className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
             <table className="min-w-full text-sm">
               <thead className="bg-semcmeBlue text-white">
                 <tr>
@@ -512,7 +496,7 @@ export default function AdminDashboardPage() {
                           selectedUserId === u.user_id ? null : u.user_id
                         )
                       }
-                      className="border-b hover:bg-gray-100 cursor-pointer"
+                      className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{u.name}</td>
                       <td className="p-3">{u.email}</td>
@@ -522,7 +506,7 @@ export default function AdminDashboardPage() {
                     </tr>
 
                     {selectedUserId === u.user_id && (
-                      <tr className="bg-gray-50 border-b">
+                      <tr className="bg-gray-50 border-b border-gray-200">
                         <td colSpan={5} className="p-4">
                           <UserDetailPanel user={u} allModules={allModules} />
                         </td>
@@ -536,7 +520,7 @@ export default function AdminDashboardPage() {
         </>
       )}
 
-      {/* ---------------- MODULES TAB ---------------- */}
+      {/* MODULES TAB */}
       {tab === "modules" && (
         <>
           <div className="flex justify-end mb-2">
@@ -548,7 +532,7 @@ export default function AdminDashboardPage() {
             </button>
           </div>
 
-          <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
+          <section className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
             <table className="min-w-full text-sm">
               <thead className="bg-semcmeBlue text-white">
                 <tr>
@@ -567,7 +551,7 @@ export default function AdminDashboardPage() {
                           selectedModuleId === m.module_id ? null : m.module_id
                         )
                       }
-                      className="border-b hover:bg-gray-100 cursor-pointer"
+                      className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{m.title}</td>
                       <td className="p-3">{m.attempts}</td>
@@ -575,7 +559,7 @@ export default function AdminDashboardPage() {
                     </tr>
 
                     {selectedModuleId === m.module_id && (
-                      <tr className="bg-gray-50 border-b">
+                      <tr className="bg-gray-50 border-b border-gray-200">
                         <td colSpan={3} className="p-4">
                           <ModuleDetailPanel module={m} />
                         </td>
@@ -589,7 +573,7 @@ export default function AdminDashboardPage() {
         </>
       )}
 
-      {/* ---------------- INSTITUTIONS TAB ---------------- */}
+      {/* INSTITUTIONS TAB */}
       {tab === "institutions" && (
         <>
           <div className="flex justify-end mb-2">
@@ -601,7 +585,7 @@ export default function AdminDashboardPage() {
             </button>
           </div>
 
-          <section className="overflow-x-auto border rounded-xl shadow-sm bg-white">
+          <section className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
             <table className="min-w-full text-sm">
               <thead className="bg-semcmeBlue text-white">
                 <tr>
@@ -622,7 +606,7 @@ export default function AdminDashboardPage() {
                             : inst.institution
                         )
                       }
-                      className="border-b hover:bg-gray-100 cursor-pointer"
+                      className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{inst.institution}</td>
                       <td className="p-3">{inst.userCount}</td>
@@ -630,7 +614,7 @@ export default function AdminDashboardPage() {
                     </tr>
 
                     {selectedInstitution === inst.institution && (
-                      <tr className="bg-gray-50 border-b">
+                      <tr className="bg-gray-50 border-b border-gray-200">
                         <td colSpan={3} className="p-4">
                           <InstitutionDetailPanel
                             institution={inst}
@@ -650,13 +634,11 @@ export default function AdminDashboardPage() {
   );
 }
 
-/* --------------------------------------------------- */
-/* ---------------- SUB-COMPONENTS ------------------- */
-/* --------------------------------------------------- */
+/* ---------------- SUB-COMPONENTS ---------------- */
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-4 text-center">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-300 p-4 text-center">
       <div className="text-xs uppercase text-gray-500 mb-1">{label}</div>
       <div className="text-2xl font-bold text-semcmeBlue">{value}</div>
     </div>
@@ -767,11 +749,9 @@ function ModuleDetailPanel({ module }: { module: ModuleSummary }) {
       <p>
         <strong>Attempts:</strong> {module.attempts}
       </p>
-
       <p>
         <strong>Completions:</strong> {module.completions}
       </p>
-
       <p>
         <strong>Average Progress:</strong> {module.avgProgress}%
       </p>
