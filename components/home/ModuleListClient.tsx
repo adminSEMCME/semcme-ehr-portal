@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// Background colors for entire card based on skill level
+// Background colors for module cards
 const cardBgColor: Record<string, string> = {
   all: "bg-blue-50",
   novice: "bg-yellow-50",
@@ -19,6 +20,26 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  // 🔥 HERO CAROUSEL STATE
+  const images = [
+    "/images/hero1.png",
+    "/images/hero2.png",
+    "/images/hero3.png",
+  ];
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const nextSlide = () => setIndex((prev) => (prev + 1) % images.length);
+  const prevSlide = () =>
+    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+
+  // Auto-advance (pauses on hover)
+  useEffect(() => {
+    if (paused) return;
+    const interval = setInterval(nextSlide, 4500);
+    return () => clearInterval(interval);
+  }, [paused]);
+
   const filtered = modules.filter((m) =>
     m.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -26,10 +47,8 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const handleSelect = (id: string, title: string) => {
     setSearchTerm(title);
     setIsOpen(false);
-
     const el = document.getElementById(id);
     if (!el) return;
-
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     el.classList.add("glow-highlight");
     setTimeout(() => el.classList.remove("glow-highlight"), 2000);
@@ -37,9 +56,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
-      {/* HEADER */}
+      {/* ============================================================
+          HEADER
+      ============================================================ */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
-        {/* LOGO */}
         <Link href="/" className="flex items-center logo-container">
           <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 logo-container">
             <div className="relative w-[170px] h-[45px] logo-container">
@@ -109,38 +129,117 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
       </div>
 
-      {/* HERO SECTION */}
-      <section className="w-full text-white py-15 text-center bg-gray-400">
-        <h1 className="text-5xl font-bold mb-4">EHR Learning Portal</h1>
-
-        <p className="max-w-2xl mx-auto mb-8 text-md">
-          Explore modules designed to improve your knowledge
-          <br />
-          and application of Electronic Health Records.
-        </p>
-
-        <div className="mt-8 flex justify-center gap-8">
-          <Link href="/login">
-            <button className="landing-signin-btn min-w-[200px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
-              Sign In
-            </button>
-          </Link>
-
-          <Link href="/register">
-            <button className="landing-register-btn min-w-[200px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
-              Register
-            </button>
-          </Link>
+      {/* ============================================================
+          HERO SECTION — CAROUSEL (FADE + ARROWS + PAUSE ON HOVER)
+      ============================================================ */}
+      <section
+        className="w-screen h-[500px] relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden bg-transparent m-0 p-0"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {/* IMAGES */}
+        <div className="absolute inset-0">
+          {images.map((img, i) => (
+            <Image
+              key={i}
+              src={img}
+              alt="EHR Hero Image"
+              fill
+              priority
+              className={`
+                object-cover
+                transition-opacity duration-1000 ease-in-out
+                ${i === index ? "opacity-100" : "opacity-0"}
+                scale-[1.06]      /* <—— ZOOM IN TO ELIMINATE EDGES  */
+              `}
+            />
+          ))}
         </div>
 
-        <p className="mt-10 max-w-2xl mx-auto text-sm font-bold text-white px-4">
-          You only need to register once. After registering, please use the Sign
-          In button above to access all modules, or use the View Module buttons
-          below to sign in and be directed to a specific module.
-        </p>
+        {/* DARK OVERLAY */}
+        <div className="absolute inset-0 bg-black/25" />
+
+        {/* LEFT-ALIGNED HERO CONTENT WITH BACKDROP PANEL */}
+        <div className="absolute inset-0 flex flex-col justify-center items-start px-20 ml-10">
+          <div className="bg-semcmeBlue/70 backdrop-blur-md p-8 rounded-xl max-w-xl shadow-xl">
+            <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-lg">
+              EHR Learning Portal
+            </h1>
+
+            <p className="mb-8 text-md text-white drop-shadow-lg leading-relaxed">
+              Explore modules designed to improve your knowledge
+              <br />
+              and application of Electronic Health Records.
+            </p>
+
+            <div className="mt-4 flex gap-6">
+              <Link href="/login">
+                <button className="landing-signin-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+                  Sign In
+                </button>
+              </Link>
+
+              <Link href="/register">
+                <button className="landing-register-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+                  Register
+                </button>
+              </Link>
+            </div>
+
+            <p className="mt-8 text-sm font-semibold text-white drop-shadow-md max-w-md">
+              You only need to register once. After registering, please use the
+              Sign In button above to access all modules, or use the View Module
+              buttons below to sign in and be directed to a specific module.
+            </p>
+          </div>
+        </div>
+
+        {/* CIRCULAR ARROWS */}
+        <button
+          onClick={prevSlide}
+          className="
+            absolute left-8 top-1/2 -translate-y-1/2
+            bg-white/90 hover:bg-white
+            text-semcmeBlue
+            h-12 w-12 rounded-full
+            flex items-center justify-center
+            shadow-lg transition
+          "
+        >
+          <ChevronLeft size={18} strokeWidth={3} />
+        </button>
+
+        <button
+          onClick={nextSlide}
+          className="
+            absolute right-8 top-1/2 -translate-y-1/2
+            bg-white/90 hover:bg-white
+            text-semcmeBlue
+            h-12 w-12 rounded-full
+            flex items-center justify-center
+            shadow-lg transition
+          "
+        >
+          <ChevronRight size={18} strokeWidth={3} />
+        </button>
+
+        {/* DOTS */}
+        <div className="absolute bottom-6 w-full flex justify-center gap-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              className={`h-3 w-3 rounded-full transition-all ${
+                i === index ? "bg-white scale-110" : "bg-white/50"
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
-      {/* MODULE GRID */}
+      {/* ============================================================
+          MODULE GRID
+      ============================================================ */}
       <section className="w-full py-14 px-6">
         <h2 className="text-3xl font-semibold mb-14 text-white text-center">
           Explore Available Modules
