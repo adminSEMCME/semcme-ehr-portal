@@ -64,7 +64,7 @@ export default function LoginClient() {
     <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
+          <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -100,7 +100,7 @@ export default function LoginClient() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="border p-3 rounded-lg w-full"
+            className="border border-gray-300 p-3 rounded-lg w-full"
           />
 
           <input
@@ -110,7 +110,7 @@ export default function LoginClient() {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="border p-3 rounded-lg w-full"
+            className="border border-gray-300 p-3 rounded-lg w-full"
           />
 
           <div className="text-center -mt-2">

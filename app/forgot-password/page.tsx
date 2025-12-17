@@ -20,10 +20,7 @@ export default function ForgotPasswordPage() {
     setErrorMsg(null);
 
     try {
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/reset-password`
-          : undefined;
+      const redirectTo = "https://semcme-ehr-portal.vercel.app/reset-password";
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,
@@ -41,7 +38,7 @@ export default function ForgotPasswordPage() {
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
+          <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -89,7 +86,7 @@ export default function ForgotPasswordPage() {
               placeholder="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="border p-3 rounded-lg w-full"
+              className="border border-gray-300 p-3 rounded-lg w-full"
             />
 
             {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}

@@ -242,7 +242,7 @@ export default function RegisterClient() {
       {/* HEADER */}
       <div className="w-full flex items-center justify-between px-4 py-3">
         <Link href="/" className="flex items-center">
-          <div className="bg-white border border-semcmeBlue rounded-md shadow-sm px-3 py-2">
+          <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
