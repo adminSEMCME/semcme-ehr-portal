@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 // Background colors for module cards
 const cardBgColor: Record<string, string> = {
@@ -20,7 +19,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  // 🔥 HERO CAROUSEL STATE
+  // HERO CAROUSEL STATE
   const images = [
     "/images/hero1.png",
     "/images/hero2.png",
@@ -29,17 +28,23 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const nextSlide = () => setIndex((prev) => (prev + 1) % images.length);
-  const prevSlide = () =>
-    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  // Stable callback to avoid React warnings
+  const nextSlide = useCallback(() => {
+    setIndex((prev) => (prev + 1) % images.length);
+  }, [images.length]);
 
-  // Auto-advance (pauses on hover)
+  const prevSlide = () => {
+    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // Auto-play with pause-on-hover
   useEffect(() => {
     if (paused) return;
     const interval = setInterval(nextSlide, 4500);
     return () => clearInterval(interval);
-  }, [paused]);
+  }, [paused, nextSlide]);
 
+  // Module filtering logic
   const filtered = modules.filter((m) =>
     m.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -47,8 +52,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const handleSelect = (id: string, title: string) => {
     setSearchTerm(title);
     setIsOpen(false);
+
     const el = document.getElementById(id);
     if (!el) return;
+
     el.scrollIntoView({ behavior: "smooth", block: "start" });
     el.classList.add("glow-highlight");
     setTimeout(() => el.classList.remove("glow-highlight"), 2000);
@@ -56,18 +63,16 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
-      {/* ============================================================
-          HEADER
-      ============================================================ */}
-      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+      {/* HEADER */}
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent z-50 relative">
         <Link href="/" className="flex items-center logo-container">
           <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 logo-container">
-            <div className="relative w-[170px] h-[45px] logo-container">
+            <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
                 alt="SEMCME Logo"
                 fill
-                className="object-contain rounded-md logo-container"
+                className="object-contain rounded-md"
                 priority
               />
             </div>
@@ -77,7 +82,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         {/* SEARCH BAR */}
         <div className="search-bar w-[90%] max-w-md sm:w-auto">
           <div className="relative">
-            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 search-bar">
+            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
               <Search className="w-4 h-4 text-semcmeBlue" />
 
               <input
@@ -89,7 +94,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 onFocus={() => setIsOpen(true)}
                 onBlur={() => setTimeout(() => setIsOpen(false), 150)}
                 placeholder="Search modules..."
-                className="search-input flex-1 bg-transparent text-sm text-gray-800"
+                className="flex-1 bg-transparent text-sm text-gray-800"
               />
 
               <button
@@ -106,7 +111,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             </div>
 
             {isOpen && (
-              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm">
+              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
                 {filtered.length === 0 ? (
                   <div className="px-3 py-2 text-gray-500">
                     No matching modules
@@ -129,38 +134,33 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
       </div>
 
-      {/* ============================================================
-          HERO SECTION — CAROUSEL (FADE + ARROWS + PAUSE ON HOVER)
-      ============================================================ */}
+      {/* HERO SECTION */}
       <section
-        className="w-screen h-[500px] relative left-1/2 right-1/2 -translate-x-1/2 overflow-hidden bg-transparent m-0 p-0"
+        className="w-full h-[500px] relative overflow-hidden z-0"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/* IMAGES */}
+        {/* Background Images */}
         <div className="absolute inset-0">
           {images.map((img, i) => (
             <Image
               key={i}
               src={img}
-              alt="EHR Hero Image"
+              alt="Hero background"
               fill
               priority
-              className={`
-                object-cover
-                transition-opacity duration-1000 ease-in-out
-                ${i === index ? "opacity-100" : "opacity-0"}
-                scale-[1.06]      /* <—— ZOOM IN TO ELIMINATE EDGES  */
-              `}
+              className={`absolute inset-0 object-cover object-center transition-opacity duration-1000 ease-in-out ${
+                i === index ? "opacity-100" : "opacity-0"
+              } scale-110`}
             />
           ))}
         </div>
 
-        {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/25" />
+        {/* Optional dark overlay */}
+        <div className="absolute inset-0 bg-black/25 z-0" />
 
-        {/* LEFT-ALIGNED HERO CONTENT WITH BACKDROP PANEL */}
-        <div className="absolute inset-0 flex flex-col justify-center items-start px-20 ml-10">
+        {/* Content Panel */}
+        <div className="absolute inset-0 flex flex-col justify-center items-start px-20 ml-10 z-10">
           <div className="bg-semcmeBlue/70 backdrop-blur-md p-8 rounded-xl max-w-xl shadow-xl">
             <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-lg">
               EHR Learning Portal
@@ -194,37 +194,38 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </div>
 
-        {/* CIRCULAR ARROWS */}
+        {/* Left Arrow */}
         <button
           onClick={prevSlide}
           className="
             absolute left-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white
+            bg-white/90 hover:bg-white z-20
             text-semcmeBlue
-            h-12 w-12 rounded-full
+            h-14 w-14 rounded-full
             flex items-center justify-center
-            shadow-lg transition
+            shadow-lg text-3xl font-bold transition
           "
         >
-          <ChevronLeft size={18} strokeWidth={3} />
+          ‹
         </button>
 
+        {/* Right Arrow */}
         <button
           onClick={nextSlide}
           className="
             absolute right-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white
+            bg-white/90 hover:bg-white z-20
             text-semcmeBlue
-            h-12 w-12 rounded-full
+            h-14 w-14 rounded-full
             flex items-center justify-center
-            shadow-lg transition
+            shadow-lg text-3xl font-bold transition
           "
         >
-          <ChevronRight size={18} strokeWidth={3} />
+          ›
         </button>
 
-        {/* DOTS */}
-        <div className="absolute bottom-6 w-full flex justify-center gap-2">
+        {/* Dots */}
+        <div className="absolute bottom-6 w-full flex justify-center gap-2 z-20">
           {images.map((_, i) => (
             <button
               key={i}
@@ -237,9 +238,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </div>
       </section>
 
-      {/* ============================================================
-          MODULE GRID
-      ============================================================ */}
+      {/* MODULE GRID */}
       <section className="w-full py-14 px-6">
         <h2 className="text-3xl font-semibold mb-14 text-white text-center">
           Explore Available Modules
