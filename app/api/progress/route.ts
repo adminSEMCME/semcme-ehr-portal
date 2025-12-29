@@ -94,6 +94,9 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
+    // NOTE: Certificate email delivery will be enabled once
+    // sending domain DNS records are configured.
+
     // 🧾 Generate and upload certificate only when completed
     if (status === "completed") {
       const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
