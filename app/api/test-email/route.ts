@@ -7,7 +7,7 @@ export async function GET() {
 
     const result = await resend.emails.send({
       from: "SEMCME <onboarding@resend.dev>",
-      to: "shanectr@umich.edu",
+      to: "admin@semcme.org",
       subject: "Resend test - SEMCME",
       html: `
         <h2>✅ Resend is working</h2>
