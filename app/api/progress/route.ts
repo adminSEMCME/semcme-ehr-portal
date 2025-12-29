@@ -5,7 +5,6 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
 
 function getBaseUrlFromRequest(req: Request) {
-  // Most reliable on Vercel + proxies
   const proto =
     req.headers.get("x-forwarded-proto") ||
     (req.url.startsWith("https") ? "https" : "http");
@@ -18,8 +17,6 @@ function getBaseUrlFromRequest(req: Request) {
 
   if (host.startsWith("http")) return host;
   if (host) return `${proto}://${host}`;
-
-  // fallback (local)
   return "http://localhost:3000";
 }
 
@@ -77,7 +74,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
     }
 
-    // ✅ Prevent regressions / re-issuing
+    // ✅ Prevent re-issuing
     const { data: existingProgress } = await supabase
       .from("module_progress")
       .select("status")
@@ -117,9 +114,6 @@ export async function POST(request: Request) {
 
     if (error) throw error;
 
-    // NOTE: Certificate email delivery will be enabled once
-    // sending domain DNS records are configured.
-
     // 🎓 Generate and upload certificate only when completed
     if (status === "completed") {
       const issuedAt = new Date().toISOString();
@@ -133,7 +127,7 @@ export async function POST(request: Request) {
         .single();
       const moduleTitle = moduleData?.title ?? "Module";
 
-      // ✅ Name: profiles first, then auth metadata fallback
+      // Name from profiles (fallback to auth metadata)
       const { data: profile } = await supabase
         .from("profiles")
         .select("first_name, last_name")
@@ -151,9 +145,9 @@ export async function POST(request: Request) {
           ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim()
           : `${metaFirst} ${metaLast}`.trim() || "Participant";
 
-      // Create PDF (Letter size)
+      // Create PDF (Letter)
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([612, 792]); // 8.5x11
+      const page = pdfDoc.addPage([612, 792]);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const italic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
       const boldItalic = await pdfDoc.embedFont(
@@ -179,10 +173,11 @@ export async function POST(request: Request) {
         return { x, w };
       };
 
-      // ✅ More padding inside borders
-      const outer = 28; // was 18
-      const inner = 48; // was 28
+      // ✅ Keep original vertical positions; only add side padding via border insets
+      const outer = 18;
+      const inner = 40; // more breathing room from sides, but not shifting content down
 
+      // Double border
       page.drawRectangle({
         x: outer,
         y: outer,
@@ -201,56 +196,41 @@ export async function POST(request: Request) {
         borderWidth: 1,
       });
 
-      // ✅ Fetch logos using request-derived base URL
+      // Logos via fetch
       const baseUrl = getBaseUrlFromRequest(request);
 
-      const semcmeLogoUrl = `${baseUrl}/cert-assets/semcme-logo.png`;
-      const valueLogoUrl = `${baseUrl}/cert-assets/valuePartnershipsLogo.png`;
-      const bcbsLogoUrl = `${baseUrl}/cert-assets/blueCrossLogo.png`;
+      const semcmeLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/semcme-logo.png`
+      );
+      const valueLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/valuePartnershipsLogo.png`
+      );
+      const bcbsLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/blueCrossLogo.png`
+      );
 
-      const semcmeLogoBytes = await fetchPngBytes(semcmeLogoUrl);
-      const valueLogoBytes = await fetchPngBytes(valueLogoUrl);
-      const bcbsLogoBytes = await fetchPngBytes(bcbsLogoUrl);
-
-      // Top SEMCME logo (left) + header text (right)
+      // ✅ Top SEMCME logo ONLY (no header text)
       if (semcmeLogoBytes) {
         const img = await pdfDoc.embedPng(semcmeLogoBytes);
-        const d = img.scale(0.18); // slightly smaller
+        const d = img.scale(0.34); // bigger so it reads like your reference
         page.drawImage(img, {
-          x: inner + 10,
-          y: height - inner - 55,
+          x: (width - d.width) / 2,
+          y: height - 120,
           width: d.width,
           height: d.height,
         });
       }
 
-      // Header text moved down for more breathing room
-      page.drawText("Southeast Michigan", {
-        x: inner + 150,
-        y: height - inner - 18,
-        size: 18,
-        font,
-        color: rgb(0, 0, 0),
-      });
-
-      page.drawText("Center for Medical Education", {
-        x: inner + 150,
-        y: height - inner - 40,
-        size: 18,
-        font,
-        color: rgb(0, 0, 0),
-      });
-
-      // Title (shifted down a bit)
+      // Title (original-ish placement)
       const t = center(
         "Certificate of Completion",
-        height - 250,
+        height - 200,
         30,
         boldItalic
       );
       page.drawRectangle({
         x: t.x,
-        y: height - 254,
+        y: height - 204,
         width: t.w,
         height: 2,
         color: borderBlue,
@@ -258,16 +238,16 @@ export async function POST(request: Request) {
 
       center(
         "Southeast Michigan Center for Medical Education",
-        height - 330,
+        height - 280,
         20,
         italic
       );
-      center("certifies that", height - 360, 18, font);
+      center("certifies that", height - 310, 18, font);
 
-      const n = center(fullName, height - 425, 34, italic, nameBlue);
+      const n = center(fullName, height - 375, 34, italic, nameBlue);
       page.drawRectangle({
         x: n.x,
-        y: height - 432,
+        y: height - 382,
         width: n.w,
         height: 2,
         color: nameBlue,
@@ -275,27 +255,29 @@ export async function POST(request: Request) {
 
       center(
         "has completed the following educational activity",
-        height - 480,
+        height - 430,
         18,
         font
       );
 
       center(
         "Michigan Electronic Health Record & Health Information Exchange Initiative:",
-        height - 555,
+        height - 505,
         16,
         italic
       );
 
-      center(moduleTitle, height - 595, 24, boldItalic);
+      center(moduleTitle, height - 545, 24, boldItalic);
 
-      // Bottom logos (raised so they’re not close to border)
+      // ✅ Bottom logos bigger
+      const bottomY = 55;
+
       if (valueLogoBytes) {
         const img = await pdfDoc.embedPng(valueLogoBytes);
-        const d = img.scale(0.2);
+        const d = img.scale(0.3); // bigger
         page.drawImage(img, {
           x: inner + 10,
-          y: inner + 18,
+          y: bottomY,
           width: d.width,
           height: d.height,
         });
@@ -303,21 +285,21 @@ export async function POST(request: Request) {
 
       if (bcbsLogoBytes) {
         const img = await pdfDoc.embedPng(bcbsLogoBytes);
-        const d = img.scale(0.2);
+        const d = img.scale(0.3); // bigger
         page.drawImage(img, {
           x: width - inner - d.width - 10,
-          y: inner + 18,
+          y: bottomY,
           width: d.width,
           height: d.height,
         });
       }
 
-      // Footer metadata (raised slightly)
+      // Footer metadata
       center(
         `Issued on ${new Date(
           issuedAt
         ).toLocaleDateString()} • Certificate ID: ${certNumber}`,
-        inner + 6,
+        35,
         10,
         font,
         rgb(0.25, 0.25, 0.25)
