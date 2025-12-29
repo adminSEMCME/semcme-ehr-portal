@@ -3,6 +3,18 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
+import { readFile } from "fs/promises";
+
+async function readPublicFile(relPath: string): Promise<Uint8Array | null> {
+  try {
+    const abs = path.join(process.cwd(), "public", relPath);
+    const buf = await readFile(abs);
+    return new Uint8Array(buf);
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: Request) {
   try {
@@ -25,197 +37,254 @@ export async function POST(request: Request) {
       }
     );
 
-    // ✅ Auth check
+    // 🔐 Auth check
     const { data: userData, error: authError } = await supabase.auth.getUser();
     if (authError || !userData?.user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const user = userData.user;
-    const userId = user.id;
+    const userId = userData.user.id;
 
-    // ✅ Parse request body
-    let body: any = {};
-    try {
-      body = await request.json();
-    } catch {
-      body = {};
-    }
-
-    const {
-      module_id,
-      status = "in_progress",
-      progress_percent = 0,
-      date_completed,
-    } = body;
+    // Parse body
+    const body = (await request.json().catch(() => ({}))) as any;
+    const { module_id, status = "in_progress", progress_percent = 0 } = body;
 
     if (!module_id) {
       return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
     }
 
-    // ✅ Prevent regressions (don’t overwrite completed modules)
-    const { data: existingProgress } = await supabase
+    // Prevent re-issuing
+    const { data: existing } = await supabase
       .from("module_progress")
-      .select("status, progress_percent")
+      .select("status")
       .eq("user_id", userId)
       .eq("module_id", module_id)
       .maybeSingle();
 
-    if (existingProgress?.status === "completed") {
-      // Don’t reissue or overwrite certificates for already completed modules
-      return NextResponse.json({
-        success: true,
-        message: "Module already completed",
-      });
+    if (existing?.status === "completed") {
+      return NextResponse.json({ success: true });
     }
 
-    // ✅ Upsert module progress
-    const payload: any = {
-      user_id: userId,
-      module_id,
-      status,
-      progress_percent,
-      last_accessed: new Date().toISOString(),
-    };
+    // Upsert progress
+    await supabase.from("module_progress").upsert(
+      {
+        user_id: userId,
+        module_id,
+        status,
+        progress_percent: status === "completed" ? 100 : progress_percent,
+        date_completed:
+          status === "completed" ? new Date().toISOString() : null,
+        last_accessed: new Date().toISOString(),
+      },
+      { onConflict: "user_id,module_id" }
+    );
 
-    if (status === "in_progress" && !date_completed) {
-      payload.date_started = payload.date_started || new Date().toISOString();
-    }
-
+    // 🎓 Generate certificate
     if (status === "completed") {
-      payload.date_completed = date_completed || new Date().toISOString();
-      payload.progress_percent = 100;
-    }
-
-    const { data, error } = await supabase
-      .from("module_progress")
-      .upsert(payload, { onConflict: "user_id,module_id" })
-      .select();
-
-    if (error) throw error;
-
-    // NOTE: Certificate email delivery will be enabled once
-    // sending domain DNS records are configured.
-
-    // 🧾 Generate and upload certificate only when completed
-    if (status === "completed") {
-      const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
       const issuedAt = new Date().toISOString();
+      const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
 
-      // Fetch module info (title shown on certificate)
+      // Module title
       const { data: moduleData } = await supabase
         .from("modules")
         .select("title")
         .eq("id", module_id)
         .single();
-      const moduleTitle = moduleData?.title || `Module ${module_id}`;
 
-      // --- Generate PDF with pdf-lib ---
+      const moduleTitle = moduleData?.title ?? "Module";
+
+      // User name (from profiles)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("first_name, last_name")
+        .eq("id", userId)
+        .single();
+
+      const fullName =
+        profile && (profile.first_name || profile.last_name)
+          ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim()
+          : "Participant";
+
+      // Create PDF (Letter size)
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([595.28, 841.89]); // A4 in points
+      const page = pdfDoc.addPage([612, 792]);
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const italic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+      const boldItalic = await pdfDoc.embedFont(
+        StandardFonts.HelveticaBoldOblique
+      );
 
       const { width, height } = page.getSize();
 
-      const drawCentered = (
+      const navy = rgb(0.08, 0.16, 0.38);
+      const borderBlue = rgb(0.12, 0.3, 0.78);
+      const nameBlue = rgb(0.26, 0.63, 0.93);
+
+      const center = (
         text: string,
         y: number,
-        size = 16,
-        useBold = false,
-        color = rgb(0, 0, 0)
+        size: number,
+        f = font,
+        color = navy
       ) => {
-        const f = useBold ? fontBold : font;
-        const textWidth = f.widthOfTextAtSize(text, size);
-        const x = (width - textWidth) / 2;
+        const w = f.widthOfTextAtSize(text, size);
+        const x = (width - w) / 2;
         page.drawText(text, { x, y, size, font: f, color });
+        return { x, w };
       };
 
-      // Header line
+      // Double border
       page.drawRectangle({
-        x: 50,
-        y: height - 120,
-        width: width - 100,
-        height: 1.5,
-        color: rgb(0.2, 0.4, 0.8),
+        x: 18,
+        y: 18,
+        width: width - 36,
+        height: height - 36,
+        borderColor: borderBlue,
+        borderWidth: 2,
+      });
+      page.drawRectangle({
+        x: 28,
+        y: 28,
+        width: width - 56,
+        height: height - 56,
+        borderColor: borderBlue,
+        borderWidth: 1,
       });
 
-      drawCentered(
+      // Logos
+      const semcmeLogo = await readPublicFile("cert-assets/semcme-logo.png");
+      const valueLogo = await readPublicFile(
+        "cert-assets/valuePartnershipsLogo.png"
+      );
+      const bcbsLogo = await readPublicFile("cert-assets/blueCrossLogo.png");
+
+      if (semcmeLogo) {
+        const img = await pdfDoc.embedPng(semcmeLogo);
+        const d = img.scale(0.22);
+        page.drawImage(img, {
+          x: 70,
+          y: height - 105,
+          width: d.width,
+          height: d.height,
+        });
+      }
+
+      page.drawText("Southeast Michigan", {
+        x: 185,
+        y: height - 70,
+        size: 18,
+        font,
+      });
+      page.drawText("Center for Medical Education", {
+        x: 185,
+        y: height - 92,
+        size: 18,
+        font,
+      });
+
+      // Title
+      const t = center(
         "Certificate of Completion",
-        height - 160,
-        28,
-        true,
-        rgb(0.1, 0.2, 0.5)
+        height - 190,
+        30,
+        boldItalic
       );
-      drawCentered("This certifies that", height - 210, 14);
-
-      const fullName = `${user.user_metadata?.first_name ?? "Participant"} ${
-        user.user_metadata?.last_name ?? ""
-      }`.trim();
-
-      drawCentered(fullName, height - 240, 22, true);
-      drawCentered("has successfully completed", height - 275, 14);
-      drawCentered(moduleTitle, height - 305, 18, true);
-
-      drawCentered(
-        `Issued on ${new Date(issuedAt).toLocaleDateString()}`,
-        height - 350,
-        12
-      );
-      drawCentered(`Certificate ID: ${certNumber}`, height - 370, 12);
-
-      // Footer line
       page.drawRectangle({
-        x: 50,
-        y: 100,
-        width: width - 100,
-        height: 1,
-        color: rgb(0.8, 0.8, 0.8),
+        x: t.x,
+        y: height - 194,
+        width: t.w,
+        height: 2,
+        color: borderBlue,
       });
-      drawCentered(
+
+      center(
         "Southeast Michigan Center for Medical Education",
-        80,
+        height - 270,
+        20,
+        italic
+      );
+      center("certifies that", height - 300, 18);
+
+      const n = center(fullName, height - 365, 34, italic, nameBlue);
+      page.drawRectangle({
+        x: n.x,
+        y: height - 372,
+        width: n.w,
+        height: 2,
+        color: nameBlue,
+      });
+
+      center(
+        "has completed the following educational activity",
+        height - 420,
+        18
+      );
+
+      center(
+        "Michigan Electronic Health Record & Health Information Exchange Initiative:",
+        height - 495,
+        16,
+        italic
+      );
+
+      center(moduleTitle, height - 535, 24, boldItalic);
+
+      // Bottom logos
+      if (valueLogo) {
+        const img = await pdfDoc.embedPng(valueLogo);
+        const d = img.scale(0.22);
+        page.drawImage(img, { x: 55, y: 45, width: d.width, height: d.height });
+      }
+
+      if (bcbsLogo) {
+        const img = await pdfDoc.embedPng(bcbsLogo);
+        const d = img.scale(0.22);
+        page.drawImage(img, {
+          x: width - d.width - 55,
+          y: 45,
+          width: d.width,
+          height: d.height,
+        });
+      }
+
+      // Footer meta
+      center(
+        `Issued on ${new Date(
+          issuedAt
+        ).toLocaleDateString()} • Certificate ID: ${certNumber}`,
+        30,
         10,
-        false,
-        rgb(0.3, 0.3, 0.3)
+        font,
+        rgb(0.25, 0.25, 0.25)
       );
 
       const pdfBytes = await pdfDoc.save();
 
-      // --- Upload to Supabase Storage ---
+      // Upload
       const filePath = `${userId}/${module_id}.pdf`;
-      const { error: uploadError } = await supabase.storage
-        .from("certificates")
-        .upload(filePath, pdfBytes, {
-          contentType: "application/pdf",
-          upsert: true,
-        });
-      if (uploadError) throw uploadError;
+      await supabase.storage.from("certificates").upload(filePath, pdfBytes, {
+        contentType: "application/pdf",
+        upsert: true,
+      });
 
-      // Get public URL
-      const { data: publicUrlData } = supabase.storage
+      const { data: urlData } = supabase.storage
         .from("certificates")
         .getPublicUrl(filePath);
 
-      const certUrl = publicUrlData.publicUrl;
-
-      // Record in certificates table
       await supabase.from("certificates").upsert({
         user_id: userId,
         module_id,
         issued_at: issuedAt,
         cert_number: certNumber,
-        cert_url: certUrl,
+        cert_url: urlData.publicUrl,
         verified: true,
       });
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true });
   } catch (err: any) {
-    console.error("Error updating module progress:", err);
-    return NextResponse.json(
-      { error: "Failed to update module progress", details: String(err) },
-      { status: 500 }
-    );
+    console.error(err);
+    return NextResponse.json({ error: "Failed" }, { status: 500 });
   }
 }
