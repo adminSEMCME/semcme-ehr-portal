@@ -4,17 +4,22 @@ import { cookies } from "next/headers";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
 
-function getBaseUrl() {
-  // Works on Vercel + local dev.
-  // On Vercel: VERCEL_URL = "your-project.vercel.app"
-  // Locally: fallback to http://localhost:3000
-  const vercelUrl = process.env.VERCEL_URL;
-  if (vercelUrl) return `https://${vercelUrl}`;
+function getBaseUrlFromRequest(req: Request) {
+  // Most reliable on Vercel + proxies
+  const proto =
+    req.headers.get("x-forwarded-proto") ||
+    (req.url.startsWith("https") ? "https" : "http");
 
-  // If you ever add a custom domain and want exact control, you can set BASE_URL in env.
-  const baseUrl = process.env.BASE_URL;
-  if (baseUrl) return baseUrl;
+  const host =
+    req.headers.get("x-forwarded-host") ||
+    req.headers.get("host") ||
+    process.env.VERCEL_URL ||
+    "";
 
+  if (host.startsWith("http")) return host;
+  if (host) return `${proto}://${host}`;
+
+  // fallback (local)
   return "http://localhost:3000";
 }
 
@@ -56,7 +61,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const userId = userData.user.id;
+    const user = userData.user;
+    const userId = user.id;
 
     // ✅ Parse request body
     const body = (await request.json().catch(() => ({}))) as any;
@@ -127,23 +133,28 @@ export async function POST(request: Request) {
         .single();
       const moduleTitle = moduleData?.title ?? "Module";
 
-      // User name from profiles (source of truth)
+      // ✅ Name: profiles first, then auth metadata fallback
       const { data: profile } = await supabase
         .from("profiles")
         .select("first_name, last_name")
         .eq("id", userId)
         .single();
 
+      const meta: any = user.user_metadata || {};
+      const metaFirst =
+        meta.first_name ?? meta.firstName ?? meta.given_name ?? "";
+      const metaLast =
+        meta.last_name ?? meta.lastName ?? meta.family_name ?? "";
+
       const fullName =
         profile && (profile.first_name || profile.last_name)
           ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim()
-          : "Participant";
+          : `${metaFirst} ${metaLast}`.trim() || "Participant";
 
       // Create PDF (Letter size)
       const pdfDoc = await PDFDocument.create();
       const page = pdfDoc.addPage([612, 792]); // 8.5x11
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-      const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const italic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
       const boldItalic = await pdfDoc.embedFont(
         StandardFonts.HelveticaBoldOblique
@@ -168,94 +179,95 @@ export async function POST(request: Request) {
         return { x, w };
       };
 
-      // Double border
+      // ✅ More padding inside borders
+      const outer = 28; // was 18
+      const inner = 48; // was 28
+
       page.drawRectangle({
-        x: 18,
-        y: 18,
-        width: width - 36,
-        height: height - 36,
+        x: outer,
+        y: outer,
+        width: width - outer * 2,
+        height: height - outer * 2,
         borderColor: borderBlue,
         borderWidth: 2,
       });
+
       page.drawRectangle({
-        x: 28,
-        y: 28,
-        width: width - 56,
-        height: height - 56,
+        x: inner,
+        y: inner,
+        width: width - inner * 2,
+        height: height - inner * 2,
         borderColor: borderBlue,
         borderWidth: 1,
       });
 
-      // ✅ Fetch logos over HTTP (prevents Vercel bundling huge /public folders)
-      const baseUrl = getBaseUrl();
+      // ✅ Fetch logos using request-derived base URL
+      const baseUrl = getBaseUrlFromRequest(request);
 
-      const semcmeLogoBytes = await fetchPngBytes(
-        `${baseUrl}/cert-assets/semcme-logo.png`
-      );
-      const valueLogoBytes = await fetchPngBytes(
-        `${baseUrl}/cert-assets/valuePartnershipsLogo.png`
-      );
-      const bcbsLogoBytes = await fetchPngBytes(
-        `${baseUrl}/cert-assets/blueCrossLogo.png`
-      );
+      const semcmeLogoUrl = `${baseUrl}/cert-assets/semcme-logo.png`;
+      const valueLogoUrl = `${baseUrl}/cert-assets/valuePartnershipsLogo.png`;
+      const bcbsLogoUrl = `${baseUrl}/cert-assets/blueCrossLogo.png`;
 
-      // Top SEMCME logo
+      const semcmeLogoBytes = await fetchPngBytes(semcmeLogoUrl);
+      const valueLogoBytes = await fetchPngBytes(valueLogoUrl);
+      const bcbsLogoBytes = await fetchPngBytes(bcbsLogoUrl);
+
+      // Top SEMCME logo (left) + header text (right)
       if (semcmeLogoBytes) {
         const img = await pdfDoc.embedPng(semcmeLogoBytes);
-        const d = img.scale(0.22);
+        const d = img.scale(0.18); // slightly smaller
         page.drawImage(img, {
-          x: 70,
-          y: height - 105,
+          x: inner + 10,
+          y: height - inner - 55,
           width: d.width,
           height: d.height,
         });
       }
 
-      // Top header text (matches your sample)
+      // Header text moved down for more breathing room
       page.drawText("Southeast Michigan", {
-        x: 185,
-        y: height - 70,
-        size: 18,
-        font,
-        color: rgb(0, 0, 0),
-      });
-      page.drawText("Center for Medical Education", {
-        x: 185,
-        y: height - 92,
+        x: inner + 150,
+        y: height - inner - 18,
         size: 18,
         font,
         color: rgb(0, 0, 0),
       });
 
-      // Title (bold italic + underline)
+      page.drawText("Center for Medical Education", {
+        x: inner + 150,
+        y: height - inner - 40,
+        size: 18,
+        font,
+        color: rgb(0, 0, 0),
+      });
+
+      // Title (shifted down a bit)
       const t = center(
         "Certificate of Completion",
-        height - 190,
+        height - 250,
         30,
         boldItalic
       );
       page.drawRectangle({
         x: t.x,
-        y: height - 194,
+        y: height - 254,
         width: t.w,
         height: 2,
         color: borderBlue,
       });
 
-      // Body text (exact style/structure you showed)
       center(
         "Southeast Michigan Center for Medical Education",
-        height - 270,
+        height - 330,
         20,
         italic
       );
-      center("certifies that", height - 300, 18, font);
+      center("certifies that", height - 360, 18, font);
 
-      // Name (blue italic + underline)
-      const n = center(fullName, height - 365, 34, italic, nameBlue);
+      const n = center(fullName, height - 425, 34, italic, nameBlue);
       page.drawRectangle({
         x: n.x,
-        y: height - 372,
+        y: height - 432,
         width: n.w,
         height: 2,
         color: nameBlue,
@@ -263,27 +275,27 @@ export async function POST(request: Request) {
 
       center(
         "has completed the following educational activity",
-        height - 420,
+        height - 480,
         18,
         font
       );
 
       center(
         "Michigan Electronic Health Record & Health Information Exchange Initiative:",
-        height - 495,
+        height - 555,
         16,
         italic
       );
 
-      center(moduleTitle, height - 535, 24, boldItalic);
+      center(moduleTitle, height - 595, 24, boldItalic);
 
-      // Bottom logos (left + right)
+      // Bottom logos (raised so they’re not close to border)
       if (valueLogoBytes) {
         const img = await pdfDoc.embedPng(valueLogoBytes);
-        const d = img.scale(0.22);
+        const d = img.scale(0.2);
         page.drawImage(img, {
-          x: 55,
-          y: 45,
+          x: inner + 10,
+          y: inner + 18,
           width: d.width,
           height: d.height,
         });
@@ -291,21 +303,21 @@ export async function POST(request: Request) {
 
       if (bcbsLogoBytes) {
         const img = await pdfDoc.embedPng(bcbsLogoBytes);
-        const d = img.scale(0.22);
+        const d = img.scale(0.2);
         page.drawImage(img, {
-          x: width - d.width - 55,
-          y: 45,
+          x: width - inner - d.width - 10,
+          y: inner + 18,
           width: d.width,
           height: d.height,
         });
       }
 
-      // Small footer metadata (you can remove if you want)
+      // Footer metadata (raised slightly)
       center(
         `Issued on ${new Date(
           issuedAt
         ).toLocaleDateString()} • Certificate ID: ${certNumber}`,
-        30,
+        inner + 6,
         10,
         font,
         rgb(0.25, 0.25, 0.25)
