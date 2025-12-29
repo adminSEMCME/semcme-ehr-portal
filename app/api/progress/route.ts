@@ -3,14 +3,27 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
-import path from "path";
-import { readFile } from "fs/promises";
 
-async function readPublicFile(relPath: string): Promise<Uint8Array | null> {
+function getBaseUrl() {
+  // Works on Vercel + local dev.
+  // On Vercel: VERCEL_URL = "your-project.vercel.app"
+  // Locally: fallback to http://localhost:3000
+  const vercelUrl = process.env.VERCEL_URL;
+  if (vercelUrl) return `https://${vercelUrl}`;
+
+  // If you ever add a custom domain and want exact control, you can set BASE_URL in env.
+  const baseUrl = process.env.BASE_URL;
+  if (baseUrl) return baseUrl;
+
+  return "http://localhost:3000";
+}
+
+async function fetchPngBytes(url: string): Promise<Uint8Array | null> {
   try {
-    const abs = path.join(process.cwd(), "public", relPath);
-    const buf = await readFile(abs);
-    return new Uint8Array(buf);
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) return null;
+    const ab = await res.arrayBuffer();
+    return new Uint8Array(ab);
   } catch {
     return null;
   }
@@ -45,41 +58,63 @@ export async function POST(request: Request) {
 
     const userId = userData.user.id;
 
-    // Parse body
+    // ✅ Parse request body
     const body = (await request.json().catch(() => ({}))) as any;
-    const { module_id, status = "in_progress", progress_percent = 0 } = body;
+    const {
+      module_id,
+      status = "in_progress",
+      progress_percent = 0,
+      date_completed,
+    } = body;
 
     if (!module_id) {
       return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
     }
 
-    // Prevent re-issuing
-    const { data: existing } = await supabase
+    // ✅ Prevent regressions / re-issuing
+    const { data: existingProgress } = await supabase
       .from("module_progress")
       .select("status")
       .eq("user_id", userId)
       .eq("module_id", module_id)
       .maybeSingle();
 
-    if (existing?.status === "completed") {
-      return NextResponse.json({ success: true });
+    if (existingProgress?.status === "completed") {
+      return NextResponse.json({
+        success: true,
+        message: "Module already completed",
+      });
     }
 
-    // Upsert progress
-    await supabase.from("module_progress").upsert(
-      {
-        user_id: userId,
-        module_id,
-        status,
-        progress_percent: status === "completed" ? 100 : progress_percent,
-        date_completed:
-          status === "completed" ? new Date().toISOString() : null,
-        last_accessed: new Date().toISOString(),
-      },
-      { onConflict: "user_id,module_id" }
-    );
+    // ✅ Upsert module progress
+    const payload: any = {
+      user_id: userId,
+      module_id,
+      status,
+      progress_percent,
+      last_accessed: new Date().toISOString(),
+    };
 
-    // 🎓 Generate certificate
+    if (status === "in_progress" && !date_completed) {
+      payload.date_started = payload.date_started || new Date().toISOString();
+    }
+
+    if (status === "completed") {
+      payload.date_completed = date_completed || new Date().toISOString();
+      payload.progress_percent = 100;
+    }
+
+    const { data, error } = await supabase
+      .from("module_progress")
+      .upsert(payload, { onConflict: "user_id,module_id" })
+      .select();
+
+    if (error) throw error;
+
+    // NOTE: Certificate email delivery will be enabled once
+    // sending domain DNS records are configured.
+
+    // 🎓 Generate and upload certificate only when completed
     if (status === "completed") {
       const issuedAt = new Date().toISOString();
       const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
@@ -90,10 +125,9 @@ export async function POST(request: Request) {
         .select("title")
         .eq("id", module_id)
         .single();
-
       const moduleTitle = moduleData?.title ?? "Module";
 
-      // User name (from profiles)
+      // User name from profiles (source of truth)
       const { data: profile } = await supabase
         .from("profiles")
         .select("first_name, last_name")
@@ -107,7 +141,7 @@ export async function POST(request: Request) {
 
       // Create PDF (Letter size)
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([612, 792]);
+      const page = pdfDoc.addPage([612, 792]); // 8.5x11
       const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
       const italic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
@@ -152,15 +186,22 @@ export async function POST(request: Request) {
         borderWidth: 1,
       });
 
-      // Logos
-      const semcmeLogo = await readPublicFile("cert-assets/semcme-logo.png");
-      const valueLogo = await readPublicFile(
-        "cert-assets/valuePartnershipsLogo.png"
-      );
-      const bcbsLogo = await readPublicFile("cert-assets/blueCrossLogo.png");
+      // ✅ Fetch logos over HTTP (prevents Vercel bundling huge /public folders)
+      const baseUrl = getBaseUrl();
 
-      if (semcmeLogo) {
-        const img = await pdfDoc.embedPng(semcmeLogo);
+      const semcmeLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/semcme-logo.png`
+      );
+      const valueLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/valuePartnershipsLogo.png`
+      );
+      const bcbsLogoBytes = await fetchPngBytes(
+        `${baseUrl}/cert-assets/blueCrossLogo.png`
+      );
+
+      // Top SEMCME logo
+      if (semcmeLogoBytes) {
+        const img = await pdfDoc.embedPng(semcmeLogoBytes);
         const d = img.scale(0.22);
         page.drawImage(img, {
           x: 70,
@@ -170,20 +211,23 @@ export async function POST(request: Request) {
         });
       }
 
+      // Top header text (matches your sample)
       page.drawText("Southeast Michigan", {
         x: 185,
         y: height - 70,
         size: 18,
         font,
+        color: rgb(0, 0, 0),
       });
       page.drawText("Center for Medical Education", {
         x: 185,
         y: height - 92,
         size: 18,
         font,
+        color: rgb(0, 0, 0),
       });
 
-      // Title
+      // Title (bold italic + underline)
       const t = center(
         "Certificate of Completion",
         height - 190,
@@ -198,14 +242,16 @@ export async function POST(request: Request) {
         color: borderBlue,
       });
 
+      // Body text (exact style/structure you showed)
       center(
         "Southeast Michigan Center for Medical Education",
         height - 270,
         20,
         italic
       );
-      center("certifies that", height - 300, 18);
+      center("certifies that", height - 300, 18, font);
 
+      // Name (blue italic + underline)
       const n = center(fullName, height - 365, 34, italic, nameBlue);
       page.drawRectangle({
         x: n.x,
@@ -218,7 +264,8 @@ export async function POST(request: Request) {
       center(
         "has completed the following educational activity",
         height - 420,
-        18
+        18,
+        font
       );
 
       center(
@@ -230,15 +277,20 @@ export async function POST(request: Request) {
 
       center(moduleTitle, height - 535, 24, boldItalic);
 
-      // Bottom logos
-      if (valueLogo) {
-        const img = await pdfDoc.embedPng(valueLogo);
+      // Bottom logos (left + right)
+      if (valueLogoBytes) {
+        const img = await pdfDoc.embedPng(valueLogoBytes);
         const d = img.scale(0.22);
-        page.drawImage(img, { x: 55, y: 45, width: d.width, height: d.height });
+        page.drawImage(img, {
+          x: 55,
+          y: 45,
+          width: d.width,
+          height: d.height,
+        });
       }
 
-      if (bcbsLogo) {
-        const img = await pdfDoc.embedPng(bcbsLogo);
+      if (bcbsLogoBytes) {
+        const img = await pdfDoc.embedPng(bcbsLogoBytes);
         const d = img.scale(0.22);
         page.drawImage(img, {
           x: width - d.width - 55,
@@ -248,7 +300,7 @@ export async function POST(request: Request) {
         });
       }
 
-      // Footer meta
+      // Small footer metadata (you can remove if you want)
       center(
         `Issued on ${new Date(
           issuedAt
@@ -261,17 +313,23 @@ export async function POST(request: Request) {
 
       const pdfBytes = await pdfDoc.save();
 
-      // Upload
+      // Upload to Storage
       const filePath = `${userId}/${module_id}.pdf`;
-      await supabase.storage.from("certificates").upload(filePath, pdfBytes, {
-        contentType: "application/pdf",
-        upsert: true,
-      });
+      const { error: uploadError } = await supabase.storage
+        .from("certificates")
+        .upload(filePath, pdfBytes, {
+          contentType: "application/pdf",
+          upsert: true,
+        });
 
+      if (uploadError) throw uploadError;
+
+      // Public URL
       const { data: urlData } = supabase.storage
         .from("certificates")
         .getPublicUrl(filePath);
 
+      // Save DB record
       await supabase.from("certificates").upsert({
         user_id: userId,
         module_id,
@@ -282,9 +340,12 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, data });
   } catch (err: any) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    console.error("Error updating module progress:", err);
+    return NextResponse.json(
+      { error: "Failed to update module progress", details: String(err) },
+      { status: 500 }
+    );
   }
 }
