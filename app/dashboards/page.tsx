@@ -221,7 +221,7 @@ export default function DashboardPage() {
                 rounded-lg 
                 overflow-hidden 
                 shadow-lg 
-                border border-gray-200
+                border border-gray-200/80
                 flex flex-col
               "
             >
@@ -239,7 +239,7 @@ export default function DashboardPage() {
 
                   <div className="flex-1 bg-white/30 h-1 rounded-full overflow-hidden">
                     <div
-                      className={`h-1 rounded-full transition-all duration-500 ${
+                      className={`h-1 rounded-full transition-all duration-700 ease-out ${
                         status === "completed" ? "bg-green-400" : "bg-white"
                       }`}
                       style={{ width: `${progressPercent}%` }}
@@ -289,10 +289,10 @@ export default function DashboardPage() {
                 )}
 
                 {/* BUTTONS STICK TO BOTTOM */}
-                <div className="mt-auto flex flex-col gap-2">
+                <div className="mt-auto flex flex-col gap-3">
                   <Button
                     onClick={() => handleStart(module)}
-                    className="module-start-btn px-6 py-2 rounded-sm font-semibold self-start"
+                    className="module-start-btn w-full px-6 py-3 rounded-md font-semibold text-base"
                   >
                     {status === "not_started"
                       ? "Start Module"
@@ -306,11 +306,20 @@ export default function DashboardPage() {
                       href={cert.cert_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="self-start"
+                      className="w-full"
                     >
                       <Button
-                        variant="outline"
-                        className="border-green-500 text-green-700 hover:bg-green-50 rounded-sm px-6 py-2"
+                        className="
+                          w-full 
+                          px-6 
+                          py-3 
+                          rounded-md 
+                          font-semibold 
+                          text-base
+                          bg-green-600 
+                          text-white 
+                          hover:bg-green-700
+                        "
                       >
                         🎓 Download Certificate
                       </Button>
