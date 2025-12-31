@@ -3,8 +3,7 @@
   // ————— helpers —————
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const moduleId =
-    (location.pathname.match(/\/modules\/([^/]+)\//) || [])[1] ||
-    "unknown_module";
+    location.pathname.split("/modules/")[1]?.split("/")[0] || "unknown_module";
 
   let lastSentPercent = -1;
   let sending = false;

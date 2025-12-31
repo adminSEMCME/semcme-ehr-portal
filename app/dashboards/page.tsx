@@ -79,6 +79,36 @@ export default function DashboardPage() {
     loadData();
   }, [router]);
 
+  useEffect(() => {
+    const channel = supabase
+      .channel("module-progress-updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "module_progress",
+        },
+        (payload) => {
+          setProgress((prev) => {
+            const updated = payload.new as ModuleProgress;
+            const exists = prev.find((p) => p.module_id === updated.module_id);
+            if (exists) {
+              return prev.map((p) =>
+                p.module_id === updated.module_id ? updated : p
+              );
+            }
+            return [...prev, updated];
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   /* HELPERS */
   const getStatus = (id: string) =>
     progress.find((p) => p.module_id === id)?.status || "not_started";
@@ -99,6 +129,7 @@ export default function DashboardPage() {
         user_id: user.id,
         module_id: module.id,
         status: "in_progress",
+        progress_percent: getProgress(module.id),
         date_started: new Date().toISOString(),
         last_accessed: new Date().toISOString(),
       });
