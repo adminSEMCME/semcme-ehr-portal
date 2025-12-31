@@ -278,7 +278,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                     {mod.title}
                   </h3>
 
-                  <p className="text-gray-600 text-sm grow flex items-center leading-relaxed px-5">
+                  <p className="text-black text-sm grow flex items-center leading-relaxed px-5">
                     {mod.description}
                   </p>
 
