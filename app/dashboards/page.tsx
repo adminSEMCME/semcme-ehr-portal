@@ -79,33 +79,37 @@ export default function DashboardPage() {
     loadData();
   }, [router]);
 
+  // Refresh progress when tab becomes visible
   useEffect(() => {
-    const channel = supabase
-      .channel("module-progress-updates")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "module_progress",
-        },
-        (payload) => {
-          setProgress((prev) => {
-            const updated = payload.new as ModuleProgress;
-            const exists = prev.find((p) => p.module_id === updated.module_id);
-            if (exists) {
-              return prev.map((p) =>
-                p.module_id === updated.module_id ? updated : p
-              );
-            }
-            return [...prev, updated];
-          });
-        }
-      )
-      .subscribe();
+    async function refreshProgress() {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (!user) return;
+
+      const { data: progressData } = await supabase
+        .from("module_progress")
+        .select("module_id, status, progress_percent")
+        .eq("user_id", user.id);
+
+      const { data: certData } = await supabase
+        .from("certificates")
+        .select("module_id, cert_url, issued_at")
+        .eq("user_id", user.id);
+
+      setProgress(progressData || []);
+      setCertificates(certData || []);
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        refreshProgress();
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      supabase.removeChannel(channel);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
