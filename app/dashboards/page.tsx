@@ -1,3 +1,4 @@
+//app/dashboards/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -36,6 +37,7 @@ export default function DashboardPage() {
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
+  const [assessments, setAssessments] = useState<{ module_id: string }[]>([]);
 
   /* LOAD DATA */
   useEffect(() => {
@@ -66,6 +68,12 @@ export default function DashboardPage() {
           .select("module_id, cert_url, issued_at")
           .eq("user_id", user.id);
 
+        const { data: assessmentData } = await supabase
+          .from("post_assessments")
+          .select("module_id")
+          .eq("user_id", user.id);
+
+        setAssessments(assessmentData || []);
         setModules(modulesData || []);
         setProgress(progressData || []);
         setCertificates(certData || []);
@@ -96,8 +104,14 @@ export default function DashboardPage() {
         .select("module_id, cert_url, issued_at")
         .eq("user_id", user.id);
 
+      const { data: assessmentData } = await supabase
+        .from("post_assessments")
+        .select("module_id")
+        .eq("user_id", user.id);
+
       setProgress(progressData || []);
       setCertificates(certData || []);
+      setAssessments(assessmentData || []);
     }
 
     function handleVisibilityChange() {
@@ -122,6 +136,9 @@ export default function DashboardPage() {
 
   const getCertificate = (id: string) =>
     certificates.find((c) => c.module_id === id);
+
+  const hasAssessment = (id: string) =>
+    assessments.some((a) => a.module_id === id);
 
   const handleStart = async (module: Module) => {
     try {
@@ -301,30 +318,32 @@ export default function DashboardPage() {
                       : "Continue Module"}
                   </Button>
 
-                  {cert && status === "completed" && (
-                    <a
-                      href={cert.cert_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full"
+                  {/* POST-ASSESSMENT / CERTIFICATE LOGIC */}
+                  {status === "completed" && !hasAssessment(module.id) && (
+                    <Button
+                      onClick={() =>
+                        router.push(`/post-assessment?module_id=${module.id}`)
+                      }
+                      className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
                     >
-                      <Button
-                        className="
-                          w-full 
-                          px-6 
-                          py-3 
-                          rounded-md 
-                          font-semibold 
-                          text-base
-                          bg-green-600 
-                          text-white 
-                          hover:bg-green-700
-                        "
-                      >
-                        🎓 Download Certificate
-                      </Button>
-                    </a>
+                      Post Assessment
+                    </Button>
                   )}
+
+                  {status === "completed" &&
+                    hasAssessment(module.id) &&
+                    cert && (
+                      <a
+                        href={cert.cert_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full"
+                      >
+                        <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                          Download Certificate
+                        </Button>
+                      </a>
+                    )}
                 </div>
               </div>
             </div>

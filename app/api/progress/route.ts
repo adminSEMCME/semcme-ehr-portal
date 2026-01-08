@@ -1,3 +1,4 @@
+//app/api/progress/route.ts
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -126,6 +127,22 @@ export async function POST(request: Request) {
       .select();
 
     if (error) throw error;
+
+    // 🚫 BLOCK CERT IF POST-ASSESSMENT NOT SUBMITTED
+    const { data: assessment } = await admin
+      .from("post_assessments")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("module_id", module_id)
+      .maybeSingle();
+
+    if (!assessment) {
+      return NextResponse.json({
+        success: true,
+        message: "Module completed, assessment not yet submitted",
+        assessmentRequired: true,
+      });
+    }
 
     // Only generate cert on completion
     if (status !== "completed") {
