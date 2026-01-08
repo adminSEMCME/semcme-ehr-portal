@@ -75,11 +75,7 @@ export default function PostAssessmentClient() {
       }),
     });
 
-    alert(
-      "Post-assessment submitted successfully.\nReturning you to the dashboard."
-    );
-
-    router.replace("/dashboards");
+    router.replace(`/dashboards?scrollTo=${moduleId}`);
   };
 
   return (

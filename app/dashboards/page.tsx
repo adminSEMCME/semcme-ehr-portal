@@ -1,4 +1,3 @@
-//app/dashboards/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -31,7 +30,9 @@ interface Certificate {
 export default function DashboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const targetModule = searchParams.get("module");
+
+  // ✅ NEW: module to scroll to
+  const scrollTo = searchParams.get("scrollTo");
 
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
@@ -87,45 +88,18 @@ export default function DashboardPage() {
     loadData();
   }, [router]);
 
-  // Refresh progress when tab becomes visible
+  // ✅ NEW: scroll after returning from post-assessment
   useEffect(() => {
-    async function refreshProgress() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData?.session?.user;
-      if (!user) return;
+    if (!scrollTo || loading) return;
 
-      const { data: progressData } = await supabase
-        .from("module_progress")
-        .select("module_id, status, progress_percent")
-        .eq("user_id", user.id);
+    const el = document.getElementById(`module-${scrollTo}`);
+    if (!el) return;
 
-      const { data: certData } = await supabase
-        .from("certificates")
-        .select("module_id, cert_url, issued_at")
-        .eq("user_id", user.id);
-
-      const { data: assessmentData } = await supabase
-        .from("post_assessments")
-        .select("module_id")
-        .eq("user_id", user.id);
-
-      setProgress(progressData || []);
-      setCertificates(certData || []);
-      setAssessments(assessmentData || []);
-    }
-
-    function handleVisibilityChange() {
-      if (document.visibilityState === "visible") {
-        refreshProgress();
-      }
-    }
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      router.replace("/dashboards"); // clean URL
+    }, 300);
+  }, [scrollTo, loading, router]);
 
   /* HELPERS */
   const getStatus = (id: string) =>
@@ -199,23 +173,11 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* PAGE TITLE */}
       <h1 className="text-4xl font-bold text-white my-10 text-center">
         EHR Learning Dashboard
       </h1>
 
-      {/* GRID OF MODULE CARDS */}
-      <div
-        className="
-          w-full max-w-7xl 
-          grid 
-          grid-cols-1 
-          md:grid-cols-2 
-          xl:grid-cols-3 
-          gap-6 
-          px-4
-        "
-      >
+      <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 px-4">
         {modules.map((module) => {
           const status = getStatus(module.id);
           const progressPercent = getProgress(module.id);
@@ -232,15 +194,9 @@ export default function DashboardPage() {
 
           return (
             <div
+              id={`module-${module.id}`} // ✅ anchor for scroll
               key={module.id}
-              className="
-                bg-white 
-                rounded-lg 
-                overflow-hidden 
-                shadow-lg 
-                border border-gray-200/80
-                flex flex-col
-              "
+              className="bg-white rounded-lg overflow-hidden shadow-lg border border-gray-200/80 flex flex-col"
             >
               {/* HEADER BAR */}
               <div className="bg-semcmeBlue text-white px-4 py-3">
@@ -250,7 +206,6 @@ export default function DashboardPage() {
                   </h2>
                 </div>
 
-                {/* PROGRESS ROW */}
                 <div className="flex items-center gap-2 mt-3">
                   <span className="text-sm">{progressPercent}%</span>
 
@@ -260,27 +215,23 @@ export default function DashboardPage() {
                         status === "completed" ? "bg-green-400" : "bg-white"
                       }`}
                       style={{ width: `${progressPercent}%` }}
-                    ></div>
+                    />
                   </div>
 
                   <span
-                    className={`
-                      text-xs px-4 py-1 rounded-full border 
-                      ${
-                        status === "completed"
-                          ? "bg-green-100 text-green-700 border-green-400"
-                          : status === "in_progress"
-                          ? "bg-blue-100 text-blue-700 border-blue-400"
-                          : "bg-gray-100 text-gray-700 border-gray-300"
-                      }
-                    `}
+                    className={`text-xs px-4 py-1 rounded-full border ${
+                      status === "completed"
+                        ? "bg-green-100 text-green-700 border-green-400"
+                        : status === "in_progress"
+                        ? "bg-blue-100 text-blue-700 border-blue-400"
+                        : "bg-gray-100 text-gray-700 border-gray-300"
+                    }`}
                   >
                     {status.replace("_", " ")}
                   </span>
                 </div>
               </div>
 
-              {/* IMAGE */}
               <img
                 src={thumbnailPath}
                 alt={`${module.title} thumbnail`}
@@ -291,21 +242,19 @@ export default function DashboardPage() {
                 }}
               />
 
-              {/* CONTENT SECTION */}
               <div className="p-6 flex flex-col gap-4 grow">
                 {objectives.length > 0 ? (
-                  <ul className="text-gray-700 text-sm leading-relaxed list-disc pl-5 space-y-2">
+                  <ul className="text-gray-700 text-sm list-disc pl-5 space-y-2">
                     {objectives.map((line, idx) => (
                       <li key={idx}>{line}</li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-gray-700 text-base leading-relaxed">
+                  <p className="text-gray-700">
                     No objectives available for this module.
                   </p>
                 )}
 
-                {/* BUTTONS STICK TO BOTTOM */}
                 <div className="mt-auto flex flex-col gap-3">
                   <Button
                     onClick={() => handleStart(module)}
@@ -318,13 +267,12 @@ export default function DashboardPage() {
                       : "Continue Module"}
                   </Button>
 
-                  {/* POST-ASSESSMENT / CERTIFICATE LOGIC */}
                   {status === "completed" && !hasAssessment(module.id) && (
                     <Button
                       onClick={() =>
                         router.push(`/post-assessment?module_id=${module.id}`)
                       }
-                      className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                      className="w-full px-6 py-3 bg-blue-600 text-white hover:bg-blue-700"
                     >
                       Post Assessment
                     </Button>
@@ -339,7 +287,7 @@ export default function DashboardPage() {
                         rel="noopener noreferrer"
                         className="w-full"
                       >
-                        <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                        <Button className="w-full px-6 py-3 bg-green-600 text-white hover:bg-green-700">
                           Download Certificate
                         </Button>
                       </a>
