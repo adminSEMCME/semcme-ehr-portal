@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,8 +31,9 @@ export default function DashboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // ✅ NEW: module id to scroll to after assessment redirect
   const scrollTo = searchParams.get("scrollTo");
+
+  const hasScrolledRef = useRef(false);
 
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
@@ -88,23 +89,29 @@ export default function DashboardPage() {
     loadData();
   }, [router]);
 
-  // ✅ NEW: after load finishes, scroll to the module (if scrollTo is present)
+  /* SCROLL AFTER REFETCH (ONCE) */
   useEffect(() => {
     if (!scrollTo) return;
-    if (loading) return; // wait until data is loaded and DOM is rendered
+    if (loading) return;
+    if (hasScrolledRef.current) return;
 
     const el = document.getElementById(`module-${scrollTo}`);
     if (!el) return;
 
-    // slight delay to ensure layout is painted
-    const t = setTimeout(() => {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    hasScrolledRef.current = true;
 
-      // optional: clean the URL so it doesn't keep re-scrolling on refresh/back
-      router.replace("/dashboards");
-    }, 200);
+    // wait for layout + images to settle
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
 
-    return () => clearTimeout(t);
+        // clean URL without jumping
+        router.replace("/dashboards", { scroll: false });
+      });
+    });
   }, [scrollTo, loading, router]);
 
   // Refresh progress when tab becomes visible
@@ -253,7 +260,7 @@ export default function DashboardPage() {
           return (
             <div
               key={module.id}
-              id={`module-${module.id}`} // ✅ NEW: anchor for scrolling
+              id={`module-${module.id}`}
               className="
                 bg-white 
                 rounded-lg 
@@ -339,7 +346,6 @@ export default function DashboardPage() {
                       : "Continue Module"}
                   </Button>
 
-                  {/* POST-ASSESSMENT / CERTIFICATE LOGIC */}
                   {status === "completed" && !hasAssessment(module.id) && (
                     <Button
                       onClick={() =>
