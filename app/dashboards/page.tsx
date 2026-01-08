@@ -7,6 +7,38 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 
+const preloadImages = (urls: string[], timeout = 800) => {
+  return Promise.all(
+    urls.map(
+      (url) =>
+        new Promise<void>((resolve) => {
+          const img = new window.Image();
+          let done = false;
+
+          const finish = () => {
+            if (done) return;
+            done = true;
+            resolve();
+          };
+
+          const timer = setTimeout(finish, timeout);
+
+          img.onload = () => {
+            clearTimeout(timer);
+            finish();
+          };
+
+          img.onerror = () => {
+            clearTimeout(timer);
+            finish();
+          };
+
+          img.src = url;
+        })
+    )
+  );
+};
+
 interface Module {
   id: string;
   title: string;
@@ -59,6 +91,14 @@ export default function DashboardPage() {
           .from("modules")
           .select("*")
           .order("order_index", { ascending: true });
+
+        if (modulesData?.length) {
+          const thumbnailUrls = modulesData.map((m) =>
+            m.url.replace("/story.html", "/story_content/thumbnail.jpg")
+          );
+
+          await preloadImages(thumbnailUrls);
+        }
 
         const { data: progressData } = await supabase
           .from("module_progress")
