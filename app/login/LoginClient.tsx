@@ -1,3 +1,4 @@
+//app/login/LoginClient.tsx
 "use client";
 
 import { useState } from "react";
@@ -42,6 +43,20 @@ export default function LoginClient() {
         setLoading(false);
         return;
       }
+
+      await fetch("/api/sessions/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: data.user.id,
+          page_path: moduleId
+            ? `/dashboards?module=${moduleId}`
+            : "/dashboards",
+          screen_width: window.screen.width,
+          screen_height: window.screen.height,
+          referrer: document.referrer || null,
+        }),
+      });
 
       // 2️⃣ Redirect based on role
       if (role === "admin") {
