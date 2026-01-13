@@ -1,3 +1,4 @@
+//app/register/RegisterClient.tsx
 "use client";
 
 import { useState } from "react";
@@ -26,6 +27,20 @@ type FormData = {
   pgyLevel: string;
   medicalSchoolYear: string;
 } & { [key: string]: string }; // index signature
+
+const formatName = (value: string) => {
+  return value
+    .trim()
+    .toLowerCase()
+    .split(" ")
+    .map((word) =>
+      word
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join("-")
+    )
+    .join(" ");
+};
 
 export default function RegisterClient() {
   const router = useRouter();
@@ -148,6 +163,11 @@ export default function RegisterClient() {
      VALIDATION BEFORE SUBMIT
      ============================================================ */
   const validateRequiredFields = () => {
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      alert("First and last name are required.");
+      return false;
+    }
+
     const required = roleFieldMap[form.role] || [];
 
     for (const field of required) {
@@ -156,6 +176,7 @@ export default function RegisterClient() {
         return false;
       }
     }
+
     return true;
   };
 
@@ -170,40 +191,56 @@ export default function RegisterClient() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: form.email,
         password: form.password,
         options: {
           emailRedirectTo: `${window.location.origin}/login${
             moduleId ? `?module=${moduleId}` : ""
           }`,
-          data: {
-            role: form.role,
-            email: form.email,
-            first_name: form.firstName,
-            last_name: form.lastName,
-            degree: form.degree,
-            institution: form.institution,
-            department: form.department,
-            title: form.title,
-            phone: form.phone,
-            profession: form.profession || null,
-            medical_id: form.medicalId || null,
-            pgy_level: form.pgyLevel || null,
-            medical_school_year: form.medicalSchoolYear || null,
-          },
         },
       });
 
-      if (error) {
-        alert("Registration failed: " + error.message);
-      } else {
-        alert("Registration successful! Please verify your email.");
-        setTimeout(
-          () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
-          2000
-        );
+      if (error || !data?.user) {
+        alert("Registration failed: " + error?.message);
+        return;
       }
+
+      // 🔐 Create profile via server route
+      const profileRes = await fetch("/api/register/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: data.user.id,
+          email: form.email,
+          first_name: formatName(form.firstName),
+          last_name: formatName(form.lastName),
+          degree: form.degree || null,
+          institution: form.institution || null,
+          department: form.department || null,
+          title: form.title || null,
+          phone: form.phone || null,
+          profession: form.profession || null,
+          medical_id: form.medicalId || null,
+          pgy_level: form.pgyLevel || null,
+          medical_school_year: form.medicalSchoolYear || null,
+        }),
+      });
+
+      if (!profileRes.ok) {
+        const err = await profileRes.json().catch(() => ({}));
+        alert(
+          "Registration failed while creating profile." +
+            (err?.error ? ` ${err.error}` : "")
+        );
+        return;
+      }
+
+      alert("Registration successful! Please verify your email.");
+      setTimeout(
+        () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
+        2000
+      );
     } finally {
       setLoading(false);
     }
