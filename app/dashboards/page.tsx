@@ -1,3 +1,4 @@
+//app/dashboards/page.tsx
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -267,7 +268,7 @@ export default function DashboardPage() {
       </div>
 
       {/* PAGE TITLE */}
-      <h1 className="text-4xl font-bold text-white my-10 text-center">
+      <h1 className="text-4xl font-bold text-white mt-6 mb-8 text-center">
         EHR Learning Dashboard
       </h1>
 
@@ -311,15 +312,16 @@ export default function DashboardPage() {
               "
             >
               {/* HEADER BAR */}
-              <div className="bg-semcmeBlue text-white px-4 py-3">
-                <div className="text-center">
-                  <h2 className="font-semibold leading-tight text-[clamp(1rem,2vw,1.25rem)]">
+              <div className="bg-semcmeBlue text-white px-4 pt-4 h-28 flex flex-col">
+                {/* TITLE SLOT — fixed height */}
+                <div className="h-[3.2rem] flex items-center justify-center text-center px-3">
+                  <h2 className="font-semibold leading-tight text-[1.05rem]">
                     {module.title}
                   </h2>
                 </div>
 
-                {/* PROGRESS ROW */}
-                <div className="flex items-center gap-2 mt-3">
+                {/* PROGRESS ROW — fixed height & position */}
+                <div className="mt-2 flex items-center gap-2">
                   <span className="text-sm">{progressPercent}%</span>
 
                   <div className="flex-1 bg-white/30 h-1 rounded-full overflow-hidden">
@@ -328,12 +330,12 @@ export default function DashboardPage() {
                         status === "completed" ? "bg-green-400" : "bg-white"
                       }`}
                       style={{ width: `${progressPercent}%` }}
-                    ></div>
+                    />
                   </div>
 
                   <span
                     className={`
-                      text-xs px-4 py-1 rounded-full border 
+                      text-xs px-4 py-1 rounded-full border
                       ${
                         status === "completed"
                           ? "bg-green-100 text-green-700 border-green-400"
@@ -360,7 +362,7 @@ export default function DashboardPage() {
               />
 
               {/* CONTENT SECTION */}
-              <div className="p-6 flex flex-col gap-4 grow">
+              <div className="p-6 flex flex-col gap-4 grow min-h-[260px]">
                 {objectives.length > 0 ? (
                   <ul className="text-gray-700 text-sm leading-relaxed list-disc pl-5 space-y-2">
                     {objectives.map((line, idx) => (
