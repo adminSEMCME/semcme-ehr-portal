@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const internalKey = request.headers.get("x-internal-key");
 
-    // 🔐 INTERNAL GUARD (mock-ehr only)
+    // 🔐 internal-only guard
     if (internalKey !== process.env.MOCK_EHR_INTERNAL_KEY) {
       return NextResponse.json(
         { error: "Unauthorized internal request" },
@@ -18,11 +18,18 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { module_id, external_id, status = "completed" } = body;
+    const { module_id, external_id } = body;
 
     if (!module_id || !external_id) {
       return NextResponse.json(
         { error: "Missing module_id or external_id" },
+        { status: 400 }
+      );
+    }
+
+    if (module_id !== MOCK_EHR_MODULE_ID) {
+      return NextResponse.json(
+        { error: "Invalid module for this endpoint" },
         { status: 400 }
       );
     }
@@ -32,9 +39,7 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    /*********************************
-     * Resolve Supabase user by external_id
-     *********************************/
+    // resolve Supabase user
     const { data: profile } = await admin
       .from("profiles")
       .select("id")
@@ -47,9 +52,7 @@ export async function POST(request: Request) {
 
     const userId = profile.id;
 
-    /*********************************
-     * ONE-TIME COMPLETION GUARD
-     *********************************/
+    // one-time completion guard
     const { data: existing } = await admin
       .from("module_progress")
       .select("status")
@@ -58,15 +61,10 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (existing?.status === "completed") {
-      return NextResponse.json({
-        success: true,
-        message: "Already completed",
-      });
+      return NextResponse.json({ success: true });
     }
 
-    /*********************************
-     * MARK MODULE COMPLETE
-     *********************************/
+    // mark module complete
     await admin.from("module_progress").upsert(
       {
         user_id: userId,
@@ -79,9 +77,7 @@ export async function POST(request: Request) {
       { onConflict: "user_id,module_id" }
     );
 
-    /*********************************
-     * TRIGGER CERT GENERATION (ONCE)
-     *********************************/
+    // generate certificate once
     await fetch(`${process.env.APP_BASE_URL}/api/certificates/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

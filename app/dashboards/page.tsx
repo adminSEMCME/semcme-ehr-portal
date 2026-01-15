@@ -234,8 +234,7 @@ export default function DashboardPage() {
 
       const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${safeToken}`;
 
-      // 🔴 IMPORTANT: same-tab navigation (fixes 403)
-      window.location.href = mockEhrUrl;
+      window.open(mockEhrUrl, "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Error starting module:", err);
     }
