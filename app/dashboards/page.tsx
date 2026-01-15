@@ -155,27 +155,32 @@ export default function DashboardPage() {
     });
   }, [scrollTo, loading, router]);
 
-  // Refresh progress when tab becomes visible
   useEffect(() => {
-    async function refreshProgress() {
+    async function refetchAll() {
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (!user) return;
 
-      const { data: progressData } = await supabase
-        .from("module_progress")
-        .select("module_id, status, progress_percent")
-        .eq("user_id", user.id);
+      const [
+        { data: progressData },
+        { data: certData },
+        { data: assessmentData },
+      ] = await Promise.all([
+        supabase
+          .from("module_progress")
+          .select("module_id, status, progress_percent")
+          .eq("user_id", user.id),
 
-      const { data: certData } = await supabase
-        .from("certificates")
-        .select("module_id, cert_url, issued_at")
-        .eq("user_id", user.id);
+        supabase
+          .from("certificates")
+          .select("module_id, cert_url, issued_at")
+          .eq("user_id", user.id),
 
-      const { data: assessmentData } = await supabase
-        .from("post_assessments")
-        .select("module_id")
-        .eq("user_id", user.id);
+        supabase
+          .from("post_assessments")
+          .select("module_id")
+          .eq("user_id", user.id),
+      ]);
 
       setProgress(progressData || []);
       setCertificates(certData || []);
@@ -184,13 +189,15 @@ export default function DashboardPage() {
 
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
-        refreshProgress();
+        refetchAll();
       }
     }
 
+    window.addEventListener("focus", refetchAll);
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
+      window.removeEventListener("focus", refetchAll);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
