@@ -223,19 +223,19 @@ export default function DashboardPage() {
         last_accessed: new Date().toISOString(),
       });
 
-      // TEMP SSO token (base64 JSON, matches mock-ehr index.php)
+      // SSO token for mock-EHR
       const payload = {
         sub: user.id,
         email: user.email,
       };
 
       const token = btoa(JSON.stringify(payload));
+      const safeToken = encodeURIComponent(token);
 
-      const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${encodeURIComponent(
-        token
-      )}`;
+      const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${safeToken}`;
 
-      window.open(mockEhrUrl, "_blank");
+      // 🔴 IMPORTANT: same-tab navigation (fixes 403)
+      window.location.href = mockEhrUrl;
     } catch (err) {
       console.error("Error starting module:", err);
     }
