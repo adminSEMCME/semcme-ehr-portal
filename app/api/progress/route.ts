@@ -7,6 +7,15 @@ const MOCK_EHR_MODULE_ID = "mock-ehr";
 
 export async function POST(request: Request) {
   try {
+    console.log("🔔 /api/progress HIT");
+
+    const headers = Object.fromEntries(request.headers.entries());
+    console.log("HEADERS:", headers);
+
+    const rawBody = await request.text();
+    console.log("RAW BODY:", rawBody);
+
+    const body = JSON.parse(rawBody);
     const internalKey = request.headers.get("x-internal-key");
 
     // 🔐 internal-only guard
@@ -17,7 +26,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json();
     const { module_id, external_id } = body;
 
     if (!module_id || !external_id) {
