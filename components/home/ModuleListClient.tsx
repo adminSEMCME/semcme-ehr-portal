@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,16 @@ const cardBgColor: Record<string, string> = {
   advanced: "bg-red-50",
 };
 
+type GroupFilter = "all" | "ume" | "cme" | "gme";
+
 export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  // GROUP FILTER STATE
+  const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
+  const [groupOpen, setGroupOpen] = useState(false);
+  const groupRef = useRef<HTMLDivElement>(null);
 
   // HERO CAROUSEL STATE
   const images = [
@@ -28,7 +35,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  // Stable callback to avoid React warnings
   const nextSlide = useCallback(() => {
     setIndex((prev) => (prev + 1) % images.length);
   }, [images.length]);
@@ -37,16 +43,37 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
     setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  // Auto-play with pause-on-hover
   useEffect(() => {
     if (paused) return;
     const interval = setInterval(nextSlide, 4500);
     return () => clearInterval(interval);
   }, [paused, nextSlide]);
 
-  // Module filtering logic
-  const filtered = modules.filter((m) =>
-    m.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // CLOSE FILTER DROPDOWN ON OUTSIDE CLICK
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (groupRef.current && !groupRef.current.contains(e.target as Node)) {
+        setGroupOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // GROUP FILTER
+  const groupFilteredModules = modules.filter((m) => {
+    const level = (m.skill_level || "").toLowerCase();
+    if (groupFilter === "all") return true;
+    if (groupFilter === "ume") return level === "novice" || level === "all";
+    if (groupFilter === "cme")
+      return level === "intermediate" || level === "all";
+    if (groupFilter === "gme") return level === "advanced" || level === "all";
+    return true;
+  });
+
+  // SEARCH FILTER
+  const filtered = groupFilteredModules.filter((m) =>
+    m.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleSelect = (id: string, title: string) => {
@@ -60,6 +87,11 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
     el.classList.add("glow-highlight");
     setTimeout(() => el.classList.remove("glow-highlight"), 2000);
   };
+
+  const sectionTitle =
+    groupFilter === "all"
+      ? "Explore Available Modules"
+      : `Explore Available ${groupFilter.toUpperCase()} Modules`;
 
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
@@ -79,57 +111,91 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </Link>
 
-        {/* SEARCH BAR */}
-        <div className="search-bar w-[90%] max-w-md sm:w-auto">
-          <div className="relative">
-            <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2">
-              <Search className="w-4 h-4 text-semcmeBlue" />
+        {/* FILTER + SEARCH */}
+        <div className="flex items-center gap-3">
+          {/* GROUP FILTER */}
+          <div ref={groupRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setGroupOpen((prev) => !prev)}
+              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-[44px] min-w-[260px] text-sm text-semcmeBlue"
+            >
+              <span className="font-medium">
+                Filter Modules: {groupFilter.toUpperCase()}
+              </span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
 
-              <input
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setIsOpen(true);
-                }}
-                onFocus={() => setIsOpen(true)}
-                onBlur={() => setTimeout(() => setIsOpen(false), 150)}
-                placeholder="Search modules..."
-                className="flex-1 bg-transparent text-sm text-gray-800"
-              />
-
-              <button
-                type="button"
-                onClick={() => setIsOpen((prev) => !prev)}
-                className="p-1 rounded-md hover:bg-slate-100"
-              >
-                <ChevronDown
-                  className={`w-4 h-4 text-semcmeBlue transition-transform ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-            </div>
-
-            {isOpen && (
-              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
-                {filtered.length === 0 ? (
-                  <div className="px-3 py-2 text-gray-500">
-                    No matching modules
-                  </div>
-                ) : (
-                  filtered.map((m) => (
-                    <button
-                      key={m.id}
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => handleSelect(m.id, m.title)}
-                      className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
-                    >
-                      {m.title}
-                    </button>
-                  ))
-                )}
+            {groupOpen && (
+              <div className="absolute right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 w-full overflow-hidden">
+                {(["all", "ume", "cme", "gme"] as GroupFilter[]).map((g) => (
+                  <button
+                    key={g}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setGroupFilter(g);
+                      setGroupOpen(false);
+                      setSearchTerm("");
+                    }}
+                    className="block w-full text-left px-4 py-3 text-sm hover:bg-slate-100 first:rounded-t-xl last:rounded-b-xl"
+                  >
+                    {g.toUpperCase()}
+                  </button>
+                ))}
               </div>
             )}
+          </div>
+
+          {/* SEARCH BAR */}
+          <div className="search-bar w-[90%] max-w-md sm:w-auto">
+            <div className="relative">
+              <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-3 h-[44px]">
+                <Search className="w-4 h-4 text-semcmeBlue" />
+                <input
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setIsOpen(true);
+                  }}
+                  onFocus={() => setIsOpen(true)}
+                  onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                  placeholder="Search modules..."
+                  className="flex-1 bg-transparent text-sm text-gray-800"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsOpen((prev) => !prev)}
+                  className="p-1 rounded-md hover:bg-slate-100"
+                >
+                  <ChevronDown
+                    className={`w-4 h-4 text-semcmeBlue transition-transform ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {isOpen && (
+                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
+                  {filtered.length === 0 ? (
+                    <div className="px-3 py-2 text-gray-500">
+                      No matching modules
+                    </div>
+                  ) : (
+                    filtered.map((m) => (
+                      <button
+                        key={m.id}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleSelect(m.id, m.title)}
+                        className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
+                      >
+                        {m.title}
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -140,7 +206,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
-        {/* Background Images */}
         <div className="absolute inset-0">
           {images.map((img, i) => (
             <Image
@@ -156,10 +221,8 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           ))}
         </div>
 
-        {/* Optional dark overlay */}
         <div className="absolute inset-0 bg-black/25 z-0" />
 
-        {/* Content Panel */}
         <div className="absolute inset-0 flex flex-col justify-center items-start px-20 ml-10 z-10">
           <div className="bg-semcmeBlue/70 backdrop-blur-md p-8 rounded-xl max-w-xl shadow-xl">
             <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-lg">
@@ -194,37 +257,20 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </div>
 
-        {/* Left Arrow */}
         <button
           onClick={prevSlide}
-          className="
-            absolute left-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white z-20
-            text-semcmeBlue
-            h-14 w-14 rounded-full
-            flex items-center justify-center
-            shadow-lg text-3xl font-bold transition
-          "
+          className="absolute left-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white z-20 text-semcmeBlue h-14 w-14 rounded-full flex items-center justify-center shadow-lg text-3xl font-bold transition"
         >
           ‹
         </button>
 
-        {/* Right Arrow */}
         <button
           onClick={nextSlide}
-          className="
-            absolute right-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white z-20
-            text-semcmeBlue
-            h-14 w-14 rounded-full
-            flex items-center justify-center
-            shadow-lg text-3xl font-bold transition
-          "
+          className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white z-20 text-semcmeBlue h-14 w-14 rounded-full flex items-center justify-center shadow-lg text-3xl font-bold transition"
         >
           ›
         </button>
 
-        {/* Dots */}
         <div className="absolute bottom-6 w-full flex justify-center gap-2 z-20">
           {images.map((_, i) => (
             <button
@@ -241,7 +287,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
       {/* MODULE GRID */}
       <section className="w-full py-14 px-6">
         <h2 className="text-3xl font-semibold mb-14 text-white text-center">
-          Explore Available Modules
+          {sectionTitle}
         </h2>
 
         <div className="w-full max-w-7xl mx-auto">
@@ -250,7 +296,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             animate={{ opacity: 1 }}
             className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full"
           >
-            {modules.map((mod, i) => {
+            {filtered.map((mod, i) => {
               const bgClass =
                 cardBgColor[(mod.skill_level || "").toLowerCase()] ||
                 "bg-white";
@@ -265,14 +311,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                     y: 0,
                     transition: { delay: i * 0.05 },
                   }}
-                  className={`
-                    ${bgClass}
-                    shadow-sm rounded-md border border-gray-200 
-                    px-3 py-7 flex flex-col 
-                    text-start hover:shadow-lg hover:-translate-y-1 
-                    transition-all duration-300 
-                    h-90
-                  `}
+                  className={`${bgClass} shadow-sm rounded-md border border-gray-200 px-3 py-7 flex flex-col text-start hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-90`}
                 >
                   <h3 className="text-lg font-bold text-semcmeBlue mt-1 px-5">
                     {mod.title}
