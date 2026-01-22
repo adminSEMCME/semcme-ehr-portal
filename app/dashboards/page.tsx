@@ -35,8 +35,8 @@ const preloadImages = (urls: string[], timeout = 800) => {
           };
 
           img.src = url;
-        })
-    )
+        }),
+    ),
   );
 };
 
@@ -95,7 +95,7 @@ export default function DashboardPage() {
 
         if (modulesData?.length) {
           const thumbnailUrls = modulesData.map((m) =>
-            m.url.replace("/story.html", "/story_content/thumbnail.jpg")
+            m.url.replace("/story.html", "/story_content/thumbnail.jpg"),
           );
 
           await preloadImages(thumbnailUrls);
@@ -309,7 +309,7 @@ export default function DashboardPage() {
 
           const thumbnailPath = module.url.replace(
             "/story.html",
-            "/story_content/thumbnail.jpg"
+            "/story_content/thumbnail.jpg",
           );
 
           const objectives = module.objective_description
@@ -358,8 +358,8 @@ export default function DashboardPage() {
                         status === "completed"
                           ? "bg-green-100 text-green-700 border-green-400"
                           : status === "in_progress"
-                          ? "bg-blue-100 text-blue-700 border-blue-400"
-                          : "bg-gray-100 text-gray-700 border-gray-300"
+                            ? "bg-blue-100 text-blue-700 border-blue-400"
+                            : "bg-gray-100 text-gray-700 border-gray-300"
                       }
                     `}
                   >
@@ -369,15 +369,20 @@ export default function DashboardPage() {
               </div>
 
               {/* IMAGE */}
-              <img
-                src={thumbnailPath}
-                alt={`${module.title} thumbnail`}
-                className="w-full h-auto object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src =
-                    "/images/default-thumbnail.jpg";
-                }}
-              />
+              <div className="w-full h-[220px] overflow-hidden bg-gray-100">
+                <img
+                  src={thumbnailPath}
+                  alt={`${module.title} thumbnail`}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.dataset.fallbackApplied) return;
+
+                    img.dataset.fallbackApplied = "true";
+                    img.src = "/images/default-thumbnail.jpg";
+                  }}
+                />
+              </div>
 
               {/* CONTENT SECTION */}
               <div className="p-6 flex flex-col gap-4 grow min-h-[260px]">
@@ -402,8 +407,8 @@ export default function DashboardPage() {
                     {status === "not_started"
                       ? "Start Module"
                       : status === "completed"
-                      ? "Review Module"
-                      : "Continue Module"}
+                        ? "Review Module"
+                        : "Continue Module"}
                   </Button>
 
                   {status === "completed" && !hasAssessment(module.id) && (
