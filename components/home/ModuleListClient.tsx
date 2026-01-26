@@ -1,3 +1,4 @@
+//components/home/ModuleListClient.tsx
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -6,14 +7,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
-
-// Background colors for module cards
-const cardBgColor: Record<string, string> = {
-  all: "bg-blue-50",
-  novice: "bg-yellow-50",
-  intermediate: "bg-green-50",
-  advanced: "bg-red-50",
-};
 
 type GroupFilter = "all" | "ume" | "cme" | "gme";
 
@@ -118,7 +111,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             <button
               type="button"
               onClick={() => setGroupOpen((prev) => !prev)}
-              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-[44px] min-w-[260px] text-sm text-semcmeBlue"
+              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-11 min-w-[260px] text-sm text-semcmeBlue"
             >
               <span className="font-medium">
                 Filter Modules: {groupFilter.toUpperCase()}
@@ -137,7 +130,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                       setGroupOpen(false);
                       setSearchTerm("");
                     }}
-                    className="block w-full text-left px-4 py-3 text-sm hover:bg-slate-100 first:rounded-t-xl last:rounded-b-xl"
+                    className="block w-full text-left px-4 py-3 text-sm text-semcmeBlue hover:bg-slate-100 first:rounded-t-xl last:rounded-b-xl"
                   >
                     {g.toUpperCase()}
                   </button>
@@ -149,7 +142,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           {/* SEARCH BAR */}
           <div className="search-bar w-[90%] max-w-md sm:w-auto">
             <div className="relative">
-              <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-3 h-[44px]">
+              <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-3 h-11">
                 <Search className="w-4 h-4 text-semcmeBlue" />
                 <input
                   value={searchTerm}
@@ -160,7 +153,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                   onFocus={() => setIsOpen(true)}
                   onBlur={() => setTimeout(() => setIsOpen(false), 150)}
                   placeholder="Search modules..."
-                  className="flex-1 bg-transparent text-sm text-gray-800"
+                  className="flex-1 bg-transparent text-sm text-semcmeBlue placeholder:text-semcmeBlue"
                 />
                 <button
                   type="button"
@@ -187,7 +180,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                         key={m.id}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => handleSelect(m.id, m.title)}
-                        className="w-full text-left px-3 py-2 hover:bg-slate-100 text-gray-800"
+                        className="w-full text-left px-3 py-2 hover:bg-slate-100 text-semcmeBlue"
                       >
                         {m.title}
                       </button>
@@ -259,16 +252,61 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
         <button
           onClick={prevSlide}
-          className="absolute left-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white z-20 text-semcmeBlue h-14 w-14 rounded-full flex items-center justify-center shadow-lg text-3xl font-bold transition"
+          className="
+            absolute 
+            left-8 top-1/2 -translate-y-1/2
+            bg-white/90 hover:bg-white
+            z-20 
+            h-12 w-12
+            rounded-full
+            flex items-center justify-center
+            shadow-lg
+            transition
+          "
         >
-          ‹
+          <svg
+            viewBox="0 0 24 24"
+            className="w-5 h-5 text-semcmeBlue"
+            aria-hidden
+          >
+            {/* visually centered left arrow */}
+            <path
+              d="M14 6l-6 6 6 6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              transform="translate(-0.75, 0)"
+            />
+          </svg>
         </button>
 
         <button
           onClick={nextSlide}
-          className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white z-20 text-semcmeBlue h-14 w-14 rounded-full flex items-center justify-center shadow-lg text-3xl font-bold transition"
+          className="
+            absolute 
+            right-8 top-1/2 -translate-y-1/2
+            bg-white/90 hover:bg-white
+            z-20 
+            h-12 w-12
+            rounded-full
+            flex items-center justify-center
+            shadow-lg
+            transition
+          "
         >
-          ›
+          <svg viewBox="0 0 24 24" className="w-5 h-5 text-semcmeBlue">
+            <path
+              d="M10 6l6 6-6 6"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              transform="translate(0.4, 0)"
+            />
+          </svg>
         </button>
 
         <div className="absolute bottom-6 w-full flex justify-center gap-2 z-20">
@@ -297,10 +335,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full"
           >
             {filtered.map((mod, i) => {
-              const bgClass =
-                cardBgColor[(mod.skill_level || "").toLowerCase()] ||
-                "bg-white";
-
               return (
                 <motion.div
                   id={mod.id}
@@ -311,7 +345,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                     y: 0,
                     transition: { delay: i * 0.05 },
                   }}
-                  className={`${bgClass} shadow-sm rounded-md border border-gray-200 px-3 py-7 flex flex-col text-start hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-90`}
+                  className="bg-white shadow-sm rounded-md border border-gray-200 px-3 py-7 flex flex-col text-start hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-90"
                 >
                   <h3 className="text-lg font-bold text-semcmeBlue mt-1 px-5">
                     {mod.title}
