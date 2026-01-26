@@ -235,18 +235,23 @@ export default function DashboardPage() {
         last_accessed: new Date().toISOString(),
       });
 
-      // SSO token for mock-EHR
-      const payload = {
-        sub: user.id,
-        email: user.email,
-      };
+      // ✅ MOCK-EHR MODULE → open mock-EHR
+      if (module.url.includes("mock-ehr")) {
+        const payload = {
+          sub: user.id,
+          email: user.email,
+        };
 
-      const token = btoa(JSON.stringify(payload));
-      const safeToken = encodeURIComponent(token);
+        const token = btoa(JSON.stringify(payload));
+        const safeToken = encodeURIComponent(token);
 
-      const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${safeToken}`;
+        const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${safeToken}`;
+        window.open(mockEhrUrl, "_blank", "noopener,noreferrer");
+        return;
+      }
 
-      window.open(mockEhrUrl, "_blank", "noopener,noreferrer");
+      // ✅ ALL OTHER MODULES → open their Storyline module
+      window.open(module.url, "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Error starting module:", err);
     }
@@ -330,7 +335,7 @@ export default function DashboardPage() {
                       setGroupFilter(g);
                       setGroupOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-slate-100 rounded-md"
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-slate-100 rounded-md text-semcmeBlue"
                   >
                     {g.toUpperCase()}
                   </button>

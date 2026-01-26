@@ -1,106 +1,78 @@
-// app/api/progress/route.ts
-
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
-
-const MOCK_EHR_MODULE_ID = "mock-ehr";
 
 export async function POST(request: Request) {
   try {
-    console.log("🔔 /api/progress HIT");
+    const body = await request.json();
+    const { module_id, progress_percent, status, date_completed } = body;
 
-    const headers = Object.fromEntries(request.headers.entries());
-    console.log("HEADERS:", headers);
-
-    const rawBody = await request.text();
-    console.log("RAW BODY:", rawBody);
-
-    const body = JSON.parse(rawBody);
-    const internalKey = request.headers.get("x-internal-key");
-
-    // 🔐 internal-only guard
-    if (internalKey !== process.env.MOCK_EHR_INTERNAL_KEY) {
-      return NextResponse.json(
-        { error: "Unauthorized internal request" },
-        { status: 401 }
-      );
+    if (!module_id) {
+      return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
     }
 
-    const { module_id, external_id } = body;
+    // ✅ MUST await cookies()
+    const cookieStore = await cookies();
 
-    if (!module_id || !external_id) {
-      return NextResponse.json(
-        { error: "Missing module_id or external_id" },
-        { status: 400 }
+    // User-scoped client (session-based)
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => cookieStore.getAll(),
+          setAll: () => {},
+        },
+      },
+    );
+
+    const { data: userData } = await supabase.auth.getUser();
+
+    // ✅ Session path (most normal cases)
+    if (userData?.user) {
+      await supabase.from("module_progress").upsert(
+        {
+          user_id: userData.user.id,
+          module_id,
+          status,
+          progress_percent,
+          date_completed: status === "completed" ? date_completed : null,
+          last_accessed: new Date().toISOString(),
+        },
+        { onConflict: "user_id,module_id" },
       );
+
+      return NextResponse.json({ success: true });
     }
 
-    if (module_id !== MOCK_EHR_MODULE_ID) {
-      return NextResponse.json(
-        { error: "Invalid module for this endpoint" },
-        { status: 400 }
-      );
+    // ✅ Fallback path (Storyline exit / keepalive / unload)
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    // resolve Supabase user
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("id")
-      .eq("external_id", external_id)
-      .maybeSingle();
-
-    if (!profile) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const userId = profile.id;
-
-    // one-time completion guard
-    const { data: existing } = await admin
-      .from("module_progress")
-      .select("status")
-      .eq("user_id", userId)
-      .eq("module_id", module_id)
-      .maybeSingle();
-
-    if (existing?.status === "completed") {
-      return NextResponse.json({ success: true });
-    }
-
-    // mark module complete
     await admin.from("module_progress").upsert(
       {
-        user_id: userId,
         module_id,
-        status: "completed",
-        progress_percent: 100,
-        date_completed: new Date().toISOString(),
+        status,
+        progress_percent,
+        date_completed: status === "completed" ? date_completed : null,
         last_accessed: new Date().toISOString(),
       },
-      { onConflict: "user_id,module_id" }
+      { onConflict: "user_id,module_id" },
     );
-
-    // generate certificate once
-    await fetch(`${process.env.APP_BASE_URL}/api/certificates/generate`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        module_id,
-        user_id: userId,
-      }),
-    });
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Progress update failed:", err);
     return NextResponse.json(
-      { error: "Failed to update module progress" },
-      { status: 500 }
+      { error: "Failed to update progress" },
+      { status: 500 },
     );
   }
 }
