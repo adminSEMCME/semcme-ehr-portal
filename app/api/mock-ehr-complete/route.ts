@@ -1,4 +1,5 @@
 // app/api/mock-ehr-complete/route.ts
+
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -12,11 +13,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { module_id, external_id } = await request.json();
+    const { module_id, sub } = await request.json();
 
-    if (!module_id || !external_id) {
+    if (!module_id || !sub) {
       return NextResponse.json(
-        { error: "Missing module_id or external_id" },
+        { error: "Missing module_id or sub" },
         { status: 400 },
       );
     }
@@ -30,21 +31,9 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    const { data: profile } = await admin
-      .from("profiles")
-      .select("id")
-      .eq("external_id", external_id)
-      .maybeSingle();
-
-    if (!profile) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    const userId = profile.id;
-
     await admin.from("module_progress").upsert(
       {
-        user_id: userId,
+        user_id: sub,
         module_id,
         status: "completed",
         progress_percent: 100,
@@ -56,7 +45,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("Mock EHR completion failed:", err);
     return NextResponse.json(
       { error: "Mock EHR completion failed" },
       { status: 500 },
