@@ -245,7 +245,7 @@ export default function DashboardPage() {
         const token = btoa(JSON.stringify(payload));
         const safeToken = encodeURIComponent(token);
 
-        const mockEhrUrl = `https://mock-ehr.semcme.org/?sso=${safeToken}`;
+        const mockEhrUrl = `https://mock-ehr.semcme.org/login.php?sso=${safeToken}`;
         window.open(mockEhrUrl, "_blank", "noopener,noreferrer");
         return;
       }
