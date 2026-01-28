@@ -195,7 +195,7 @@ export default function RegisterClient() {
         email: form.email,
         password: form.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/login${
+          emailRedirectTo: `https://ehr.portal.semcme.org/login${
             moduleId ? `?module=${moduleId}` : ""
           }`,
         },
