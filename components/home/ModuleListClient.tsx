@@ -324,9 +324,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
       {/* MODULE GRID */}
       <section className="w-full py-14 px-6">
-        <h2 className="text-3xl font-semibold mb-14 text-white text-center">
+        <h2 className="text-3xl font-semibold mb-7 text-white text-center">
           {sectionTitle}
         </h2>
+
+        <p className="mb-7 text-sm text-white text-center max-w-xl mx-auto">
+          Use the "Filter Modules" drop-down above to view learning modules tailored to specific
+          education levels.
+        </p>
 
         <div className="w-full max-w-7xl mx-auto">
           <motion.div

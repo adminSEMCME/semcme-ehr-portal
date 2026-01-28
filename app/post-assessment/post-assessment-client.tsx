@@ -11,10 +11,8 @@ type Responses = {
   design: string;
   teaching: string;
   utility: string;
-
-  // UME / Medical Student ONLY
-  confidence?: string;
-  preparedness?: string;
+  confidence: string;
+  preparedness: string;
 };
 
 export default function PostAssessmentClient() {
@@ -27,12 +25,10 @@ export default function PostAssessmentClient() {
     design: "",
     teaching: "",
     utility: "",
-
-    // UME-only fields (conditionally used)
     confidence: "",
     preparedness: "",
   });
-  const [isMedicalStudent, setIsMedicalStudent] = useState(false);
+
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -40,30 +36,6 @@ export default function PostAssessmentClient() {
       router.push("/dashboards");
     }
   }, [moduleId, router]);
-
-  useEffect(() => {
-    async function fetchUserRole() {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const user = sessionData?.session?.user;
-
-      if (!user) return;
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      if (error) {
-        console.error("Error fetching user role:", error);
-        return;
-      }
-
-      setIsMedicalStudent(data?.role === "Medical Student");
-    }
-
-    fetchUserRole();
-  }, []);
 
   const handleChange = (key: keyof Responses, value: string) => {
     setResponses((prev) => ({ ...prev, [key]: value }));
@@ -75,18 +47,16 @@ export default function PostAssessmentClient() {
       "design",
       "teaching",
       "utility",
+      "confidence",
+      "preparedness",
     ];
-
-    if (isMedicalStudent) {
-      requiredFields.push("confidence", "preparedness");
-    }
 
     const hasMissing = requiredFields.some(
       (field) => !responses[field]?.trim(),
     );
 
     if (hasMissing) {
-      alert("Please answer all required questions.");
+      alert("Please answer all questions before submitting.");
       return;
     }
 
@@ -107,13 +77,12 @@ export default function PostAssessmentClient() {
     });
 
     if (error) {
-      alert("Error submitting assessment.");
       console.error(error);
+      alert("Error submitting assessment.");
       setSubmitting(false);
       return;
     }
 
-    // Trigger cert generation
     await fetch("/api/certificates/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -177,38 +146,31 @@ export default function PostAssessmentClient() {
           onChange={(v) => handleChange("utility", v)}
         />
 
-        {isMedicalStudent && (
-          <>
-            <div className="space-y-3">
-              <h2 className="font-semibold text-lg">
-                Which aspects of this activity were most effective?
-              </h2>
+        {/* TEXT QUESTIONS — NOW FOR ALL USERS */}
+        <div className="space-y-3">
+          <h2 className="font-semibold text-lg">
+            Which aspects of this activity were most effective?
+          </h2>
+          <textarea
+            value={responses.confidence}
+            onChange={(e) => handleChange("confidence", e.target.value)}
+            rows={4}
+            className="w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-semcmeBlue"
+          />
+        </div>
 
-              <textarea
-                value={responses.confidence ?? ""}
-                onChange={(e) => handleChange("confidence", e.target.value)}
-                rows={4}
-                placeholder="Please describe what worked well..."
-                className="w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-semcmeBlue"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <h2 className="font-semibold text-lg">
-                Which aspects of this activity could be improved? (please
-                provide specific suggestions)
-              </h2>
-
-              <textarea
-                value={responses.preparedness ?? ""}
-                onChange={(e) => handleChange("preparedness", e.target.value)}
-                rows={4}
-                placeholder="Please share your suggestions..."
-                className="w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-semcmeBlue"
-              />
-            </div>
-          </>
-        )}
+        <div className="space-y-3">
+          <h2 className="font-semibold text-lg">
+            Which aspects of this activity could be improved? (please provide
+            specific suggestions)
+          </h2>
+          <textarea
+            value={responses.preparedness}
+            onChange={(e) => handleChange("preparedness", e.target.value)}
+            rows={4}
+            className="w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-semcmeBlue"
+          />
+        </div>
 
         <Button
           onClick={handleSubmit}
@@ -241,8 +203,6 @@ function Question({
           <label key={opt} className="flex items-start gap-3 cursor-pointer">
             <input
               type="radio"
-              name={title}
-              value={opt}
               checked={value === opt}
               onChange={() => onChange(opt)}
               className="mt-1"
