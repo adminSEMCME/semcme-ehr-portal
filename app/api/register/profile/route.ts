@@ -8,6 +8,7 @@ export async function POST(req: Request) {
     const {
       user_id,
       external_id,
+      role,
       email,
       first_name,
       last_name,
@@ -37,6 +38,7 @@ export async function POST(req: Request) {
     const { error } = await admin.from("profiles").upsert({
       id: user_id,
       external_id: external_id ?? user_id,
+      role,
       email,
       first_name,
       last_name,

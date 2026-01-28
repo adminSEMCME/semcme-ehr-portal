@@ -213,6 +213,7 @@ export default function RegisterClient() {
         body: JSON.stringify({
           user_id: data.user.id,
           external_id: data.user.id,
+          role: form.role,
           email: form.email,
           first_name: formatName(form.firstName),
           last_name: formatName(form.lastName),
