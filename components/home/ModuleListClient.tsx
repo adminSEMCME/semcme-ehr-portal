@@ -216,9 +216,19 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
         <div className="absolute inset-0 bg-black/25 z-0" />
 
-        <div className="absolute inset-0 flex flex-col justify-center items-start px-20 ml-10 z-10">
-          <div className="bg-semcmeBlue/70 backdrop-blur-md p-8 rounded-xl max-w-xl shadow-xl">
-            <h1 className="text-5xl font-bold mb-4 text-white drop-shadow-lg">
+        <div className="absolute inset-0 flex flex-col justify-center items-center px-6 z-10">
+          <div
+            className="
+              max-w-xl w-full
+              rounded-2xl
+              shadow-xl
+              text-center
+              p-10
+              bg-slate-400/90
+              backdrop-blur-sm
+            "
+          >
+            <h1 className="text-5xl font-bold mb-6 text-white drop-shadow-lg">
               EHR Learning Portal
             </h1>
 
@@ -228,7 +238,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               and application of Electronic Health Records.
             </p>
 
-            <div className="mt-4 flex gap-6">
+            <div className="mt-4 flex gap-6 justify-center">
               <Link href="/login">
                 <button className="landing-signin-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
                   Sign In
@@ -242,7 +252,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </Link>
             </div>
 
-            <p className="mt-8 text-sm font-semibold text-white drop-shadow-md max-w-md">
+            <p className="mt-8 text-sm font-semibold text-white drop-shadow-md max-w-md mx-auto">
               You only need to register once. After registering, please use the
               Sign In button above to access all modules, or use the View Module
               buttons below to sign in and be directed to a specific module.
@@ -329,8 +339,8 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </h2>
 
         <p className="mb-7 text-sm text-white text-center max-w-xl mx-auto">
-          Use the "Filter Modules" drop-down above to view learning modules tailored to specific
-          education levels.
+          Use the "Filter Modules" drop-down above to view learning modules
+          tailored to specific education levels.
         </p>
 
         <div className="w-full max-w-7xl mx-auto">
