@@ -63,7 +63,7 @@ export default function LoginClient() {
         router.push("/admin-dashboard");
       } else if (role === "user") {
         router.push(
-          moduleId ? `/dashboards?module=${moduleId}` : "/dashboards"
+          moduleId ? `/dashboards?module=${moduleId}` : "/dashboards",
         );
       } else {
         alert("Invalid user role.");
@@ -149,7 +149,7 @@ export default function LoginClient() {
         <p className="text-gray-600 mt-6 text-sm text-center">
           Don't have an account?{" "}
           <a
-            href={`/register/choose${moduleId ? `?module=${moduleId}` : ""}`}
+            href={`/register${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
           >
             Register here

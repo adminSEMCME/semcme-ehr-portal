@@ -37,7 +37,7 @@ const formatName = (value: string) => {
       word
         .split("-")
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join("-")
+        .join("-"),
     )
     .join(" ");
 };
@@ -139,7 +139,7 @@ export default function RegisterClient() {
      HANDLE CHANGE
      ============================================================ */
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
 
@@ -212,6 +212,7 @@ export default function RegisterClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: data.user.id,
+          external_id: data.user.id,
           email: form.email,
           first_name: formatName(form.firstName),
           last_name: formatName(form.lastName),
@@ -231,7 +232,7 @@ export default function RegisterClient() {
         const err = await profileRes.json().catch(() => ({}));
         alert(
           "Registration failed while creating profile." +
-            (err?.error ? ` ${err.error}` : "")
+            (err?.error ? ` ${err.error}` : ""),
         );
         return;
       }
@@ -239,7 +240,7 @@ export default function RegisterClient() {
       alert("Registration successful! Please verify your email.");
       setTimeout(
         () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
-        2000
+        2000,
       );
     } finally {
       setLoading(false);
