@@ -376,10 +376,13 @@ export default function DashboardPage() {
           const progressPercent = getProgress(module.id);
           const cert = getCertificate(module.id);
 
-          const thumbnailPath = module.url.replace(
-            "/story.html",
-            "/story_content/thumbnail.jpg",
-          );
+          const thumbnailPath =
+            module.id === "mock-ehr"
+              ? "/images/mock-ehr-thumbnail.png"
+              : module.url.replace(
+                  "/story.html",
+                  "/story_content/thumbnail.jpg",
+                );
 
           const objectives = module.objective_description
             ? module.objective_description.split("\n").filter(Boolean)
