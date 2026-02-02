@@ -441,7 +441,7 @@ export default function DashboardPage() {
               </div>
 
               {/* IMAGE */}
-              <div className="w-full h-[220px] overflow-hidden bg-gray-100">
+              <div className="w-full h-[220px] overflow-hidden bg-white">
                 <img
                   src={thumbnailPath}
                   alt={`${module.title} thumbnail`}
