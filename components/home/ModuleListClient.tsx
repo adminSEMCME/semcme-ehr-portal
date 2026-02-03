@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
 
-type GroupFilter = "all" | "ume" | "cme" | "gme";
+type GroupFilter = "all" | "ume" | "gme" | "cme";
 
 export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -121,7 +121,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
             {groupOpen && (
               <div className="absolute right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 w-full overflow-hidden">
-                {(["all", "ume", "cme", "gme"] as GroupFilter[]).map((g) => (
+                {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
                   <button
                     key={g}
                     onMouseDown={(e) => e.preventDefault()}
@@ -228,8 +228,8 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               backdrop-blur-sm
             "
           >
-            <h1 className="text-5xl font-bold mb-6 text-white drop-shadow-lg">
-              EHR Learning Portal
+            <h1 className="text-4xl font-bold mb-6 text-white drop-shadow-lg">
+              Improving EHR Use For Better Outcomes
             </h1>
 
             <p className="mb-8 text-md text-white drop-shadow-lg leading-relaxed">
@@ -319,7 +319,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </svg>
         </button>
 
-        <div className="absolute bottom-6 w-full flex justify-center gap-2 z-20">
+        <div className="absolute bottom-4 w-full flex justify-center gap-2 z-20">
           {images.map((_, i) => (
             <button
               key={i}

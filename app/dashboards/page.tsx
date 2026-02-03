@@ -327,7 +327,7 @@ export default function DashboardPage() {
 
             {groupOpen && (
               <div className="absolute right-0 mt-2 w-full bg-white border border-slate-200 rounded-md shadow-lg z-50">
-                {(["all", "ume", "cme", "gme"] as GroupFilter[]).map((g) => (
+                {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
                   <button
                     key={g}
                     onMouseDown={(e) => e.preventDefault()}
@@ -355,8 +355,9 @@ export default function DashboardPage() {
       </div>
 
       {/* PAGE TITLE */}
-      <h1 className="text-4xl font-bold text-white mt-6 mb-8 text-center">
-        EHR Learning Dashboard
+      <h1 className="text-4xl font-bold text-white mt-6 mb-8 text-center leading-12">
+        Improving EHR Use for Better Outcomes: <br />
+        User Dashboard
       </h1>
 
       {/* GRID OF MODULE CARDS */}
