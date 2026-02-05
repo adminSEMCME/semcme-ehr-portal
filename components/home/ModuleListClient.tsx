@@ -63,8 +63,12 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   // HERO CAROUSEL STATE
   const images = [
     "/images/hero1.png",
-    "/images/hero2.png",
-    "/images/hero3.png",
+    "/images/hero2.jpg",
+    "/images/hero3.jpg",
+    "/images/hero4.jpg",
+    "/images/hero5.jpg",
+    "/images/hero6.jpg",
+    "/images/hero7.jpg",
   ];
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -251,7 +255,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
       {/* HERO SECTION */}
       <section
-        className="w-full h-[500px] relative overflow-hidden z-0"
+        className="w-full h-[600px] relative overflow-hidden z-0"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
@@ -380,7 +384,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             <button
               key={i}
               onClick={() => setIndex(i)}
-              className={`h-3 w-3 rounded-full transition-all ${
+              className={`h-2 w-2 rounded-full transition-all ${
                 i === index ? "bg-white scale-110" : "bg-white/50"
               }`}
             />
