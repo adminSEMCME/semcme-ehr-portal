@@ -60,6 +60,47 @@ interface Certificate {
   issued_at: string;
 }
 
+const getSkillLevels = (skillLevel?: string): string[] => {
+  if (!skillLevel) return [];
+  return skillLevel.split(",").map((s) => s.trim().toLowerCase());
+};
+
+const sortModulesForGroup = (
+  modules: any[],
+  group: "all" | "ume" | "gme" | "cme",
+) => {
+  // 1. Base order
+  const sorted = [...modules].sort(
+    (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
+  );
+
+  // 2. No special rules
+  if (group === "all" || group === "ume") return sorted;
+
+  // 3. Find the multi-skill module
+  const multiIndex = sorted.findIndex(
+    (m) => getSkillLevels(m.skill_level).length > 1,
+  );
+
+  if (multiIndex === -1) return sorted;
+
+  const [multi] = sorted.splice(multiIndex, 1);
+
+  // 4. CME → force index 3 (4th position)
+  if (group === "cme") {
+    sorted.splice(3, 0, multi);
+    return sorted;
+  }
+
+  // 5. GME → force LAST
+  if (group === "gme") {
+    sorted.push(multi);
+    return sorted;
+  }
+
+  return sorted;
+};
+
 export default function DashboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -74,7 +115,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [assessments, setAssessments] = useState<{ module_id: string }[]>([]);
 
-  type GroupFilter = "all" | "ume" | "cme" | "gme";
+  type GroupFilter = "all" | "ume" | "gme" | "cme";
 
   const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
   const [groupOpen, setGroupOpen] = useState(false);
@@ -264,13 +305,15 @@ export default function DashboardPage() {
   };
 
   const filteredModules = modules.filter((m: any) => {
-    const level = (m.skill_level || "").toLowerCase();
+    const levels = getSkillLevels(m.skill_level);
 
     if (groupFilter === "all") return true;
-    if (groupFilter === "ume") return level === "novice" || level === "all";
+    if (groupFilter === "ume")
+      return levels.includes("novice") || levels.includes("all");
+    if (groupFilter === "gme")
+      return levels.includes("intermediate") || levels.includes("all");
     if (groupFilter === "cme")
-      return level === "intermediate" || level === "all";
-    if (groupFilter === "gme") return level === "advanced" || level === "all";
+      return levels.includes("advanced") || levels.includes("all");
 
     return true;
   });
@@ -372,7 +415,7 @@ export default function DashboardPage() {
           px-4
         "
       >
-        {filteredModules.map((module) => {
+        {sortModulesForGroup(filteredModules, groupFilter).map((module) => {
           const status = getStatus(module.id);
           const progressPercent = getProgress(module.id);
           const cert = getCertificate(module.id);
@@ -385,7 +428,7 @@ export default function DashboardPage() {
                   "/story_content/thumbnail.jpg",
                 );
 
-          const objectives = module.objective_description
+          const objectives: string[] = module.objective_description
             ? module.objective_description.split("\n").filter(Boolean)
             : [];
 
