@@ -46,6 +46,7 @@ interface Module {
   description?: string;
   objective_description?: string;
   url: string;
+  ce_code?: string;
 }
 
 interface ModuleProgress {
@@ -114,6 +115,9 @@ export default function DashboardPage() {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [assessments, setAssessments] = useState<{ module_id: string }[]>([]);
+  const [canCollectCE, setCanCollectCE] = useState(false);
+  const [showCEModal, setShowCEModal] = useState(false);
+  const [activeCEModule, setActiveCEModule] = useState<Module | null>(null);
 
   type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -132,6 +136,22 @@ export default function DashboardPage() {
         if (!user) {
           router.push("/login");
           return;
+        }
+
+        const { data: profileData, error: profileError } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        if (profileError) {
+          console.error("Error loading profile role:", profileError);
+        } else {
+          const role = profileData?.role?.toLowerCase();
+
+          setCanCollectCE(
+            role === "practicing physician/faculty" || role === "nursing",
+          );
         }
 
         const { data: modulesData } = await supabase
@@ -527,16 +547,43 @@ export default function DashboardPage() {
                         : "Continue Module"}
                   </Button>
 
-                  {status === "completed" && !hasAssessment(module.id) && (
-                    <Button
-                      onClick={() =>
-                        router.push(`/post-assessment?module_id=${module.id}`)
-                      }
-                      className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
-                    >
-                      Post Assessment
-                    </Button>
-                  )}
+                  {status === "completed" &&
+                    !hasAssessment(module.id) &&
+                    (canCollectCE ? (
+                      // 🔹 WITH CE → split row
+                      <div className="grid grid-cols-2 gap-3">
+                        <Button
+                          onClick={() =>
+                            router.push(
+                              `/post-assessment?module_id=${module.id}`,
+                            )
+                          }
+                          className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                          Post Assessment
+                        </Button>
+
+                        <Button
+                          onClick={() => {
+                            setActiveCEModule(module);
+                            setShowCEModal(true);
+                          }}
+                          className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                        >
+                          Collect CE Credits
+                        </Button>
+                      </div>
+                    ) : (
+                      // 🔹 NO CE → full width (original behavior)
+                      <Button
+                        onClick={() =>
+                          router.push(`/post-assessment?module_id=${module.id}`)
+                        }
+                        className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Post Assessment
+                      </Button>
+                    ))}
 
                   {status === "completed" &&
                     hasAssessment(module.id) &&
@@ -558,6 +605,78 @@ export default function DashboardPage() {
           );
         })}
       </div>
+      {showCEModal && activeCEModule && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+              Collect CE Credits
+            </h2>
+
+            <p className="text-sm text-gray-700 mb-4">
+              To claim continuing education (CE) credit for{" "}
+              <strong>{activeCEModule.title}</strong>, follow the steps below.
+            </p>
+
+            <ol className="text-sm text-gray-700 list-decimal pl-5 space-y-2 mb-4">
+              <li>
+                Sign in to CME Tracker:
+                <br />
+                <a
+                  href="https://cmetracker.net/MCLAREN"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  https://cmetracker.net/MCLAREN
+                </a>
+              </li>
+              <li>
+                Select <strong>Sign In / Create Account</strong>
+              </li>
+              <li>
+                Navigate to <strong>My Portal</strong>
+              </li>
+              <li>
+                Select <strong>Claim Credit</strong>
+              </li>
+              <li>
+                Enter activity code:
+                <div className="mt-1 font-mono bg-gray-100 px-2 py-1 rounded text-sm">
+                  {activeCEModule.ce_code || "CODE-TBD"}
+                </div>
+              </li>
+              <li>Complete the evaluation and attest to your credits</li>
+            </ol>
+
+            <p className="text-xs text-gray-500 mb-4">
+              Preferred browsers: Chrome, Firefox, Microsoft Edge
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowCEModal(false);
+                  setActiveCEModule(null);
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={() => {
+                  window.open("https://cmetracker.net/MCLAREN", "_blank");
+                  setShowCEModal(false);
+                  setActiveCEModule(null);
+                }}
+                className="bg-purple-600 text-white hover:bg-purple-700"
+              >
+                Go to CME Tracker
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
