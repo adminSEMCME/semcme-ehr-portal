@@ -153,6 +153,15 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
         {/* FILTER + SEARCH */}
         <div className="flex items-center gap-3">
+          <a
+            href="/pdfs/for-instructors.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white font-semibold text-md underline hover:pointer-events-auto whitespace-nowrap"
+          >
+            For Instructors
+          </a>
+
           {/* GROUP FILTER */}
           <div ref={groupRef} className="relative">
             <button
