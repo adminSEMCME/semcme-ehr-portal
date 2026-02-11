@@ -118,6 +118,12 @@ export default function DashboardPage() {
   const [canCollectCE, setCanCollectCE] = useState(false);
   const [showCEModal, setShowCEModal] = useState(false);
   const [activeCEModule, setActiveCEModule] = useState<Module | null>(null);
+  const [showAccredModal, setShowAccredModal] = useState(false);
+  const [activeAccredModule, setActiveAccredModule] = useState<Module | null>(
+    null,
+  );
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+  const [showCEInfoModal, setShowCEInfoModal] = useState(false);
 
   type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -186,6 +192,26 @@ export default function DashboardPage() {
         setModules(modulesData || []);
         setProgress(progressData || []);
         setCertificates(certData || []);
+        // 🔹 Show CE info modal ONLY on first completed module
+        const role = profileData?.role?.toLowerCase();
+        const isCEUser =
+          role === "practicing physician/faculty" || role === "nursing";
+
+        const { data: cePref } = await supabase
+          .from("user_ce_preferences")
+          .select("ce_info_seen")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (isCEUser && progressData && !cePref?.ce_info_seen) {
+          const completedCount = progressData.filter(
+            (p) => p.status === "completed",
+          ).length;
+
+          if (completedCount === 1) {
+            setShowCEInfoModal(true);
+          }
+        }
       } catch (err) {
         console.error("Error loading dashboard:", err);
       } finally {
@@ -227,6 +253,16 @@ export default function DashboardPage() {
       const user = sessionData?.session?.user;
       if (!user) return;
 
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      const role = profileData?.role?.toLowerCase();
+      const isCEUser =
+        role === "practicing physician/faculty" || role === "nursing";
+
       const [
         { data: progressData },
         { data: certData },
@@ -251,6 +287,23 @@ export default function DashboardPage() {
       setProgress(progressData || []);
       setCertificates(certData || []);
       setAssessments(assessmentData || []);
+
+      // 🔹 Show CE info modal immediately after first completion
+      const { data: cePref } = await supabase
+        .from("user_ce_preferences")
+        .select("ce_info_seen")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (isCEUser && progressData && !cePref?.ce_info_seen) {
+        const completedCount = progressData.filter(
+          (p) => p.status === "completed",
+        ).length;
+
+        if (completedCount === 1) {
+          setShowCEInfoModal(true);
+        }
+      }
     }
 
     function handleVisibilityChange() {
@@ -287,6 +340,23 @@ export default function DashboardPage() {
       const user = sessionData?.session?.user;
       if (!user) return router.push("/login");
 
+      // 🔹 If CE user, check if they skipped accreditation before
+      if (canCollectCE) {
+        const { data } = await supabase
+          .from("module_accreditation_views")
+          .select("dont_show_again")
+          .eq("user_id", user.id)
+          .eq("module_id", module.id)
+          .maybeSingle();
+
+        if (!data?.dont_show_again) {
+          setActiveAccredModule(module);
+          setShowAccredModal(true);
+          return; // ⛔ STOP here until modal confirmed
+        }
+      }
+
+      // 🔹 Continue with your original logic
       await supabase.from("module_progress").upsert({
         user_id: user.id,
         module_id: module.id,
@@ -296,7 +366,7 @@ export default function DashboardPage() {
         last_accessed: new Date().toISOString(),
       });
 
-      // ✅ MOCK-EHR MODULE → open mock-EHR
+      // ✅ MOCK-EHR MODULE
       if (module.url.includes("mock-ehr")) {
         const payload = {
           sub: user.id,
@@ -311,11 +381,61 @@ export default function DashboardPage() {
         return;
       }
 
-      // ✅ ALL OTHER MODULES → open their Storyline module
+      // ✅ ALL OTHER MODULES
       window.open(module.url, "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Error starting module:", err);
     }
+  };
+
+  const handleConfirmAccreditation = async () => {
+    if (!activeAccredModule) return;
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const user = sessionData?.session?.user;
+    if (!user) return;
+
+    // Save preference if checked
+    if (dontShowAgain) {
+      await supabase.from("module_accreditation_views").upsert({
+        user_id: user.id,
+        module_id: activeAccredModule.id,
+        dont_show_again: true,
+      });
+    }
+
+    // Continue normal start logic
+    await supabase.from("module_progress").upsert({
+      user_id: user.id,
+      module_id: activeAccredModule.id,
+      status: "in_progress",
+      progress_percent: getProgress(activeAccredModule.id),
+      date_started: new Date().toISOString(),
+      last_accessed: new Date().toISOString(),
+    });
+
+    if (activeAccredModule.url.includes("mock-ehr")) {
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+
+      const token = btoa(JSON.stringify(payload));
+      const safeToken = encodeURIComponent(token);
+
+      window.open(
+        `https://mock-ehr.semcme.org/?sso=${safeToken}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+    } else {
+      window.open(activeAccredModule.url, "_blank", "noopener,noreferrer");
+    }
+
+    // Reset modal state
+    setShowAccredModal(false);
+    setActiveAccredModule(null);
+    setDontShowAgain(false);
   };
 
   /* LOGOUT */
@@ -605,6 +725,112 @@ export default function DashboardPage() {
           );
         })}
       </div>
+
+      {/* 🔹 CE FIRST-COMPLETION INFO MODAL */}
+      {showCEInfoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+              Important: CE vs Post Assessment
+            </h2>
+
+            <p className="text-sm text-gray-700 mb-4">
+              You do NOT need to complete both options.
+            </p>
+
+            <ul className="text-sm text-gray-700 list-disc pl-5 space-y-2 mb-4">
+              <li>
+                If you want CE credit through McLaren, select
+                <strong> Collect CE Credits</strong>.
+              </li>
+              <li>
+                If you do NOT want CE credit, complete the
+                <strong> Post Assessment</strong> to receive a certificate of
+                completion.
+              </li>
+            </ul>
+
+            <div className="flex justify-end">
+              <Button
+                onClick={async () => {
+                  const { data: sessionData } =
+                    await supabase.auth.getSession();
+                  const user = sessionData?.session?.user;
+                  if (!user) return;
+
+                  await supabase.from("user_ce_preferences").upsert({
+                    user_id: user.id,
+                    ce_info_seen: true,
+                  });
+
+                  setShowCEInfoModal(false);
+                }}
+                className="bg-semcmeBlue text-white hover:bg-blue-800"
+              >
+                Got It
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAccredModal && activeAccredModule && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+              Accreditation Statement
+            </h2>
+
+            <p className="text-sm text-gray-700 mb-4">
+              Each module has its own accreditation statement. You must review
+              the statement for this module before proceeding. After reviewing
+              it once, you may select
+              <strong> “Don't show this message again” </strong>
+              and it will not appear again for this module.
+            </p>
+
+            <a
+              href={`/accreditation/${activeAccredModule.id}.pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mb-4 text-blue-600 underline font-medium"
+            >
+              {activeAccredModule.title} Accreditation Statement (PDF)
+            </a>
+
+            <div className="flex items-center gap-2 mb-4">
+              <input
+                type="checkbox"
+                id="dontShow"
+                checked={dontShowAgain}
+                onChange={(e) => setDontShowAgain(e.target.checked)}
+              />
+              <label htmlFor="dontShow" className="text-sm text-gray-700">
+                Don't show this message again
+              </label>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowAccredModal(false);
+                  setActiveAccredModule(null);
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={handleConfirmAccreditation}
+                className="bg-semcmeBlue text-white hover:bg-blue-800"
+              >
+                Continue to Module
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       {showCEModal && activeCEModule && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
