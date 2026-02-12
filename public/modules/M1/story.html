@@ -2,9 +2,9 @@
 <html lang="en-US">
 <head>
   <meta charset="utf-8">
-  <!-- Created using Storyline 360 - http://www.articulate.com  -->
-  <!-- version: 3.80.31058.0 -->
-  <title>EHRs: An Introduction v1.2</title>
+  <!-- Created using Storyline 360 x64 - http://www.articulate.com  -->
+  <!-- version: 3.109.36182.0 -->
+  <title>EHRs - An Introduction 1.4</title>
   <meta http-equiv="x-ua-compatible" content="IE=edge"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,shrink-to-fit=no,minimal-ui"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -24,23 +24,25 @@
       tinCanPresent: false,
       cmi5Present: false,
       aoSupport: false,
-      scale: 'noscale',
+      scale: 'Scaled',
       captureRc: false,
       browserSize: 'fullscreen',
       bgColor: '#282828',
-      features: 'ConnectionMessages,DropIn1,DropIn2,DropIn3,DropIn4,DropIn5,FullScreenToggle,HyperlinkHoverStateFix,LayerPresentAsDialog,MultipleQuizTracking,UpdatedThemeEditor',
+      features: 'DropInBase,LocalizationCaptionReview,PlayerSizeOption,SlideLevelScale',
       themeName: 'unified',
       preloaderColor: '#FFFFFF',
       suppressAnalytics: false,
       productChannel: 'stable',
       publishSource: 'storyline',
       aid: 'auth0|986a4be0-3cd6-0132-9fd7-22000b430d1b',
-      cid: 'cff24444-3ac8-4684-b6f2-293d83eb3652',
-      playerVersion: '3.80.31058.0',
-      publishTimestamp: '2023-11-14T18:50:45.0508133Z',
+      cid: 'f4d00788-0be2-446a-98c7-81d4e310be9b',
+      playerVersion: '3.109.36182.0',
+      publishTimestamp: '2026-02-05T18:40:03.1126418Z',
       maxIosVideoElements: 10,
       connectionSettings: { message: 'You%20are%20offline.%20Trying%20to%20reconnect...', useDarkTheme: false, mode: 'disabled' },
-
+      hasFeature: function(feature) {
+        return this.features.split(',').includes(feature);
+      },
       
       parseParams: function(qs) {
         if (window.globals.parsedParams != null) {
@@ -60,6 +62,15 @@
       }
 
     };
+
+    if (window.flagsUnderTest != null) {
+      window.globals.features = window.flagsUnderTest.reduce((accum, feature) => {
+        if (!accum.includes(feature)) {
+          accum.push(feature);
+        }
+        return accum;
+      }, window.globals.features.split(',')).join();
+    }
   </script>
   <script>
     var isIe11 = ('ActiveXObject' in window || window.MSBlobBuilder != null)
@@ -69,6 +80,15 @@
       document.write(atob('PHN0eWxlPg0KICBAZm9udC1mYWNlIHsNCiAgICBmb250LWZhbWlseTogIk9wZW4gU2FucyBGdWxsIjsNCiAgICBmb250LXN0eWxlOiBub3JtYWw7DQogICAgZm9udC13ZWlnaHQ6IDQwMDsNCiAgICBzcmM6IHVybCgiLi9odG1sNS9saWIvc3R5bGVzaGVldHMvbW9iaWxlLWZvbnRzL29wZW4tc2Fucy1yZWd1bGFyLndvZmYiKSBmb3JtYXQoIndvZmYiKTsNCiAgfQ0KDQogICogew0KICAgIG1hcmdpbjogMDsNCiAgICBwYWRkaW5nOiAwOw0KICB9DQoNCiAgYm9keSwNCiAgaHRtbCB7DQogICAgYmFja2dyb3VuZDogYmxhY2s7DQogICAgY29sb3I6IHdoaXRlOw0KICAgIGZvbnQtZmFtaWx5OiAiT3BlbiBTYW5zIEZ1bGwiLCBzYW5zLXNlcmlmOw0KICAgIGZvbnQtc2l6ZTogMTZweDsNCiAgICBoZWlnaHQ6IDEwMCU7DQogICAgdGV4dC1hbGlnbjogY2VudGVyOw0KICAgIG92ZXJmbG93OiBoaWRkZW47DQogIH0NCg0KICAuc2xpZGUtbG9hZGVyIHsNCiAgICBkaXNwbGF5OiBub25lOw0KICB9DQoNCiAgLm1vYmlsZS1zdGFydC1jb3Vyc2UtdGl0bGUgew0KICAgIGZvbnQtc2l6ZTogMjlweDsNCiAgICBwYWRkaW5nLWJvdHRvbTogMzMuNzVweDsNCiAgICBwYWRkaW5nLXRvcDogMzMuNzVweDsNCiAgICB0ZXh0LXNoYWRvdzogNHB4IDRweCAyNXB4IHJnYigwLCAwLCAwLCAuMyk7DQogICAgY29sb3I6ICNlOGU4ZTg7DQogICAgei1pbmRleDogOTk5Ow0KICB9DQoNCiAgcCB7DQogICAgZm9udC1zaXplOiAxLjFlbTsNCiAgfQ0KDQogIHNwYW4gew0KICAgIGhlaWdodDogMTAwJTsNCiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgfQ0KDQogIC5jb250ZW50IHsNCiAgICBiYWNrZ3JvdW5kOiAjMDAwOw0KICAgIHRleHQtYWxpZ246IGxlZnQ7DQogICAgZm9udC1zaXplOiAxNXB4Ow0KICAgIGNvbG9yOiAjYWFhOw0KICAgIHdpZHRoOiA4MCU7DQogICAgbWF4LXdpZHRoOiA1MzVweDsNCiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgfQ0KDQogIC5idG4tY29udGFpbiB7DQogICAgcG9zaXRpb246IHJlbGF0aXZlOw0KICAgIG1hcmdpbi10b3A6IDNlbTsNCiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7DQogIH0NCg0KICAuaWUxMS13YXJuIHAgYSB7DQogICAgY29sb3I6ICM1ZGIwZmYgIWltcG9ydGFudDsNCiAgICB0ZXh0LWRlY29yYXRpb246IHVuZGVybGluZSAhaW1wb3J0YW50Ow0KICB9DQoNCiAgYS5sZWFybiB7DQogICAgcG9zaXRpb246IHJlbGF0aXZlOw0KICAgIGZsb2F0OiBsZWZ0Ow0KICAgIG1hcmdpbi1yaWdodDogMmVtOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCiAgICBib3JkZXI6IDFweCBzb2xpZCB3aGl0ZTsNCiAgICBjb2xvcjogYmxhY2sgIWltcG9ydGFudDsNCiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7DQogICAgcGFkZGluZzogLjVlbTsNCiAgICBwYWRkaW5nOiAxOHB4Ow0KICAgIHBhZGRpbmctbGVmdDogNTBweDsNCiAgICBwYWRkaW5nLXJpZ2h0OiAzMHB4Ow0KICAgIGJhY2tncm91bmQ6ICNmZmY7DQogICAgYm9yZGVyLXJhZGl1czogNDBweDsNCiAgICBjdXJzb3I6IHBvaW50ZXI7DQogIH0NCg0KICBhLmxlYXJuOmFmdGVyIHsNCiAgICBjb250ZW50OiAiIjsNCiAgICBwb3NpdGlvbjogYWJzb2x1dGU7DQogICAgcG9pbnRlci1ldmVudHM6IG5vbmU7DQogICAgbGVmdDogMjBweDsNCiAgICB0b3A6IDUwJTsNCiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVkoLTUwJSk7DQogICAgd2lkdGg6IDA7DQogICAgaGVpZ2h0OiAwOw0KICAgIGJvcmRlci1zdHlsZTogc29saWQ7DQogICAgYm9yZGVyLXdpZHRoOiA5cHggMCA5cHggMTVweDsNCiAgICBib3JkZXItY29sb3I6IHRyYW5zcGFyZW50IHRyYW5zcGFyZW50IHRyYW5zcGFyZW50ICM2ZTZlNmU7DQogICAgY2xlYXI6IGJvdGg7DQogIH0NCg0KICAuaWUxMS13YXJuIHsNCiAgICBwb3NpdGlvbjogZml4ZWQ7DQogICAgd2lkdGg6IDEwMCU7DQogICAgaGVpZ2h0OiAxMDAlOw0KICAgIGJhY2tncm91bmQ6IGJsYWNrOw0KICB9DQo8L3N0eWxlPg0KDQo8ZGl2IGNsYXNzPSJpZTExLXdhcm4iPg0KICA8c3Bhbj48L3NwYW4+DQogIDxkaXYgY2xhc3M9ImNvbnRlbnQiPg0KICAgIDxkaXYgY2xhc3M9Im1vYmlsZS1zdGFydC1jb3Vyc2UtdGl0bGUiPkVuZCBvZiBTdXBwb3J0IGZvciBJbnRlcm5ldCBFeHBsb3JlciAxMTwvZGl2Pg0KICAgIDxwPkZvbGxvd2luZyBNaWNyb3NvZnQncyBsZWFkLCB3ZSBlbmRlZCBzdXBwb3J0IGZvciBJbnRlcm5ldCBFeHBsb3JlciAxMSAoSUUxMSkuDQogICAgICBBcyBvZiBKdWx5IDIwMjIsIHlvdSBjYW4gbm8gbG9uZ2VyIHZpZXcgUmlzZSAzNjAsIFN0b3J5bGluZSAzNjAsIG9yIFN0dWRpbyAzNjANCiAgICAgIGNvdXJzZXMgaW4gSUUxMS4gVXNlIHRoZSBsYXRlc3QgdmVyc2lvbiBvZiBhIHN1cHBvcnRlZCBicm93c2VyIC0NCiAgICAgIDxhIGhyZWY9Imh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vY2hyb21lL2Rvd25sb2Fkcy8iIHRhcmdldD0iX2JsYW5rIj5Hb29nbGUgQ2hyb21lPC9hPiwNCiAgICAgIDxhIGhyZWY9Imh0dHBzOi8vd3d3Lm1pY3Jvc29mdC5jb20vZW4tdXMvZWRnZSIgdGFyZ2V0PSJfYmxhbmsiPk1pY3Jvc29mdCBFZGdlPC9hPiwNCiAgICAgIG9yDQogICAgICA8YSBocmVmPSJodHRwczovL3d3dy5tb3ppbGxhLm9yZy9lbi1VUy9maXJlZm94L25ldy8iIHRhcmdldD0iX2JsYW5rIj5Nb3ppbGxhIEZpcmVmb3g8L2E+Lg0KICAgIDwvcD4NCiAgICA8ZGl2IGNsYXNzPSJidG4tY29udGFpbiI+DQogICAgICA8YSBjbGFzcz0ibGVhcm4iIGhyZWY9Imh0dHBzOi8vYXJ0aWN1bGF0ZS5jb20vc3VwcG9ydC9hcnRpY2xlL0VuZC1vZi1TdXBwb3J0LWZvci1JbnRlcm5ldC1FeHBsb3Jlci0xMSINCiAgICAgICAgdGFyZ2V0PSJfYmxhbmsiPkxlYXJuIE1vcmU8L2E+DQogICAgPC9kaXY+DQogIDwvZGl2Pg0KPC9kaXY+DQo='));
     }
   </script>
+
+  <script>
+    if (window.globals.hasFeature('Localization')) {
+      
+      
+    }
+  </script>
+
+  
   
   <script>window.THREE = { };</script>
   
@@ -123,7 +143,8 @@
     })();
   </script>
   
-  <script src='story_content/user.js' type=text/javascript></script>
+  <script src='story_content/triggers.js' type=text/javascript></script>
+<script src='story_content/user.js' type=text/javascript></script>
   <div class="slide-loader"></div>
 
   <script>
@@ -131,7 +152,7 @@
   </script>
 
   <div class="mobile-load-title-overlay" style="display: none">
-    <div class="mobile-load-title">EHRs: An Introduction v1.2</div>
+    <div class="mobile-load-title">EHRs - An Introduction 1.4</div>
   </div>
 
   <div class="mobile-chrome-warning"></div>
@@ -173,7 +194,7 @@
     transform: translateX(-50%);
   }
 
-  .is-portrait .warn-connection-content {
+  .view-mobile.is-portrait .warn-connection-content {
     transform: translate(-50%, calc(-100% - 15px));
   }
 
@@ -242,11 +263,8 @@
 
     var connectionSettings = window.globals.connectionSettings || {};
 
-    // The `window.globals.features` variable must be set in `webpack.dev.config` when testing locally - it is not enough
-    // to have it in the data - but it must be set there as well.
     var useConnectionMessages = window.AbortController != null &&
       window.location.protocol != 'file:' &&
-      window.globals.features.indexOf('ConnectionMessages') != -1 &&
       connectionSettings.mode === 'normal';
 
     window.DS.connection.useConnectionMessages = useConnectionMessages;
@@ -382,11 +400,14 @@
       }
 
       var isPortrait = document.body.classList.contains('is-portrait');
+      var isMobile = document.body.classList.contains('view-mobile');
       var warningEl = document.querySelector('.warn-connection-content');
 
-      if (isPortrait) {
+      if (isPortrait && isMobile) {
         var slide = document.querySelector('.primary-slide');
-        var slideRect = slide.getBoundingClientRect();
+        var slideRect = slide != null
+          ? slide.getBoundingClientRect()
+          : { top: window.innerHeight, left: 0, width: window.innerWidth };
 
         warningEl.style.top = `${slideRect.top}px`
         warningEl.style.left = `${slideRect.left + slideRect.width / 2}px`
@@ -412,9 +433,9 @@
     var warnDialogEl = document.querySelector('.warn-connection-dialog');
 
     function disableKeys() {
-      if (DS.views.nsStack.length === 1) {
+      if (DS.views && DS.views.nsStack && DS.views.nsStack.length === 1) {
         DS.views.nsStack[0].tabReachable = false
-        DS.views.nsStack[0].updateTabIndex(true, true);
+        DS.views.nsStack[0].updateTabIndex(true);
       }
 
       accStyle.innerHTML = '.acc-shadow-dom { display: none; }';
@@ -425,8 +446,8 @@
     }
 
     function enableKeys() {
-      document.body.removeChild(accStyle);
-      if (DS.views.nsStack.length === 1 && DS.views.nsStack[0].name === '_frame') {
+      accStyle.remove();
+      if (DS.views && DS.views.nsStack && DS.views.nsStack.length === 1 && DS.views.nsStack[0].name === '_frame') {
         DS.views.nsStack[0].tabReachable = true;
         DS.views.nsStack[0].updateTabIndex();
       }
@@ -455,5 +476,4 @@
   <link rel="stylesheet" href="html5/data/css/output.min.css" data-noprefix/>
 </body>
 <script src="html5/lib/scripts/bootstrapper.min.js"></script>
-<script src="/modules/module-progress-tracker.js"></script>
 </html>
