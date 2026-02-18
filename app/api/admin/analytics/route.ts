@@ -20,7 +20,7 @@ export async function GET(request: Request) {
           });
         },
       },
-    }
+    },
   );
 
   // AUTH CHECK
@@ -40,14 +40,14 @@ export async function GET(request: Request) {
     console.error("join error:", joinErr);
     return NextResponse.json(
       { error: "Failed to load analytics", details: joinErr.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
   // ALL MODULES (for filters + "not started")
   const { data: modules, error: modulesErr } = await supabase
     .from("modules")
-    .select("id, title, order_index")
+    .select("id, title, order_index, skill_level")
     .order("order_index", { ascending: true });
 
   if (modulesErr) {

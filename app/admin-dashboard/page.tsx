@@ -1,6 +1,7 @@
+//app/admin-dashboard/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import React from "react";
 
 /* ---------------- CSV EXPORT HELPER ---------------- */
@@ -36,7 +37,7 @@ function exportCSV(filename: string, rows: Record<string, any>[]) {
   URL.revokeObjectURL(url);
 }
 
-/* ---------------- ORIGINAL TYPES ---------------- */
+/* ---------------- UPDATED TYPES ---------------- */
 
 type UserModuleRow = {
   user_id: string;
@@ -44,15 +45,20 @@ type UserModuleRow = {
   last_name: string | null;
   email: string;
   institution: string | null;
+  role: string | null;
   user_created_at: string | null;
+
   module_id: string | null;
   module_title: string | null;
   order_index: number | null;
+  skill_level: string | null;
+
   status: string | null;
   progress_percent: number | null;
   date_started: string | null;
   date_completed: string | null;
   last_accessed: string | null;
+
   cert_url: string | null;
   cert_issued_at: string | null;
 };
@@ -61,6 +67,7 @@ type ModuleMeta = {
   id: string;
   title: string;
   order_index: number | null;
+  skill_level: string | null;
 };
 
 type AnalyticsResponse = {
@@ -73,6 +80,7 @@ type UserSummary = {
   name: string;
   email: string;
   institution: string;
+  role: string;
   createdAt: string | null;
   completedCount: number;
   inProgressCount: number;
@@ -82,6 +90,7 @@ type UserSummary = {
 type ModuleSummary = {
   module_id: string;
   title: string;
+  skill_level: string | null;
   attempts: number;
   completions: number;
   avgProgress: number;
@@ -89,12 +98,14 @@ type ModuleSummary = {
   usersCompleted: number;
   usersInProgress: number;
   usersNotStarted: number;
+  certificateCount: number;
 };
 
 type InstitutionSummary = {
   institution: string;
   userCount: number;
   totalCompletions: number;
+  totalCertificates: number;
   perModule: Record<string, number>;
 };
 
@@ -110,13 +121,22 @@ export default function AdminDashboardPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [selectedInstitution, setSelectedInstitution] = useState<string | null>(
-    null
+    null,
   );
 
   const [filterModuleId, setFilterModuleId] = useState<string | "all">("all");
   const [filterInstitution, setFilterInstitution] = useState<string | "all">(
-    "all"
+    "all",
   );
+  const [filterRole, setFilterRole] = useState<string | "all">("all");
+  const [filterSkillLevel, setFilterSkillLevel] = useState<string | "all">(
+    "all",
+  );
+  const [filterSelectedModules, setFilterSelectedModules] = useState<string[]>(
+    [],
+  );
+  const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
+  const moduleDropdownRef = useRef<HTMLDivElement | null>(null);
 
   /* ------------------- LOAD ANALYTICS ------------------- */
 
@@ -140,6 +160,25 @@ export default function AdminDashboardPage() {
     load();
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        moduleDropdownRef.current &&
+        !moduleDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsModuleDropdownOpen(false);
+      }
+    }
+
+    if (isModuleDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModuleDropdownOpen]);
+
   /* ------------------- PROCESS ANALYTICS ------------------- */
 
   const {
@@ -158,10 +197,12 @@ export default function AdminDashboardPage() {
     const moduleMap = new Map<string, ModuleSummary>();
     const institutionMap = new Map<string, InstitutionSummary>();
 
+    // Initialize modules
     for (const mod of allModules) {
       moduleMap.set(mod.id, {
         module_id: mod.id,
         title: mod.title,
+        skill_level: mod.skill_level ?? null,
         attempts: 0,
         completions: 0,
         avgProgress: 0,
@@ -169,9 +210,11 @@ export default function AdminDashboardPage() {
         usersCompleted: 0,
         usersInProgress: 0,
         usersNotStarted: 0,
+        certificateCount: 0,
       });
     }
 
+    // Process rows
     for (const row of userModules) {
       const id = row.user_id;
       if (!id) continue;
@@ -185,6 +228,7 @@ export default function AdminDashboardPage() {
           name,
           email: row.email,
           institution: row.institution ?? "",
+          role: row.role ?? "",
           createdAt: row.user_created_at ?? null,
           completedCount: 0,
           inProgressCount: 0,
@@ -205,10 +249,13 @@ export default function AdminDashboardPage() {
 
         if (row.status === "completed") m.usersCompleted++;
         else if (row.status === "in_progress") m.usersInProgress++;
-        else m.usersNotStarted++;
 
         if (row.status) m.attempts++;
         if (row.status === "completed") m.completions++;
+
+        if (row.cert_url) {
+          m.certificateCount++;
+        }
 
         if (typeof row.progress_percent === "number") {
           (m as any)._sum = ((m as any)._sum ?? 0) + row.progress_percent;
@@ -217,6 +264,7 @@ export default function AdminDashboardPage() {
       }
     }
 
+    // Finalize module stats
     for (const [, mod] of moduleMap) {
       const totalUsers = usersMap.size;
       const started = mod.usersCompleted + mod.usersInProgress;
@@ -227,6 +275,7 @@ export default function AdminDashboardPage() {
       mod.avgProgress = count ? Math.round(sum / count) : 0;
     }
 
+    // Build institution summary
     for (const [, u] of usersMap) {
       const inst = u.institution.trim() || "Unknown";
 
@@ -235,12 +284,12 @@ export default function AdminDashboardPage() {
           institution: inst,
           userCount: 0,
           totalCompletions: 0,
+          totalCertificates: 0,
           perModule: {},
         });
       }
 
       const i = institutionMap.get(inst)!;
-
       i.userCount++;
 
       for (const m of u.modules) {
@@ -248,13 +297,17 @@ export default function AdminDashboardPage() {
           i.totalCompletions++;
           i.perModule[m.module_id] = (i.perModule[m.module_id] ?? 0) + 1;
         }
+
+        if (m.cert_url) {
+          i.totalCertificates++;
+        }
       }
     }
 
     const kpiUsers = usersMap.size;
     const kpiCompletions = Array.from(usersMap.values()).reduce(
       (sum, u) => sum + u.completedCount,
-      0
+      0,
     );
 
     const avgProgress = (() => {
@@ -274,7 +327,7 @@ export default function AdminDashboardPage() {
     return {
       users: Array.from(usersMap.values()),
       modules: Array.from(moduleMap.values()).sort(
-        (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)
+        (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
       ),
       institutions: Array.from(institutionMap.values()),
       kpis: {
@@ -282,7 +335,10 @@ export default function AdminDashboardPage() {
         totalCompletions: kpiCompletions,
         avgProgress,
       },
-      moduleOptions: allModules.map((m) => ({ value: m.id, label: m.title })),
+      moduleOptions: allModules.map((m) => ({
+        value: m.id,
+        label: m.title,
+      })),
       institutionOptions: Array.from(institutionMap.values()).map((i) => ({
         value: i.institution,
         label: i.institution,
@@ -297,14 +353,16 @@ export default function AdminDashboardPage() {
     let list = [...users];
 
     if (filterInstitution !== "all") {
-      list = list.filter((u) =>
-        u.institution.toLowerCase().includes(filterInstitution.toLowerCase())
-      );
+      list = list.filter((u) => u.institution === filterInstitution);
+    }
+
+    if (filterRole !== "all") {
+      list = list.filter((u) => u.role === filterRole);
     }
 
     if (filterModuleId !== "all") {
       list = list.filter((u) =>
-        u.modules.some((m) => m.module_id === filterModuleId)
+        u.modules.some((m) => m.module_id === filterModuleId),
       );
     }
 
@@ -312,14 +370,74 @@ export default function AdminDashboardPage() {
       const q = search.toLowerCase();
       list = list.filter(
         (u) =>
-          u.name.toLowerCase().includes(q) ||
-          u.email.toLowerCase().includes(q) ||
-          u.institution.toLowerCase().includes(q)
+          u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
       );
     }
 
     return list;
-  }, [users, search, filterInstitution, filterModuleId]);
+  }, [users, search, filterInstitution, filterModuleId, filterRole]);
+
+  const filteredModules = useMemo(() => {
+    let list = [...modules];
+
+    // Skill Level filter
+    if (filterSkillLevel !== "all") {
+      list = list.filter((m) => m.skill_level === filterSkillLevel);
+    }
+
+    // Multi-module selector filter
+    if (filterSelectedModules.length > 0) {
+      list = list.filter((m) => filterSelectedModules.includes(m.module_id));
+    }
+
+    // Institution filter
+    if (filterInstitution !== "all") {
+      list = list.map((m) => {
+        const instUsers = users.filter(
+          (u) => u.institution === filterInstitution,
+        );
+
+        const completed = instUsers.filter((u) =>
+          u.modules.some(
+            (mod) =>
+              mod.module_id === m.module_id && mod.status === "completed",
+          ),
+        ).length;
+
+        const inProgress = instUsers.filter((u) =>
+          u.modules.some(
+            (mod) =>
+              mod.module_id === m.module_id && mod.status === "in_progress",
+          ),
+        ).length;
+
+        const started = completed + inProgress;
+
+        const certificates = instUsers.filter((u) =>
+          u.modules.some(
+            (mod) => mod.module_id === m.module_id && mod.cert_url,
+          ),
+        ).length;
+
+        return {
+          ...m,
+          usersCompleted: completed,
+          usersInProgress: inProgress,
+          usersNotStarted: instUsers.length - started,
+          attempts: started,
+          certificateCount: certificates,
+        };
+      });
+    }
+
+    return list;
+  }, [
+    modules,
+    filterSkillLevel,
+    filterInstitution,
+    filterSelectedModules,
+    users,
+  ]);
 
   /* ------------------- LOADING ------------------- */
 
@@ -334,48 +452,109 @@ export default function AdminDashboardPage() {
   /* ------------------- EXPORT BUTTONS ------------------- */
 
   const exportUsers = () => {
-    const rows = filteredUsers.map((u) => ({
-      user_id: u.user_id,
-      name: u.name,
-      email: u.email,
-      institution: u.institution,
-      account_created: u.createdAt,
-      completed_count: u.completedCount,
-      in_progress_count: u.inProgressCount,
-    }));
+    const rows = filteredUsers.map((u) => {
+      const completed = u.modules.filter((m) => m.status === "completed");
+      const inProgress = u.modules.filter((m) => m.status === "in_progress");
+
+      const notStarted = allModules.filter(
+        (mod) => !u.modules.some((m) => m.module_id === mod.id),
+      );
+
+      return {
+        name: u.name,
+        email: u.email,
+        institution: u.institution,
+        role: u.role,
+        account_created: u.createdAt,
+        completed_count: u.completedCount,
+        in_progress_count: u.inProgressCount,
+
+        completed_modules: completed
+          .map(
+            (m) =>
+              `${m.module_title ?? m.module_id} (${m.date_completed ?? "—"} | ${
+                m.cert_url ? "Certificate Issued" : "No Certificate"
+              })`,
+          )
+          .join("; "),
+
+        in_progress_modules: inProgress
+          .map(
+            (m) =>
+              `${m.module_title ?? m.module_id} (${m.progress_percent ?? 0}%)`,
+          )
+          .join("; "),
+
+        not_started_modules: notStarted.map((m) => m.title).join("; "),
+      };
+    });
+
     exportCSV("users.csv", rows);
   };
 
   const exportModules = () => {
-    const rows = modules.map((m) => ({
-      module_id: m.module_id,
-      title: m.title,
-      order_index: m.order_index,
-      attempts: m.attempts,
-      completions: m.completions,
-      avg_progress: m.avgProgress,
-      users_completed: m.usersCompleted,
-      users_in_progress: m.usersInProgress,
-      users_not_started: m.usersNotStarted,
-    }));
+    const rows = filteredModules.map((m) => {
+      const completedUsers = users.filter((u) =>
+        u.modules.some(
+          (mod) => mod.module_id === m.module_id && mod.status === "completed",
+        ),
+      );
+
+      const inProgressUsers = users.filter((u) =>
+        u.modules.some(
+          (mod) =>
+            mod.module_id === m.module_id && mod.status === "in_progress",
+        ),
+      );
+
+      const notStartedUsers = users.filter(
+        (u) => !u.modules.some((mod) => mod.module_id === m.module_id),
+      );
+
+      return {
+        module_title: m.title,
+        skill_level: m.skill_level,
+        total_users_started: m.attempts,
+        total_in_progress: m.usersInProgress,
+        total_completed: m.usersCompleted,
+        avg_progress_percent: m.avgProgress,
+        total_certificates_issued: m.certificateCount,
+
+        completed_users: completedUsers
+          .map((u) => `${u.name} | ${u.email}`)
+          .join("; "),
+
+        in_progress_users: inProgressUsers
+          .map((u) => `${u.name} | ${u.email}`)
+          .join("; "),
+
+        not_started_users: notStartedUsers
+          .map((u) => `${u.name} | ${u.email}`)
+          .join("; "),
+      };
+    });
+
     exportCSV("modules.csv", rows);
   };
 
   const exportInstitutions = () => {
-    const rows: any[] = [];
-    for (const inst of institutions) {
-      for (const moduleId of Object.keys(inst.perModule)) {
-        rows.push({
-          institution: inst.institution,
-          user_count: inst.userCount,
-          total_completions: inst.totalCompletions,
-          module_id: moduleId,
-          module_title:
-            allModules.find((m) => m.id === moduleId)?.title ?? moduleId,
-          completion_count: inst.perModule[moduleId],
-        });
-      }
-    }
+    const rows = institutions.map((inst) => {
+      const instUsers = users.filter(
+        (u) => (u.institution.trim() || "Unknown") === inst.institution,
+      );
+
+      return {
+        institution_name: inst.institution,
+        total_users: inst.userCount,
+        total_modules_completed: inst.totalCompletions,
+        total_certificates_issued: inst.totalCertificates,
+
+        user_list: instUsers
+          .map((u) => `${u.name} | ${u.email} | ${u.role}`)
+          .join("; "),
+      };
+    });
+
     exportCSV("institutions.csv", rows);
   };
 
@@ -430,7 +609,7 @@ export default function AdminDashboardPage() {
               value={filterModuleId}
               onChange={(e) =>
                 setFilterModuleId(
-                  e.target.value === "all" ? "all" : e.target.value
+                  e.target.value === "all" ? "all" : e.target.value,
                 )
               }
               className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
@@ -447,7 +626,7 @@ export default function AdminDashboardPage() {
               value={filterInstitution}
               onChange={(e) =>
                 setFilterInstitution(
-                  e.target.value === "all" ? "all" : e.target.value
+                  e.target.value === "all" ? "all" : e.target.value,
                 )
               }
               className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
@@ -456,6 +635,21 @@ export default function AdminDashboardPage() {
               {institutionOptions.map((i) => (
                 <option key={i.value} value={i.value}>
                   {i.label}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filterRole}
+              onChange={(e) =>
+                setFilterRole(e.target.value === "all" ? "all" : e.target.value)
+              }
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
+            >
+              <option value="all">All roles</option>
+              {Array.from(new Set(users.map((u) => u.role))).map((role) => (
+                <option key={role} value={role}>
+                  {role}
                 </option>
               ))}
             </select>
@@ -475,7 +669,7 @@ export default function AdminDashboardPage() {
             Click a user row to expand their full module history.
           </p>
 
-          {/* TABLE WRAPPER (BORDER FIXED HERE) */}
+          {/* TABLE WRAPPER */}
           <div className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
             <table className="min-w-full text-sm">
               <thead className="bg-semcmeBlue text-white">
@@ -483,6 +677,7 @@ export default function AdminDashboardPage() {
                   <th className="p-3 text-left">Name</th>
                   <th className="p-3 text-left">Email</th>
                   <th className="p-3 text-left">Institution</th>
+                  <th className="p-3 text-left">Role</th>
                   <th className="p-3 text-left">Completed</th>
                   <th className="p-3 text-left">In Progress</th>
                 </tr>
@@ -493,7 +688,7 @@ export default function AdminDashboardPage() {
                     <tr
                       onClick={() =>
                         setSelectedUserId(
-                          selectedUserId === u.user_id ? null : u.user_id
+                          selectedUserId === u.user_id ? null : u.user_id,
                         )
                       }
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
@@ -501,13 +696,14 @@ export default function AdminDashboardPage() {
                       <td className="p-3">{u.name}</td>
                       <td className="p-3">{u.email}</td>
                       <td className="p-3">{u.institution}</td>
+                      <td className="p-3">{u.role}</td>
                       <td className="p-3">{u.completedCount}</td>
                       <td className="p-3">{u.inProgressCount}</td>
                     </tr>
 
                     {selectedUserId === u.user_id && (
                       <tr className="bg-gray-50 border-b border-gray-200">
-                        <td colSpan={5} className="p-4">
+                        <td colSpan={6} className="p-4">
                           <UserDetailPanel user={u} allModules={allModules} />
                         </td>
                       </tr>
@@ -523,6 +719,80 @@ export default function AdminDashboardPage() {
       {/* MODULES TAB */}
       {tab === "modules" && (
         <>
+          <section className="flex flex-col md:flex-row items-center justify-center gap-4 mb-3 w-full max-w-5xl mx-auto">
+            <select
+              value={filterSkillLevel}
+              onChange={(e) =>
+                setFilterSkillLevel(
+                  e.target.value === "all" ? "all" : e.target.value,
+                )
+              }
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
+            >
+              <option value="all">All Skill Levels</option>
+              {Array.from(
+                new Set(modules.map((m) => m.skill_level).filter(Boolean)),
+              ).map((level) => (
+                <option key={level as string} value={level as string}>
+                  {level}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filterInstitution}
+              onChange={(e) =>
+                setFilterInstitution(
+                  e.target.value === "all" ? "all" : e.target.value,
+                )
+              }
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
+            >
+              <option value="all">All Institutions</option>
+              {institutionOptions.map((i) => (
+                <option key={i.value} value={i.value}>
+                  {i.label}
+                </option>
+              ))}
+            </select>
+
+            <div ref={moduleDropdownRef} className="relative flex-1">
+              <button
+                type="button"
+                onClick={() => setIsModuleDropdownOpen((prev) => !prev)}
+                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-left"
+              >
+                {filterSelectedModules.length === 0
+                  ? "Select Modules"
+                  : `${filterSelectedModules.length} Module(s) Selected`}
+              </button>
+
+              {isModuleDropdownOpen && (
+                <div className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2">
+                  {modules.map((m) => (
+                    <label
+                      key={m.module_id}
+                      className="flex items-center gap-2 text-sm cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={filterSelectedModules.includes(m.module_id)}
+                        onChange={() => {
+                          setFilterSelectedModules((prev) =>
+                            prev.includes(m.module_id)
+                              ? prev.filter((id) => id !== m.module_id)
+                              : [...prev, m.module_id],
+                          );
+                        }}
+                      />
+                      {m.title}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+
           <div className="flex justify-end mb-2">
             <button
               onClick={exportModules}
@@ -537,31 +807,39 @@ export default function AdminDashboardPage() {
               <thead className="bg-semcmeBlue text-white">
                 <tr>
                   <th className="p-3 text-left">Module</th>
-                  <th className="p-3 text-left">Attempts</th>
-                  <th className="p-3 text-left">Completions</th>
+                  <th className="p-3 text-left">Skill Level</th>
+                  <th className="p-3 text-left">Started</th>
+                  <th className="p-3 text-left">In Progress</th>
+                  <th className="p-3 text-left">Completed</th>
                 </tr>
               </thead>
 
               <tbody>
-                {modules.map((m) => (
+                {filteredModules.map((m) => (
                   <React.Fragment key={m.module_id}>
                     <tr
                       onClick={() =>
                         setSelectedModuleId(
-                          selectedModuleId === m.module_id ? null : m.module_id
+                          selectedModuleId === m.module_id ? null : m.module_id,
                         )
                       }
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{m.title}</td>
+                      <td className="p-3">{m.skill_level ?? "—"}</td>
                       <td className="p-3">{m.attempts}</td>
-                      <td className="p-3">{m.completions}</td>
+                      <td className="p-3">{m.usersInProgress}</td>
+                      <td className="p-3">{m.usersCompleted}</td>
                     </tr>
 
                     {selectedModuleId === m.module_id && (
                       <tr className="bg-gray-50 border-b border-gray-200">
-                        <td colSpan={3} className="p-4">
-                          <ModuleDetailPanel module={m} />
+                        <td colSpan={5} className="p-4">
+                          <ModuleDetailPanel
+                            module={m}
+                            users={users}
+                            filterInstitution={filterInstitution}
+                          />
                         </td>
                       </tr>
                     )}
@@ -592,6 +870,7 @@ export default function AdminDashboardPage() {
                   <th className="p-3 text-left">Institution</th>
                   <th className="p-3 text-left">Users</th>
                   <th className="p-3 text-left">Total Completions</th>
+                  <th className="p-3 text-left">Total Certificates Issued</th>
                 </tr>
               </thead>
 
@@ -603,7 +882,7 @@ export default function AdminDashboardPage() {
                         setSelectedInstitution(
                           selectedInstitution === inst.institution
                             ? null
-                            : inst.institution
+                            : inst.institution,
                         )
                       }
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
@@ -611,14 +890,16 @@ export default function AdminDashboardPage() {
                       <td className="p-3">{inst.institution}</td>
                       <td className="p-3">{inst.userCount}</td>
                       <td className="p-3">{inst.totalCompletions}</td>
+                      <td className="p-3">{inst.totalCertificates}</td>
                     </tr>
 
                     {selectedInstitution === inst.institution && (
                       <tr className="bg-gray-50 border-b border-gray-200">
-                        <td colSpan={3} className="p-4">
+                        <td colSpan={4} className="p-4">
                           <InstitutionDetailPanel
                             institution={inst}
                             allModules={allModules}
+                            users={users}
                           />
                         </td>
                       </tr>
@@ -656,7 +937,7 @@ function UserDetailPanel({
   const inProgress = user.modules.filter((m) => m.status === "in_progress");
 
   const notStarted = allModules.filter(
-    (mod) => !user.modules.some((m) => m.module_id === mod.id)
+    (mod) => !user.modules.some((m) => m.module_id === mod.id),
   );
 
   return (
@@ -686,22 +967,22 @@ function UserDetailPanel({
           <ul className="text-xs">
             {completed.map((m, idx) => (
               <li key={idx}>
-                <strong>{m.module_title ?? m.module_id}</strong> —{" "}
-                {m.date_completed
-                  ? new Date(m.date_completed).toLocaleDateString()
-                  : "date unknown"}
-                {m.cert_url && (
-                  <>
-                    {" "}
-                    •{" "}
-                    <a
-                      href={m.cert_url}
-                      target="_blank"
-                      className="text-semcmeBlue underline"
-                    >
-                      Certificate
-                    </a>
-                  </>
+                <strong>{m.module_title ?? m.module_id}</strong>
+
+                <div>
+                  • Completed:{" "}
+                  {m.date_completed
+                    ? new Date(m.date_completed).toLocaleDateString()
+                    : "date unknown"}
+                </div>
+
+                <div>• Certificate Issued: {m.cert_url ? "Yes" : "No"}</div>
+
+                {m.cert_issued_at && (
+                  <div>
+                    • Certificate Issue Date:{" "}
+                    {new Date(m.cert_issued_at).toLocaleDateString()}
+                  </div>
                 )}
               </li>
             ))}
@@ -741,29 +1022,96 @@ function UserDetailPanel({
   );
 }
 
-function ModuleDetailPanel({ module }: { module: ModuleSummary }) {
+function ModuleDetailPanel({
+  module,
+  users,
+  filterInstitution,
+}: {
+  module: ModuleSummary;
+  users: UserSummary[];
+  filterInstitution: string | "all";
+}) {
+  const scopedUsers =
+    filterInstitution === "all"
+      ? users
+      : users.filter((u) => u.institution === filterInstitution);
+
+  const completedUsers = scopedUsers.filter((u) =>
+    u.modules.some(
+      (m) => m.module_id === module.module_id && m.status === "completed",
+    ),
+  );
+
+  const inProgressUsers = scopedUsers.filter((u) =>
+    u.modules.some(
+      (m) => m.module_id === module.module_id && m.status === "in_progress",
+    ),
+  );
+
+  const notStartedUsers = scopedUsers.filter(
+    (u) => !u.modules.some((m) => m.module_id === module.module_id),
+  );
+
   return (
-    <div className="text-sm text-gray-700 space-y-2">
+    <div className="text-sm text-gray-700 space-y-4">
       <h3 className="text-lg font-semibold text-semcmeBlue">{module.title}</h3>
 
-      <p>
-        <strong>Attempts:</strong> {module.attempts}
-      </p>
-      <p>
-        <strong>Completions:</strong> {module.completions}
-      </p>
-      <p>
-        <strong>Average Progress:</strong> {module.avgProgress}%
-      </p>
+      <div>
+        <p>
+          <strong>Skill Level:</strong> {module.skill_level ?? "—"}
+        </p>
+        <p>
+          <strong>Average Progress:</strong> {module.avgProgress}%
+        </p>
+        <p>
+          <strong>Total Certificates Issued:</strong> {module.certificateCount}
+        </p>
+      </div>
 
-      <h4 className="font-semibold mt-2">Users Completed</h4>
-      <p>{module.usersCompleted}</p>
+      <div>
+        <h4 className="font-semibold text-gray-800">Users Completed</h4>
+        {completedUsers.length === 0 ? (
+          <p className="text-xs text-gray-500">None.</p>
+        ) : (
+          <ul className="text-xs">
+            {completedUsers.map((u) => (
+              <li key={u.user_id}>
+                {u.name} ({u.email})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <h4 className="font-semibold mt-2">Users In Progress</h4>
-      <p>{module.usersInProgress}</p>
+      <div>
+        <h4 className="font-semibold text-gray-800">Users In Progress</h4>
+        {inProgressUsers.length === 0 ? (
+          <p className="text-xs text-gray-500">None.</p>
+        ) : (
+          <ul className="text-xs">
+            {inProgressUsers.map((u) => (
+              <li key={u.user_id}>
+                {u.name} ({u.email})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
-      <h4 className="font-semibold mt-2">Users Not Started</h4>
-      <p>{module.usersNotStarted}</p>
+      <div>
+        <h4 className="font-semibold text-gray-800">Users Not Started</h4>
+        {notStartedUsers.length === 0 ? (
+          <p className="text-xs text-gray-500">None.</p>
+        ) : (
+          <ul className="text-xs">
+            {notStartedUsers.map((u) => (
+              <li key={u.user_id}>
+                {u.name} ({u.email})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
@@ -771,32 +1119,55 @@ function ModuleDetailPanel({ module }: { module: ModuleSummary }) {
 function InstitutionDetailPanel({
   institution,
   allModules,
+  users,
 }: {
   institution: InstitutionSummary;
   allModules: ModuleMeta[];
+  users: UserSummary[];
 }) {
-  const moduleTitleMap = new Map(allModules.map((m) => [m.id, m.title]));
-  const entries = Object.entries(institution.perModule);
+  const instUsers = users.filter(
+    (u) => (u.institution.trim() || "Unknown") === institution.institution,
+  );
 
   return (
-    <div className="text-sm text-gray-700 space-y-2">
+    <div className="text-sm text-gray-700 space-y-4">
       <h3 className="text-lg font-semibold text-semcmeBlue">
-        {institution.institution} — Module Breakdown
+        {institution.institution}
       </h3>
 
-      {entries.length === 0 ? (
+      {instUsers.length === 0 ? (
         <p className="text-xs text-gray-500">
-          No module completions for this institution yet.
+          No users found for this institution.
         </p>
       ) : (
-        <ul className="text-xs">
-          {entries.map(([moduleId, count]) => (
-            <li key={moduleId}>
-              <strong>{moduleTitleMap.get(moduleId) ?? moduleId}</strong> —{" "}
-              {count} completion{count === 1 ? "" : "s"}
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-4">
+          {instUsers.map((u) => {
+            const completed = u.modules.filter((m) => m.status === "completed");
+
+            return (
+              <div key={u.user_id} className="border rounded-md p-3 bg-white">
+                <p>
+                  <strong>{u.name}</strong> ({u.email}) — {u.role}
+                </p>
+
+                {completed.length === 0 ? (
+                  <p className="text-xs text-gray-500 mt-1">
+                    No completed modules.
+                  </p>
+                ) : (
+                  <ul className="text-xs mt-1">
+                    {completed.map((m, idx) => (
+                      <li key={idx}>
+                        {m.module_title ?? m.module_id} —{" "}
+                        {m.cert_url ? "Certificate Issued" : "No Certificate"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
