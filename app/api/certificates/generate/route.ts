@@ -1,6 +1,7 @@
 // app/api/certificates/generate/route.ts
 import { NextResponse } from "next/server";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@supabase/supabase-js";
 
@@ -21,6 +22,28 @@ function getBaseUrlFromRequest(req: Request) {
   if (host.startsWith("http")) return host;
   if (host) return `${proto}://${host}`;
   return "http://localhost:3000";
+}
+
+function wrapText(text: string, maxWidth: number, font: any, fontSize: number) {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const width = font.widthOfTextAtSize(testLine, fontSize);
+
+    if (width <= maxWidth) {
+      currentLine = testLine;
+    } else {
+      lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+
+  if (currentLine) lines.push(currentLine);
+
+  return lines;
 }
 
 async function fetchPngBytes(url: string): Promise<Uint8Array | null> {
@@ -45,7 +68,7 @@ export async function POST(request: Request) {
     if (!module_id || !user_id) {
       return NextResponse.json(
         { error: "Missing module_id or user_id" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -58,7 +81,7 @@ export async function POST(request: Request) {
     // 🔐 SERVICE ROLE CLIENT (no cookies, no auth session)
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
     const issuedAt = new Date().toISOString();
@@ -96,13 +119,26 @@ export async function POST(request: Request) {
        PDF CREATION
     -------------------------------- */
     const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
     const page = pdfDoc.addPage([612, 792]);
 
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const italic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
-    const boldItalic = await pdfDoc.embedFont(
-      StandardFonts.HelveticaBoldOblique
-    );
+    const baseUrl = getBaseUrlFromRequest(request);
+
+    const latoRegularBytes = await fetch(
+      `${baseUrl}/cert-assets/fonts/Lato-Regular.ttf`,
+    ).then((res) => res.arrayBuffer());
+
+    const latoItalicBytes = await fetch(
+      `${baseUrl}/cert-assets/fonts/Lato-Italic.ttf`,
+    ).then((res) => res.arrayBuffer());
+
+    const latoBoldItalicBytes = await fetch(
+      `${baseUrl}/cert-assets/fonts/Lato-BoldItalic.ttf`,
+    ).then((res) => res.arrayBuffer());
+
+    const font = await pdfDoc.embedFont(latoRegularBytes);
+    const italic = await pdfDoc.embedFont(latoItalicBytes);
+    const boldItalic = await pdfDoc.embedFont(latoBoldItalicBytes);
 
     const { width, height } = page.getSize();
 
@@ -115,7 +151,7 @@ export async function POST(request: Request) {
       y: number,
       size: number,
       f = font,
-      color = navy
+      color = navy,
     ) => {
       const w = f.widthOfTextAtSize(text, size);
       const x = (width - w) / 2;
@@ -135,17 +171,16 @@ export async function POST(request: Request) {
         width: width - b * 2,
         height: height - b * 2,
         borderColor: blue,
-        borderWidth: i === 0 ? 2 : 1,
+        borderWidth: i === 0 ? 1.2 : 0.8,
       });
     });
 
     /* -------------------------------
        Logos
     -------------------------------- */
-    const baseUrl = getBaseUrlFromRequest(request);
 
     const semcmeLogo = await fetchPngBytes(
-      `${baseUrl}/cert-assets/semcmeLogo.png`
+      `${baseUrl}/cert-assets/semcmeLogo.png`,
     );
 
     if (semcmeLogo) {
@@ -162,26 +197,97 @@ export async function POST(request: Request) {
     /* -------------------------------
        Text
     -------------------------------- */
-    center("Certificate of Completion", height - 230, 28, boldItalic);
+    const titleY = height - 230;
+    const titleLine = center(
+      "Certificate of Completion",
+      titleY,
+      28,
+      boldItalic,
+    );
+
+    page.drawRectangle({
+      x: titleLine.x,
+      y: titleY - 4,
+      width: titleLine.w,
+      height: 1,
+      color: navy,
+    });
     center(
       "Southeast Michigan Center for Medical Education",
       height - 300,
       18,
-      italic
+      font,
     );
-    center("certifies that", height - 330, 16);
+    center("certifies that", height - 335, 18, font);
 
     const nameY = height - 385;
     const nameLine = center(fullName, nameY, 30, italic, lightBlue);
     page.drawRectangle({
       x: nameLine.x,
-      y: nameY - 6,
+      y: nameY - 4,
       width: nameLine.w,
-      height: 2,
+      height: 1,
       color: lightBlue,
     });
 
-    center(moduleTitle, height - 520, 22, boldItalic);
+    center(
+      "has completed the following educational activity",
+      height - 430,
+      18,
+      font,
+    );
+
+    const maxTextWidth = width - 120;
+    const wrappedTitle = wrapText(moduleTitle, maxTextWidth, boldItalic, 22);
+
+    const activityLineY = height - 430;
+    let startY = activityLineY - 50;
+
+    wrappedTitle.forEach((line) => {
+      center(line, startY, 22, boldItalic);
+      startY -= 28;
+    });
+
+    /* -------------------------------
+   Bottom Logos
+-------------------------------- */
+
+    const bottomLogoY = 35;
+    const sidePadding = 35;
+
+    // LEFT LOGO — Value Partnerships
+    const valuePartnersBytes = await fetchPngBytes(
+      `${baseUrl}/cert-assets/valuePartnershipsLogo.png`,
+    );
+
+    if (valuePartnersBytes) {
+      const leftImg = await pdfDoc.embedPng(valuePartnersBytes);
+      const scaledLeft = leftImg.scale(0.5);
+
+      page.drawImage(leftImg, {
+        x: sidePadding,
+        y: bottomLogoY,
+        width: scaledLeft.width,
+        height: scaledLeft.height,
+      });
+    }
+
+    // RIGHT LOGO — Blue Cross
+    const bcbsBytes = await fetchPngBytes(
+      `${baseUrl}/cert-assets/blueCrossLogo.png`,
+    );
+
+    if (bcbsBytes) {
+      const rightImg = await pdfDoc.embedPng(bcbsBytes);
+      const scaledRight = rightImg.scale(0.5);
+
+      page.drawImage(rightImg, {
+        x: width - scaledRight.width - sidePadding,
+        y: bottomLogoY,
+        width: scaledRight.width,
+        height: scaledRight.height,
+      });
+    }
 
     const pdfBytes = await pdfDoc.save();
 
@@ -213,7 +319,7 @@ export async function POST(request: Request) {
     console.error("Certificate generation failed:", err);
     return NextResponse.json(
       { error: "Failed to generate certificate", details: String(err) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
