@@ -87,9 +87,9 @@ const sortModulesForGroup = (
 
   const [multi] = sorted.splice(multiIndex, 1);
 
-  // 4. CME → force index 3 (4th position)
+  // 4. CME → force index 2 (3rd position)
   if (group === "cme") {
-    sorted.splice(3, 0, multi);
+    sorted.splice(2, 0, multi);
     return sorted;
   }
 
