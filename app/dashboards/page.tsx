@@ -70,36 +70,64 @@ const sortModulesForGroup = (
   modules: any[],
   group: "all" | "ume" | "gme" | "cme",
 ) => {
-  // 1. Base order
-  const sorted = [...modules].sort(
+  const baseSorted = [...modules].sort(
     (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
   );
 
-  // 2. No special rules
-  if (group === "all" || group === "ume") return sorted;
+  if (group === "all" || group === "ume") return baseSorted;
 
-  // 3. Find the multi-skill module
-  const multiIndex = sorted.findIndex(
-    (m) => getSkillLevels(m.skill_level).length > 1,
-  );
-
-  if (multiIndex === -1) return sorted;
-
-  const [multi] = sorted.splice(multiIndex, 1);
-
-  // 4. CME → force index 2 (3rd position)
-  if (group === "cme") {
-    sorted.splice(2, 0, multi);
-    return sorted;
-  }
-
-  // 5. GME → force LAST
+  // ---------- GME ORDER ----------
   if (group === "gme") {
-    sorted.push(multi);
-    return sorted;
+    const gmeOrder = [
+      "Introduction to EHR Educational Series",
+      "Effective Use of EHRs",
+      "Mock EHR Clinical Encounter",
+      "High Yield Notes",
+      "Coding and Billing: Office Workflow",
+      "Medical Procedure and Visit Coding",
+      "Diagnosis Coding and Billing: ICD-10 and How to Build a Diagnosis",
+      "Documenting Social Determinants of Health",
+    ];
+
+    return baseSorted.sort((a, b) => {
+      const aIndex = gmeOrder.indexOf(a.title);
+      const bIndex = gmeOrder.indexOf(b.title);
+
+      if (aIndex === -1 && bIndex === -1)
+        return (a.order_index ?? 0) - (b.order_index ?? 0);
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+
+      return aIndex - bIndex;
+    });
   }
 
-  return sorted;
+  // ---------- CME ORDER ----------
+  if (group === "cme") {
+    const cmeOrder = [
+      "Introduction to EHR Educational Series",
+      "Improving Efficiency and Effectiveness in the Use of EHRs",
+      "Documenting Social Determinants of Health",
+      "Improving Quality Metrics for Transitions of Care: From Hospital to PCP",
+      "Improving Quality Metrics for Transitions of Care: From Emergency Room to Primary Care",
+      "Documenting Evidence Based Management of Obesity and Performance Measures",
+      "Documenting Evidence Based Management of Diabetes and Performance Measures",
+    ];
+
+    return baseSorted.sort((a, b) => {
+      const aIndex = cmeOrder.indexOf(a.title);
+      const bIndex = cmeOrder.indexOf(b.title);
+
+      if (aIndex === -1 && bIndex === -1)
+        return (a.order_index ?? 0) - (b.order_index ?? 0);
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+
+      return aIndex - bIndex;
+    });
+  }
+
+  return baseSorted;
 };
 
 export default function DashboardPage() {
