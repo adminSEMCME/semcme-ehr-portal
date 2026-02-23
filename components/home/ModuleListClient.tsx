@@ -168,7 +168,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
       {/* HEADER */}
-      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent z-50 relative">
+      <div className="w-full flex flex-col items-center lg:flex-row lg:items-center lg:justify-between px-4 py-3 bg-transparent z-50 relative gap-3">
         <Link href="/" className="flex items-center logo-container">
           <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 logo-container">
             <div className="relative w-[170px] h-[45px]">
@@ -184,7 +184,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </Link>
 
         {/* FILTER + SEARCH */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col items-center lg:flex-row lg:items-center w-full lg:w-auto gap-3">
           <a
             href="/pdfs/for-instructors.pdf"
             target="_blank"
@@ -316,7 +316,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               backdrop-blur-sm
             "
           >
-            <h1 className="text-4xl font-bold mb-6 text-white drop-shadow-lg">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-5 sm:mb-6 text-white drop-shadow-lg leading-tight">
               Improving EHR Use For Better Outcomes
             </h1>
 
@@ -326,7 +326,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               and application of Electronic Health Records.
             </p>
 
-            <div className="mt-4 flex gap-6 justify-center">
+            <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center w-full">
               <Link href="/login">
                 <button className="landing-signin-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
                   Sign In
@@ -351,13 +351,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         <button
           onClick={prevSlide}
           className="
+            hidden sm:flex
             absolute 
             left-8 top-1/2 -translate-y-1/2
             bg-white/90 hover:bg-white
             z-20 
             h-12 w-12
             rounded-full
-            flex items-center justify-center
+            items-center justify-center
             shadow-lg
             transition
           "
@@ -383,13 +384,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         <button
           onClick={nextSlide}
           className="
+            hidden sm:flex
             absolute 
             right-8 top-1/2 -translate-y-1/2
             bg-white/90 hover:bg-white
             z-20 
             h-12 w-12
             rounded-full
-            flex items-center justify-center
+            items-center justify-center
             shadow-lg
             transition
           "
@@ -407,7 +409,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </svg>
         </button>
 
-        <div className="absolute bottom-4 w-full flex justify-center gap-2 z-20">
+        <div className="absolute bottom-2 sm:bottom-4 w-full flex justify-center gap-2 z-20">
           {images.map((_, i) => (
             <button
               key={i}

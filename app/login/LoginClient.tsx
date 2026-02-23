@@ -76,8 +76,8 @@ export default function LoginClient() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
-      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans px-4 sm:px-6">
+      <div className="w-full flex items-center justify-between py-3 bg-transparent">
         <Link href="/" className="flex items-center">
           <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">

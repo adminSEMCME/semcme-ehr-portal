@@ -275,9 +275,9 @@ export default function RegisterClient() {
      UI
      ============================================================ */
   return (
-    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative px-4 sm:px-6">
       {/* HEADER */}
-      <div className="w-full flex items-center justify-between px-4 py-3">
+      <div className="w-full flex items-center justify-between py-3">
         <Link href="/" className="flex items-center">
           <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
