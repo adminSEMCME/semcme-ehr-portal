@@ -168,9 +168,9 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
       {/* HEADER */}
-      <div className="w-full flex flex-col items-center lg:flex-row lg:items-center lg:justify-between px-4 py-3 bg-transparent z-50 relative gap-3">
-        <Link href="/" className="flex items-center logo-container">
-          <div className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-2 logo-container">
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent z-50 relative">
+        <Link href="/" className="flex items-center">
+          <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
                 src="/logos/semcme_logo.jpg"
@@ -183,102 +183,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </Link>
 
-        {/* FILTER + SEARCH */}
-        <div className="flex flex-col items-center lg:flex-row lg:items-center w-full lg:w-auto gap-3">
-          <a
-            href="/pdfs/for-instructors.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white font-semibold text-md underline hover:pointer-events-auto whitespace-nowrap"
-          >
-            For Instructors
-          </a>
-
-          {/* GROUP FILTER */}
-          <div ref={groupRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setGroupOpen((prev) => !prev)}
-              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-11 min-w-[260px] text-sm text-semcmeBlue"
-            >
-              <span className="font-medium">
-                Filter Modules: {groupFilter.toUpperCase()}
-              </span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
-            {groupOpen && (
-              <div className="absolute right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 w-full overflow-hidden">
-                {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
-                  <button
-                    key={g}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      setGroupFilter(g);
-                      setGroupOpen(false);
-                      setSearchTerm("");
-                    }}
-                    className="block w-full text-left px-4 py-3 text-sm text-semcmeBlue hover:bg-slate-100 first:rounded-t-xl last:rounded-b-xl"
-                  >
-                    {g.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* SEARCH BAR */}
-          <div className="search-bar w-[90%] max-w-md sm:w-auto">
-            <div className="relative">
-              <div className="flex items-center gap-2 bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-3 py-3 h-11">
-                <Search className="w-4 h-4 text-semcmeBlue" />
-                <input
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setIsOpen(true);
-                  }}
-                  onFocus={() => setIsOpen(true)}
-                  onBlur={() => setTimeout(() => setIsOpen(false), 150)}
-                  placeholder="Search modules..."
-                  className="flex-1 bg-transparent text-sm text-semcmeBlue placeholder:text-semcmeBlue"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsOpen((prev) => !prev)}
-                  className="p-1 rounded-md hover:bg-slate-100"
-                >
-                  <ChevronDown
-                    className={`w-4 h-4 text-semcmeBlue transition-transform ${
-                      isOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-              </div>
-
-              {isOpen && (
-                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
-                  {filtered.length === 0 ? (
-                    <div className="px-3 py-2 text-gray-500">
-                      No matching modules
-                    </div>
-                  ) : (
-                    filtered.map((m) => (
-                      <button
-                        key={m.id}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => handleSelect(m.id, m.title)}
-                        className="w-full text-left px-3 py-2 hover:bg-slate-100 text-semcmeBlue"
-                      >
-                        {m.title}
-                      </button>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <a
+          href="/pdfs/for-instructors.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white font-semibold text-md underline whitespace-nowrap"
+        >
+          For Instructors
+        </a>
       </div>
 
       {/* HERO SECTION */}
@@ -428,10 +340,98 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           {sectionTitle}
         </h2>
 
-        <p className="mb-7 text-sm text-white text-center max-w-xl mx-auto">
-          Use the "Filter Modules" drop-down above to view learning modules
-          tailored to specific education levels.
+        <p className="mb-6 text-sm text-white text-center max-w-xl mx-auto">
+          Use the filter or search below to find learning modules tailored to
+          your education level or specific topics.
         </p>
+
+        {/* FILTER + SEARCH ABOVE MODULES */}
+        <div className="w-full flex flex-col lg:flex-row items-center justify-center gap-4 mb-8 px-4">
+          {/* GROUP FILTER */}
+          <div ref={groupRef} className="relative w-full max-w-md lg:max-w-sm">
+            <button
+              type="button"
+              onClick={() => setGroupOpen((prev) => !prev)}
+              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-11 w-full text-sm text-semcmeBlue"
+            >
+              <span className="font-medium">
+                Filter Modules: {groupFilter.toUpperCase()}
+              </span>
+              <ChevronDown className="w-4 h-4" />
+            </button>
+
+            {groupOpen && (
+              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
+                  <button
+                    key={g}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setGroupFilter(g);
+                      setGroupOpen(false);
+                      setSearchTerm("");
+                    }}
+                    className="block w-full text-left px-4 py-3 text-sm text-semcmeBlue hover:bg-slate-100"
+                  >
+                    {g.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* SEARCH BAR */}
+          <div className="w-full max-w-md lg:max-w-sm">
+            <div className="relative">
+              <div className="flex items-center gap-2 bg-white rounded-md shadow-sm px-3 py-3 h-11">
+                <Search className="w-4 h-4 text-semcmeBlue" />
+                <input
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setIsOpen(true);
+                  }}
+                  onFocus={() => setIsOpen(true)}
+                  onBlur={() => setTimeout(() => setIsOpen(false), 150)}
+                  placeholder="Search modules..."
+                  className="flex-1 bg-transparent text-sm text-semcmeBlue placeholder:text-semcmeBlue"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsOpen((prev) => !prev)}
+                  className="p-1 rounded-md hover:bg-slate-100"
+                >
+                  <ChevronDown
+                    className={`w-4 h-4 text-semcmeBlue transition-transform ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {isOpen && (
+                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
+                  {filtered.length === 0 ? (
+                    <div className="px-3 py-2 text-gray-500">
+                      No matching modules
+                    </div>
+                  ) : (
+                    filtered.map((m) => (
+                      <button
+                        key={m.id}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => handleSelect(m.id, m.title)}
+                        className="w-full text-left px-3 py-2 hover:bg-slate-100 text-semcmeBlue"
+                      >
+                        {m.title}
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
 
         <div className="w-full max-w-7xl mx-auto">
           <motion.div

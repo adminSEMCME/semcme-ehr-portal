@@ -297,7 +297,7 @@ export default function RegisterClient() {
             window.history.length > 1 ? router.back() : router.push("/")
           }
           className="
-            bg-white border border-semcmeBlue rounded-md shadow-sm 
+            bg-white rounded-md shadow-sm 
             px-4 py-2 flex items-center gap-2 text-semcmeBlue 
             font-semibold hover:bg-slate-100 transition
           "
@@ -308,7 +308,7 @@ export default function RegisterClient() {
 
       {/* FORM */}
       <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mt-5 mb-20 lg:mt-10 border border-gray-200">
-        <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-semcmeBlue mb-6 text-center">
           EHR Account Registration
         </h1>
 
@@ -537,10 +537,11 @@ export default function RegisterClient() {
             type="submit"
             disabled={loading}
             className="
-              w-full py-3 mt-4 rounded-lg font-semibold 
-              bg-semcmeBlue text-white 
-              shadow-md hover:shadow-lg 
-              hover:bg-white hover:text-semcmeBlue hover:border-semcmeBlue border-2 
+              w-full py-3 mt-4 rounded-lg font-semibold
+              bg-[#02519c] text-white
+              border border-transparent
+              shadow-md hover:shadow-lg
+              hover:bg-gray-100 hover:text-[#02519c]
               active:scale-[0.98]
               transition-all duration-200
             "
