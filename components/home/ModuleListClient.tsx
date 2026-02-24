@@ -168,8 +168,9 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   return (
     <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
       {/* HEADER */}
-      <div className="w-full flex items-center justify-between px-4 py-3 bg-transparent z-50 relative">
-        <Link href="/" className="flex items-center">
+      <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between px-4 py-3 bg-transparent z-50 relative">
+        {/* Logo */}
+        <Link href="/" className="flex justify-center lg:justify-start">
           <div className="bg-white rounded-md shadow-sm px-3 py-2">
             <div className="relative w-[170px] h-[45px]">
               <Image
@@ -183,14 +184,24 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </div>
         </Link>
 
-        <a
-          href="/pdfs/for-instructors.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-white font-semibold text-md underline whitespace-nowrap"
-        >
-          For Instructors
-        </a>
+        {/* Links */}
+        <div className="flex justify-center gap-6 mt-3 lg:mt-0">
+          <a
+            href="/pdfs/for-instructors.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white font-semibold text-md underline whitespace-nowrap"
+          >
+            For Instructors
+          </a>
+
+          <Link
+            href="/data-request"
+            className="text-white font-semibold text-md underline whitespace-nowrap"
+          >
+            Data Request Form
+          </Link>
+        </div>
       </div>
 
       {/* HERO SECTION */}
@@ -321,7 +332,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
           </svg>
         </button>
 
-        <div className="absolute bottom-2 sm:bottom-4 w-full flex justify-center gap-2 z-20">
+        <div className="absolute bottom-1 sm:bottom-4 w-full flex justify-center gap-2 z-20">
           {images.map((_, i) => (
             <button
               key={i}
