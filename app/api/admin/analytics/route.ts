@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 
 export async function GET(request: Request) {
   const cookieStore = await cookies();
@@ -50,6 +51,22 @@ export async function GET(request: Request) {
     .select("id, title, order_index, skill_level")
     .order("order_index", { ascending: true });
 
+  // POST ASSESSMENTS
+  const serviceSupabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+
+  const { data: postAssessments, error: postAssessmentsErr } =
+    await serviceSupabase
+      .from("post_assessments")
+      .select("*")
+      .order("submitted_at", { ascending: false });
+
+  if (postAssessmentsErr) {
+    console.error("post assessments error:", postAssessmentsErr);
+  }
+
   if (modulesErr) {
     console.error("modules error:", modulesErr);
   }
@@ -58,5 +75,6 @@ export async function GET(request: Request) {
   return NextResponse.json({
     userModules: userModules ?? [],
     modules: modules ?? [],
+    postAssessments: postAssessments ?? [],
   });
 }

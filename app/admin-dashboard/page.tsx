@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useState, useRef } from "react";
 import React from "react";
+import PostAssessmentsTab from "./PostAssessmentsTab";
 
 /* ---------------- CSV EXPORT HELPER ---------------- */
 
@@ -70,9 +71,17 @@ type ModuleMeta = {
   skill_level: string | null;
 };
 
+type PostAssessment = {
+  id: string;
+  module_id: string;
+  responses: Record<string, string>;
+  submitted_at: string;
+};
+
 type AnalyticsResponse = {
   userModules: UserModuleRow[];
   modules: ModuleMeta[];
+  postAssessments: PostAssessment[];
 };
 
 type UserSummary = {
@@ -115,7 +124,9 @@ export default function AdminDashboardPage() {
   const [analytics, setAnalytics] = useState<AnalyticsResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [tab, setTab] = useState<"users" | "modules" | "institutions">("users");
+  const [tab, setTab] = useState<
+    "users" | "modules" | "institutions" | "assessments"
+  >("users");
 
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -146,13 +157,21 @@ export default function AdminDashboardPage() {
       try {
         const res = await fetch("/api/admin/analytics");
         if (!res.ok) {
-          setAnalytics({ userModules: [], modules: [] });
+          setAnalytics({
+            userModules: [],
+            modules: [],
+            postAssessments: [],
+          });
           return;
         }
         const data = (await res.json()) as AnalyticsResponse;
         setAnalytics(data);
       } catch {
-        setAnalytics({ userModules: [], modules: [] });
+        setAnalytics({
+          userModules: [],
+          modules: [],
+          postAssessments: [],
+        });
       } finally {
         setLoading(false);
       }
@@ -578,7 +597,7 @@ export default function AdminDashboardPage() {
 
       {/* TABS */}
       <div className="flex gap-2 justify-center">
-        {["users", "modules", "institutions"].map((t) => (
+        {["users", "modules", "institutions", "assessments"].map((t) => (
           <button
             key={t}
             onClick={() => setTab(t as any)}
@@ -910,6 +929,13 @@ export default function AdminDashboardPage() {
             </table>
           </section>
         </>
+      )}
+
+      {tab === "assessments" && (
+        <PostAssessmentsTab
+          assessments={analytics?.postAssessments ?? []}
+          modules={analytics?.modules ?? []}
+        />
       )}
     </div>
   );
