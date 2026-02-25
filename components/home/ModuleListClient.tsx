@@ -87,6 +87,8 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
   const [groupOpen, setGroupOpen] = useState(false);
   const groupRef = useRef<HTMLDivElement>(null);
+  const [guidesOpen, setGuidesOpen] = useState(false);
+  const guidesRef = useRef<HTMLDivElement>(null);
 
   // HERO CAROUSEL STATE
   const images = [
@@ -122,6 +124,17 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         setGroupOpen(false);
       }
     }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (guidesRef.current && !guidesRef.current.contains(e.target as Node)) {
+        setGuidesOpen(false);
+      }
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -185,22 +198,44 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         </Link>
 
         {/* Links */}
-        <div className="flex justify-center gap-6 mt-3 lg:mt-0">
-          <a
-            href="/pdfs/for-instructors.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white font-semibold text-md underline whitespace-nowrap"
+        {/* GUIDES DROPDOWN */}
+        <div
+          ref={guidesRef}
+          className="relative flex justify-center lg:justify-end mt-3 lg:mt-0 transition-all duration-200 cursor-pointer p-0.5"
+        >
+          <button
+            onClick={() => setGuidesOpen((prev) => !prev)}
+            className="text-white font-semibold text-md flex items-center gap-1 hover:underline transition-all duration-200"
           >
-            For Instructors
-          </a>
+            Website Guides
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${
+                guidesOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
-          <Link
-            href="/data-request"
-            className="text-white font-semibold text-md underline whitespace-nowrap"
-          >
-            Data Request Form
-          </Link>
+          {guidesOpen && (
+            <div className="absolute top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
+              <a
+                href="/pdfs/user-guide.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
+              >
+                User Guide
+              </a>
+
+              <a
+                href="/pdfs/instructor-guide.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
+              >
+                Instructor Guide
+              </a>
+            </div>
+          )}
         </div>
       </div>
 

@@ -655,11 +655,11 @@ export default function DashboardPage() {
               </div>
 
               {/* IMAGE */}
-              <div className="w-full h-[220px] overflow-hidden bg-white">
+              <div className="w-full bg-white sm:h-[220px] sm:overflow-hidden">
                 <img
                   src={thumbnailPath}
                   alt={`${module.title} thumbnail`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto sm:h-full object-contain sm:object-cover"
                   onError={(e) => {
                     const img = e.currentTarget;
                     if (img.dataset.fallbackApplied) return;
