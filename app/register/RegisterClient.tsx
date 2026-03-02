@@ -1,7 +1,7 @@
 //app/register/RegisterClient.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -134,6 +134,26 @@ export default function RegisterClient() {
 
   const [form, setForm] = useState<FormData>(defaultForm);
   const [loading, setLoading] = useState(false);
+  const [institutions, setInstitutions] = useState<
+    { id: string; name: string }[]
+  >([]);
+
+  const [customInstitution, setCustomInstitution] = useState("");
+
+  useEffect(() => {
+    const fetchInstitutions = async () => {
+      const { data, error } = await supabase
+        .from("institutions")
+        .select("id, name")
+        .order("name");
+
+      if (!error && data) {
+        setInstitutions(data);
+      }
+    };
+
+    fetchInstitutions();
+  }, []);
 
   /* ============================================================
      HANDLE CHANGE
@@ -206,6 +226,32 @@ export default function RegisterClient() {
         return;
       }
 
+      // 🔹 Determine institution_id
+      let institutionId = form.institution;
+
+      if (form.institution === "other") {
+        if (!customInstitution.trim()) {
+          alert("Please enter your institution.");
+          setLoading(false);
+          return;
+        }
+
+        // Insert new institution into table
+        const { data: newInst, error: instError } = await supabase
+          .from("institutions")
+          .insert([{ name: customInstitution.trim() }])
+          .select()
+          .single();
+
+        if (instError || !newInst) {
+          alert("Failed to create new institution.");
+          setLoading(false);
+          return;
+        }
+
+        institutionId = newInst.id;
+      }
+
       // 🔐 Create profile via server route
       const profileRes = await fetch("/api/register/profile", {
         method: "POST",
@@ -218,7 +264,7 @@ export default function RegisterClient() {
           first_name: formatName(form.firstName),
           last_name: formatName(form.lastName),
           degree: form.degree || null,
-          institution: form.institution || null,
+          institution_id: institutionId || null,
           department: form.department || null,
           title: form.title || null,
           phone: form.phone || null,
@@ -463,14 +509,40 @@ export default function RegisterClient() {
           {(showField("institution") || showField("department")) && (
             <div className="grid md:grid-cols-2 gap-4">
               {showField("institution") && (
-                <FieldInput
-                  label="Institution"
-                  required
-                  name="institution"
-                  value={form.institution}
-                  onChange={handleChange}
-                  inputClass={inputClass}
-                />
+                <div>
+                  <label className={labelRequired}>
+                    Institution <span className={requiredStar}>*</span>
+                  </label>
+
+                  <select
+                    required
+                    name="institution"
+                    value={form.institution}
+                    onChange={handleChange}
+                    className={inputClass}
+                  >
+                    <option value="">Select your institution</option>
+
+                    {institutions.map((inst) => (
+                      <option key={inst.id} value={inst.id}>
+                        {inst.name}
+                      </option>
+                    ))}
+
+                    <option value="other">Other</option>
+                  </select>
+
+                  {form.institution === "other" && (
+                    <input
+                      type="text"
+                      placeholder="Enter your institution"
+                      value={customInstitution}
+                      onChange={(e) => setCustomInstitution(e.target.value)}
+                      className={`${inputClass} mt-3`}
+                      required
+                    />
+                  )}
+                </div>
               )}
               {showField("department") && (
                 <FieldInput
