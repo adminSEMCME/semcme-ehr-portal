@@ -38,22 +38,18 @@ export default async function DashboardLayout({ children }: any) {
 
   const role = profile.role;
 
-  // 🚫 Block unapproved accounts entirely
   if (profile.is_approved !== true) {
     redirect("/login");
   }
 
-  // 🚫 Institution Admins should never access user dashboard
   if (role === "Institution Administrator") {
     redirect("/institution-admin");
   }
 
-  // 🚫 Website admin should not access user dashboard
   if (role === "admin") {
     redirect("/admin-dashboard");
   }
 
-  // 🚫 If no role at all, block
   if (!role) {
     redirect("/login");
   }
