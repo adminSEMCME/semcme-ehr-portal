@@ -98,6 +98,15 @@ export default function RegisterClient() {
       "department",
       "phone",
     ],
+    "Institution Administrator": [
+      "email",
+      "password",
+      "firstName",
+      "lastName",
+      "title",
+      "institution",
+      "phone",
+    ],
     Other: [
       "profession",
       "email",
@@ -378,6 +387,9 @@ export default function RegisterClient() {
                 Practicing Physician / Faculty
               </option>
               <option value="Nursing">Nursing</option>
+              <option value="Institution Administrator">
+                Institution Administrator
+              </option>
               <option value="Other">Other (Please specify)</option>
             </select>
           </div>

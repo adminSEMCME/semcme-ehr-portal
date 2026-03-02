@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: any) {
           // ❌ server component cannot modify cookies
         },
       },
-    }
+    },
   );
 
   const { data } = await supabase.auth.getUser();
@@ -27,8 +27,36 @@ export default async function DashboardLayout({ children }: any) {
 
   if (!user) redirect("/login");
 
-  const role = user.user_metadata?.role;
-  if (role !== "user") redirect("/login");
+  // 🔎 Fetch profile
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role, is_approved")
+    .eq("id", user.id)
+    .single();
+
+  if (!profile) redirect("/login");
+
+  const role = profile.role;
+
+  // 🚫 Block unapproved accounts entirely
+  if (profile.is_approved !== true) {
+    redirect("/login");
+  }
+
+  // 🚫 Institution Admins should never access user dashboard
+  if (role === "Institution Administrator") {
+    redirect("/institution-admin");
+  }
+
+  // 🚫 Website admin should not access user dashboard
+  if (role === "admin") {
+    redirect("/admin-dashboard");
+  }
+
+  // 🚫 If no role at all, block
+  if (!role) {
+    redirect("/login");
+  }
 
   return (
     <>

@@ -24,7 +24,7 @@ export default function LoginClient() {
     setLoading(true);
 
     try {
-      // 1️⃣ Attempt login using Supabase Auth
+      // 1️⃣ Attempt login
       const { data, error } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
@@ -36,14 +36,42 @@ export default function LoginClient() {
         return;
       }
 
-      const role = data.user.user_metadata?.role;
+      // 2️⃣ WEBSITE ADMIN (metadata-based) FIRST
+      const metadataRole = data.user.user_metadata?.role;
 
-      if (!role) {
-        alert("This account has no assigned role.");
+      if (metadataRole === "admin") {
+        router.push("/admin-dashboard");
+        return;
+      }
+
+      // 3️⃣ Fetch profile ONCE
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role, is_approved")
+        .eq("id", data.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        alert("Unable to load user profile.");
+        await supabase.auth.signOut();
         setLoading(false);
         return;
       }
 
+      // 4️⃣ Block unapproved Institution Admin
+      if (
+        profile.role === "Institution Administrator" &&
+        !profile.is_approved
+      ) {
+        alert(
+          "Your Institution Administrator account is pending approval. You will receive access once approved.",
+        );
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
+
+      // 5️⃣ Start session tracking
       await fetch("/api/sessions/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,15 +86,13 @@ export default function LoginClient() {
         }),
       });
 
-      // 2️⃣ Redirect based on role
-      if (role === "admin") {
-        router.push("/admin-dashboard");
-      } else if (role === "user") {
+      // 6️⃣ Redirect based on profile role
+      if (profile.role === "Institution Administrator") {
+        router.push("/institution-admin");
+      } else {
         router.push(
           moduleId ? `/dashboards?module=${moduleId}` : "/dashboards",
         );
-      } else {
-        alert("Invalid user role.");
       }
     } catch (err) {
       alert("Unexpected login error.");
