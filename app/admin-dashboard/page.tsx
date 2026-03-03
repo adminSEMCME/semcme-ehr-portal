@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import React from "react";
 import PostAssessmentsTab from "./PostAssessmentsTab";
+import { Link } from "lucide-react";
 
 /* ---------------- CSV EXPORT HELPER ---------------- */
 
@@ -125,7 +126,12 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   const [tab, setTab] = useState<
-    "users" | "modules" | "institutions" | "assessments"
+    | "users"
+    | "modules"
+    | "institutions"
+    | "assessments"
+    | "dataRequests"
+    | "adminApprovals"
   >("users");
 
   const [search, setSearch] = useState("");
@@ -597,7 +603,14 @@ export default function AdminDashboardPage() {
 
       {/* TABS */}
       <div className="flex gap-2 justify-center">
-        {["users", "modules", "institutions", "assessments"].map((t) => (
+        {[
+          "users",
+          "modules",
+          "institutions",
+          "assessments",
+          "dataRequests",
+          "adminApprovals",
+        ].map((t) => (
           <button
             key={t}
             onClick={() => setTab(t as any)}
@@ -607,7 +620,11 @@ export default function AdminDashboardPage() {
                 : "bg-white text-semcmeBlue border-semcmeBlue/40"
             }`}
           >
-            {t[0].toUpperCase() + t.slice(1)}
+            {t === "dataRequests"
+              ? "Data Requests"
+              : t === "adminApprovals"
+                ? "Admin Approvals"
+                : t[0].toUpperCase() + t.slice(1)}
           </button>
         ))}
       </div>
@@ -937,6 +954,9 @@ export default function AdminDashboardPage() {
           modules={analytics?.modules ?? []}
         />
       )}
+
+      {tab === "dataRequests" && <DataRequestsTab />}
+      {tab === "adminApprovals" && <AdminApprovalsTab />}
     </div>
   );
 }
@@ -1195,6 +1215,230 @@ function InstitutionDetailPanel({
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+function DataRequestsTab() {
+  const [requests, setRequests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadRequests();
+  }, []);
+
+  async function loadRequests() {
+    setLoading(true);
+    const res = await fetch("/api/admin/data-requests");
+    const data = await res.json();
+    setRequests(data || []);
+    setLoading(false);
+  }
+
+  async function updateStatus(id: string, status: string) {
+    await fetch("/api/admin/update-request-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status }),
+    });
+
+    loadRequests();
+  }
+
+  if (loading) return <p className="text-center py-6">Loading requests...</p>;
+
+  if (requests.length === 0)
+    return (
+      <p className="text-center py-6 text-gray-500">No data requests found.</p>
+    );
+
+  return (
+    <div className="space-y-4 mt-6">
+      {requests.map((r) => (
+        <div key={r.id} className="border border-gray-300 shadow-sm bg-white">
+          {/* Header */}
+          <div
+            onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
+            className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50"
+          >
+            <div className="space-y-1">
+              <p className="font-semibold text-semcmeBlue">
+                {r.report_type.toUpperCase()} REPORT
+              </p>
+
+              <p className="text-sm text-gray-600">
+                {new Date(r.created_at).toLocaleDateString()}
+              </p>
+
+              <p className="text-sm text-gray-700">
+                <strong>Institution:</strong> {r.institution_name}
+              </p>
+
+              {r.individual_user_email && (
+                <p className="text-sm text-gray-700">
+                  <strong>Requestor Email:</strong> {r.requestor_email}
+                </p>
+              )}
+            </div>
+
+            <div className="capitalize font-medium">{r.status}</div>
+          </div>
+
+          {/* Expanded Content */}
+          {expandedId === r.id && (
+            <div className="p-4 border-t bg-gray-50 space-y-3 text-sm">
+              {r.individual_user_email && (
+                <p>
+                  <strong>Individual User Email:</strong>{" "}
+                  {r.individual_user_email}
+                </p>
+              )}
+
+              <p>
+                <strong>Module Scope:</strong> {r.module_scope}
+              </p>
+
+              {r.selected_modules?.length > 0 && (
+                <p>
+                  <strong>Selected Modules:</strong>{" "}
+                  {r.selected_modules.join(", ")}
+                </p>
+              )}
+
+              {r.additional_notes && (
+                <p>
+                  <strong>Additional Notes:</strong> {r.additional_notes}
+                </p>
+              )}
+
+              {/* ACTION BUTTONS */}
+              <div className="flex gap-3 pt-3">
+                {r.status === "pending" && (
+                  <>
+                    <button
+                      onClick={() => updateStatus(r.id, "approved")}
+                      className="px-3 py-1 bg-green-600 text-white rounded"
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      onClick={() => updateStatus(r.id, "denied")}
+                      className="px-3 py-1 bg-red-600 text-white rounded"
+                    >
+                      Deny
+                    </button>
+                  </>
+                )}
+
+                {r.status === "approved" && (
+                  <button
+                    onClick={() => updateStatus(r.id, "completed")}
+                    className="px-3 py-1 bg-blue-600 text-white rounded"
+                  >
+                    Mark Completed
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AdminApprovalsTab() {
+  const [admins, setAdmins] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAdmins();
+  }, []);
+
+  async function loadAdmins() {
+    setLoading(true);
+
+    const response = await fetch("/api/admin/pending-admins");
+    const data = await response.json();
+
+    setAdmins(data || []);
+    setLoading(false);
+  }
+
+  async function approve(id: string) {
+    await fetch("/api/admin/approve-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    loadAdmins();
+  }
+
+  async function deny(id: string) {
+    const res = await fetch("/api/admin/deny-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.ok) {
+      setAdmins((prev) => prev.filter((a) => a.id !== id));
+    } else {
+      alert("Failed to deny admin.");
+    }
+  }
+
+  if (loading)
+    return <p className="text-center py-6">Loading pending admins...</p>;
+
+  if (admins.length === 0)
+    return (
+      <p className="text-center py-6 text-gray-500">
+        No pending institution administrators.
+      </p>
+    );
+
+  return (
+    <div className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white mt-4">
+      <table className="min-w-full text-sm">
+        <thead className="bg-semcmeBlue text-white">
+          <tr>
+            <th className="p-3 text-left">Name</th>
+            <th className="p-3 text-left">Email</th>
+            <th className="p-3 text-left">Institution</th>
+            <th className="p-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {admins.map((a: any) => (
+            <tr key={a.id} className="border-b border-gray-200">
+              <td className="p-3">
+                {a.first_name} {a.last_name}
+              </td>
+              <td className="p-3">{a.email}</td>
+              <td className="p-3">{a.institution_name}</td>
+              <td className="p-3 flex gap-2">
+                <button
+                  onClick={() => approve(a.id)}
+                  className="px-3 py-1 bg-green-600 text-white rounded"
+                >
+                  Approve
+                </button>
+
+                <button
+                  onClick={() => deny(a.id)}
+                  className="px-3 py-1 bg-red-600 text-white rounded"
+                >
+                  Deny
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
