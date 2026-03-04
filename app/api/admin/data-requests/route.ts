@@ -14,9 +14,16 @@ export async function GET() {
       .from("institution_data_requests")
       .select(
         `
-        *,
-        institutions(name),
-        profiles!institution_data_requests_requested_by_fkey(email)
+          id,
+          created_at,
+          report_type,
+          status,
+          module_scope,
+          selected_modules,
+          additional_notes,
+          individual_user_email,
+          institutions(name),
+          profiles!institution_data_requests_requested_by_fkey(email)
         `,
       )
       .order("created_at", { ascending: false });

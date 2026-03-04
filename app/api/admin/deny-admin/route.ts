@@ -12,7 +12,13 @@ export async function POST(req: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    const { error } = await supabase.from("profiles").delete().eq("id", id);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        is_denied: true,
+        is_approved: false,
+      })
+      .eq("id", id);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

@@ -1222,7 +1222,6 @@ function InstitutionDetailPanel({
 function DataRequestsTab() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     loadRequests();
@@ -1236,11 +1235,11 @@ function DataRequestsTab() {
     setLoading(false);
   }
 
-  async function updateStatus(id: string, status: string) {
+  async function markCompleted(id: string) {
     await fetch("/api/admin/update-request-status", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, status }),
+      body: JSON.stringify({ id }),
     });
 
     loadRequests();
@@ -1253,98 +1252,125 @@ function DataRequestsTab() {
       <p className="text-center py-6 text-gray-500">No data requests found.</p>
     );
 
+  const pendingRequests = requests.filter((r) => r.status === "pending");
+
+  const completedRequests = requests.filter((r) => r.status === "completed");
+
   return (
-    <div className="space-y-4 mt-6">
-      {requests.map((r) => (
-        <div key={r.id} className="border border-gray-300 shadow-sm bg-white">
-          {/* Header */}
-          <div
-            onClick={() => setExpandedId(expandedId === r.id ? null : r.id)}
-            className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50"
-          >
-            <div className="space-y-1">
-              <p className="font-semibold text-semcmeBlue">
-                {r.report_type.toUpperCase()} REPORT
-              </p>
+    <div className="space-y-10 mt-6">
+      {/* ================== PENDING SECTION ================== */}
+      <div>
+        <h2 className="text-xl font-semibold text-semcmeBlue mb-4">
+          Pending Requests
+        </h2>
 
-              <p className="text-sm text-gray-600">
-                {new Date(r.created_at).toLocaleDateString()}
-              </p>
-
-              <p className="text-sm text-gray-700">
-                <strong>Institution:</strong> {r.institution_name}
-              </p>
-
-              {r.individual_user_email && (
-                <p className="text-sm text-gray-700">
-                  <strong>Requestor Email:</strong> {r.requestor_email}
-                </p>
-              )}
-            </div>
-
-            <div className="capitalize font-medium">{r.status}</div>
+        {pendingRequests.length === 0 ? (
+          <p className="text-gray-500 text-sm">No pending requests.</p>
+        ) : (
+          <div className="space-y-6">
+            {pendingRequests.map((r) => (
+              <RequestCard
+                key={r.id}
+                request={r}
+                showCompleteButton
+                onComplete={markCompleted}
+              />
+            ))}
           </div>
+        )}
+      </div>
 
-          {/* Expanded Content */}
-          {expandedId === r.id && (
-            <div className="p-4 border-t bg-gray-50 space-y-3 text-sm">
-              {r.individual_user_email && (
-                <p>
-                  <strong>Individual User Email:</strong>{" "}
-                  {r.individual_user_email}
-                </p>
-              )}
+      {/* ================== COMPLETED SECTION ================== */}
+      <div>
+        <h2 className="text-xl font-semibold text-semcmeBlue mb-4">
+          Completed Requests
+        </h2>
 
-              <p>
-                <strong>Module Scope:</strong> {r.module_scope}
-              </p>
+        {completedRequests.length === 0 ? (
+          <p className="text-gray-500 text-sm">No completed requests yet.</p>
+        ) : (
+          <div className="space-y-6">
+            {completedRequests.map((r) => (
+              <RequestCard key={r.id} request={r} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
-              {r.selected_modules?.length > 0 && (
-                <p>
-                  <strong>Selected Modules:</strong>{" "}
-                  {r.selected_modules.join(", ")}
-                </p>
-              )}
+function RequestCard({
+  request,
+  showCompleteButton = false,
+  onComplete,
+}: {
+  request: any;
+  showCompleteButton?: boolean;
+  onComplete?: (id: string) => void;
+}) {
+  return (
+    <div className="border border-gray-300 shadow-sm bg-white p-6 rounded-md">
+      <div className="flex justify-between items-start mb-4">
+        <div className="space-y-2">
+          <p className="font-semibold text-semcmeBlue text-lg">
+            Report Type: {request.report_type.toUpperCase()}
+          </p>
 
-              {r.additional_notes && (
-                <p>
-                  <strong>Additional Notes:</strong> {r.additional_notes}
-                </p>
-              )}
+          <p className="text-sm text-gray-600">
+            Date Requested: {new Date(request.created_at).toLocaleDateString()}
+          </p>
 
-              {/* ACTION BUTTONS */}
-              <div className="flex gap-3 pt-3">
-                {r.status === "pending" && (
-                  <>
-                    <button
-                      onClick={() => updateStatus(r.id, "approved")}
-                      className="px-3 py-1 bg-green-600 text-white rounded"
-                    >
-                      Approve
-                    </button>
+          <p className="text-sm">
+            <strong>Institution:</strong> {request.institution_name}
+          </p>
 
-                    <button
-                      onClick={() => updateStatus(r.id, "denied")}
-                      className="px-3 py-1 bg-red-600 text-white rounded"
-                    >
-                      Deny
-                    </button>
-                  </>
-                )}
-
-                {r.status === "approved" && (
-                  <button
-                    onClick={() => updateStatus(r.id, "completed")}
-                    className="px-3 py-1 bg-blue-600 text-white rounded"
-                  >
-                    Mark Completed
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
+          <p className="text-sm">
+            <strong>Requestor Email:</strong> {request.requestor_email}
+          </p>
         </div>
-      ))}
+
+        <div className="capitalize font-medium text-sm px-3 py-1 rounded bg-gray-100">
+          {request.status}
+        </div>
+      </div>
+
+      <div className="space-y-2 text-sm">
+        {request.individual_user_email && (
+          <p>
+            <strong>Individual User Email:</strong>{" "}
+            {request.individual_user_email}
+          </p>
+        )}
+
+        <p>
+          <strong>Module Scope:</strong> {request.module_scope}
+        </p>
+
+        {request.selected_modules?.length > 0 && (
+          <p>
+            <strong>Selected Modules:</strong>{" "}
+            {request.selected_modules.join(", ")}
+          </p>
+        )}
+
+        {request.additional_notes && (
+          <p>
+            <strong>Additional Notes:</strong> {request.additional_notes}
+          </p>
+        )}
+      </div>
+
+      {showCompleteButton && (
+        <div className="pt-4">
+          <button
+            onClick={() => onComplete?.(request.id)}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Mark Completed
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1359,10 +1385,8 @@ function AdminApprovalsTab() {
 
   async function loadAdmins() {
     setLoading(true);
-
-    const response = await fetch("/api/admin/pending-admins");
-    const data = await response.json();
-
+    const res = await fetch("/api/admin/institution-admins");
+    const data = await res.json();
     setAdmins(data || []);
     setLoading(false);
   }
@@ -1373,72 +1397,125 @@ function AdminApprovalsTab() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
-
     loadAdmins();
   }
 
   async function deny(id: string) {
-    const res = await fetch("/api/admin/deny-admin", {
+    await fetch("/api/admin/deny-admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
-
-    if (res.ok) {
-      setAdmins((prev) => prev.filter((a) => a.id !== id));
-    } else {
-      alert("Failed to deny admin.");
-    }
+    loadAdmins();
   }
 
   if (loading)
-    return <p className="text-center py-6">Loading pending admins...</p>;
+    return <p className="text-center py-6">Loading administrators...</p>;
 
-  if (admins.length === 0)
-    return (
-      <p className="text-center py-6 text-gray-500">
-        No pending institution administrators.
-      </p>
-    );
+  const pending = admins.filter((a) => !a.is_approved && !a.is_denied);
+  const approved = admins.filter((a) => a.is_approved && !a.is_denied);
+  const denied = admins.filter((a) => a.is_denied);
 
   return (
-    <div className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white mt-4">
-      <table className="min-w-full text-sm">
-        <thead className="bg-semcmeBlue text-white">
-          <tr>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Email</th>
-            <th className="p-3 text-left">Institution</th>
-            <th className="p-3 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {admins.map((a: any) => (
-            <tr key={a.id} className="border-b border-gray-200">
-              <td className="p-3">
-                {a.first_name} {a.last_name}
-              </td>
-              <td className="p-3">{a.email}</td>
-              <td className="p-3">{a.institution_name}</td>
-              <td className="p-3 flex gap-2">
-                <button
-                  onClick={() => approve(a.id)}
-                  className="px-3 py-1 bg-green-600 text-white rounded"
-                >
-                  Approve
-                </button>
+    <div className="space-y-10 mt-6">
+      <AdminSection
+        title="Pending Institution Administrators"
+        admins={pending}
+        status="pending"
+        approve={approve}
+        deny={deny}
+      />
 
-                <button
-                  onClick={() => deny(a.id)}
-                  className="px-3 py-1 bg-red-600 text-white rounded"
+      <AdminSection
+        title="Approved Institution Administrators"
+        admins={approved}
+        status="approved"
+      />
+
+      <AdminSection
+        title="Denied Institution Administrators"
+        admins={denied}
+        status="denied"
+      />
+    </div>
+  );
+}
+
+function AdminSection({
+  title,
+  admins,
+  status,
+  approve,
+  deny,
+}: {
+  title: string;
+  admins: any[];
+  status: "pending" | "approved" | "denied";
+  approve?: (id: string) => void;
+  deny?: (id: string) => void;
+}) {
+  return (
+    <div>
+      <h2 className="text-xl font-semibold text-semcmeBlue mb-4">{title}</h2>
+
+      {admins.length === 0 ? (
+        <p className="text-gray-500 text-sm">No records found.</p>
+      ) : (
+        <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2">
+          {admins.map((a) => (
+            <div
+              key={a.id}
+              className="border border-gray-300 shadow-sm bg-white p-6 rounded-md"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="space-y-2">
+                  <p className="font-semibold text-semcmeBlue text-lg">
+                    {a.first_name} {a.last_name}
+                  </p>
+
+                  <p className="text-sm text-gray-600">
+                    <strong>Email:</strong> {a.email}
+                  </p>
+
+                  <p className="text-sm">
+                    <strong>Institution:</strong> {a.institution_name}
+                  </p>
+                </div>
+
+                <div
+                  className={`capitalize font-medium text-sm px-3 py-1 rounded ${
+                    status === "pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : status === "approved"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                  }`}
                 >
-                  Deny
-                </button>
-              </td>
-            </tr>
+                  {status}
+                </div>
+              </div>
+
+              {status === "pending" && (
+                <div className="flex gap-3 pt-3">
+                  <button
+                    onClick={() => approve?.(a.id)}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  >
+                    Approve
+                  </button>
+
+                  <button
+                    onClick={() => deny?.(a.id)}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  >
+                    Deny
+                  </button>
+                </div>
+              )}
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 }

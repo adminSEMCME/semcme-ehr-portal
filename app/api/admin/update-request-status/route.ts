@@ -5,7 +5,11 @@ import { createClient } from "@supabase/supabase-js";
 
 export async function POST(req: Request) {
   try {
-    const { id, status } = await req.json();
+    const { id } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    }
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +19,7 @@ export async function POST(req: Request) {
     const { error } = await supabase
       .from("institution_data_requests")
       .update({
-        status,
+        status: "completed",
         updated_at: new Date().toISOString(),
       })
       .eq("id", id);
