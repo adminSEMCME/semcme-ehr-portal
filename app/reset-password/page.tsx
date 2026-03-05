@@ -1,3 +1,5 @@
+//app/reset-password/page.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -35,10 +37,17 @@ export default function ResetPasswordPage() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      setReady(!!data.session);
-    })();
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === "PASSWORD_RECOVERY") {
+          setReady(true);
+        }
+      },
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   const handleUpdate = async (e: React.FormEvent) => {
