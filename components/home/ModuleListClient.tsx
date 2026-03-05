@@ -15,6 +15,16 @@ const getSkillLevels = (skillLevel?: string): string[] => {
   return skillLevel.split(",").map((s) => s.trim().toLowerCase());
 };
 
+// HERO CAROUSEL STATE
+const HERO_IMAGES = [
+  "/images/hero2.jpg",
+  "/images/hero3.jpg",
+  "/images/hero4.jpg",
+  "/images/hero5.jpg",
+  "/images/hero6.jpg",
+  "/images/hero7.jpg",
+];
+
 const sortModulesForGroup = (
   modules: any[],
   group: "all" | "ume" | "gme" | "cme",
@@ -90,32 +100,27 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [guidesOpen, setGuidesOpen] = useState(false);
   const guidesRef = useRef<HTMLDivElement>(null);
 
-  // HERO CAROUSEL STATE
-  const images = [
-    "/images/hero1.png",
-    "/images/hero2.jpg",
-    "/images/hero3.jpg",
-    "/images/hero4.jpg",
-    "/images/hero5.jpg",
-    "/images/hero6.jpg",
-    "/images/hero7.jpg",
-  ];
+  const images = HERO_IMAGES;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const nextSlide = useCallback(() => {
-    setIndex((prev) => (prev + 1) % images.length);
-  }, [images.length]);
+  const nextSlide = () => {
+    setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+  };
 
   const prevSlide = () => {
-    setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    setIndex((prev) => (prev === 0 ? HERO_IMAGES.length - 1 : prev - 1));
   };
 
   useEffect(() => {
     if (paused) return;
-    const interval = setInterval(nextSlide, 4500);
+
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, 4500);
+
     return () => clearInterval(interval);
-  }, [paused, nextSlide]);
+  }, [paused]);
 
   // CLOSE FILTER DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
@@ -253,7 +258,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               alt="Hero background"
               fill
               priority
-              className={`absolute inset-0 object-cover object-center transition-opacity duration-1000 ease-in-out ${
+              className={`absolute inset-0 object-cover object-center transition-opacity duration-2000 ease-in-out ${
                 i === index ? "opacity-100" : "opacity-0"
               } scale-110`}
             />
