@@ -1,7 +1,6 @@
 // app/api/certificates/generate/route.ts
 import { NextResponse } from "next/server";
-import { PDFDocument, rgb } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@supabase/supabase-js";
 
@@ -42,7 +41,6 @@ function wrapText(text: string, maxWidth: number, font: any, fontSize: number) {
   }
 
   if (currentLine) lines.push(currentLine);
-
   return lines;
 }
 
@@ -72,13 +70,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const userId = user_id;
-
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      throw new Error("SUPABASE_SERVICE_ROLE_KEY is missing");
-    }
-
-    // 🔐 SERVICE ROLE CLIENT (no cookies, no auth session)
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -87,214 +78,280 @@ export async function POST(request: Request) {
     const issuedAt = new Date().toISOString();
     const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
 
+    const completedDate = new Date(issuedAt).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
     /* -------------------------------
-       Fetch module title
+       Fetch Data
     -------------------------------- */
-    const { data: moduleRow } = await admin
+    const { data: moduleDetails } = await admin
       .from("modules")
-      .select("title")
+      .select("title, objective_description")
       .eq("id", module_id)
       .single();
 
-    const moduleTitle = moduleRow?.title ?? "Module";
-
-    /* -------------------------------
-       Resolve participant name
-    -------------------------------- */
-    let fullName = "Participant";
+    const moduleTitle = moduleDetails?.title ?? "Module";
+    const objectiveText = moduleDetails?.objective_description ?? "";
 
     const { data: profile } = await admin
       .from("profiles")
       .select("first_name,last_name")
-      .eq("id", userId)
+      .eq("id", user_id)
       .maybeSingle();
 
-    if (profile?.first_name || profile?.last_name) {
-      fullName = `${profile?.first_name ?? ""} ${
-        profile?.last_name ?? ""
-      }`.trim();
-    }
+    const fullName =
+      profile?.first_name || profile?.last_name
+        ? `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim()
+        : "Participant";
 
     /* -------------------------------
-       PDF CREATION
+       Create PDF
     -------------------------------- */
     const pdfDoc = await PDFDocument.create();
-    pdfDoc.registerFontkit(fontkit);
-    const page = pdfDoc.addPage([612, 792]);
-
-    const baseUrl = getBaseUrlFromRequest(request);
-
-    const latoRegularBytes = await fetch(
-      `${baseUrl}/cert-assets/fonts/Lato-Regular.ttf`,
-    ).then((res) => res.arrayBuffer());
-
-    const latoItalicBytes = await fetch(
-      `${baseUrl}/cert-assets/fonts/Lato-Italic.ttf`,
-    ).then((res) => res.arrayBuffer());
-
-    const latoBoldItalicBytes = await fetch(
-      `${baseUrl}/cert-assets/fonts/Lato-BoldItalic.ttf`,
-    ).then((res) => res.arrayBuffer());
-
-    const font = await pdfDoc.embedFont(latoRegularBytes);
-    const italic = await pdfDoc.embedFont(latoItalicBytes);
-    const boldItalic = await pdfDoc.embedFont(latoBoldItalicBytes);
+    const page = pdfDoc.addPage([792, 612]);
 
     const { width, height } = page.getSize();
 
+    /* ---------- Fonts ---------- */
+
+    const times = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    const timesBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+    const helveticaBoldOblique = await pdfDoc.embedFont(
+      StandardFonts.HelveticaBoldOblique,
+    );
+    const helveticaOblique = await pdfDoc.embedFont(
+      StandardFonts.HelveticaOblique,
+    );
+
+    /* ---------- Colors ---------- */
+
+    const black = rgb(0, 0, 0);
     const navy = rgb(0.08, 0.16, 0.38);
-    const blue = rgb(0.12, 0.3, 0.78);
     const lightBlue = rgb(0.26, 0.63, 0.93);
+    const blue = rgb(0.12, 0.3, 0.78);
 
     const center = (
       text: string,
       y: number,
       size: number,
-      f = font,
+      font: any,
       color = navy,
     ) => {
-      const w = f.widthOfTextAtSize(text, size);
-      const x = (width - w) / 2;
-      page.drawText(text, { x, y, size, font: f, color });
-      return { x, w };
+      const textWidth = font.widthOfTextAtSize(text, size);
+      const x = (width - textWidth) / 2;
+      page.drawText(text, { x, y, size, font, color });
+      return { x, textWidth };
     };
 
-    // Borders
-    const b1 = 18;
-    const b2 = 24;
-    const b3 = 30;
+    /* ---------- Border ---------- */
 
-    [b1, b2, b3].forEach((b, i) => {
-      page.drawRectangle({
-        x: b,
-        y: b,
-        width: width - b * 2,
-        height: height - b * 2,
-        borderColor: blue,
-        borderWidth: i === 0 ? 1.2 : 0.8,
-      });
+    page.drawRectangle({
+      x: 18,
+      y: 18,
+      width: width - 36,
+      height: height - 36,
+      borderColor: blue,
+      borderWidth: 3,
     });
 
-    /* -------------------------------
-       Logos
-    -------------------------------- */
+    /* ---------- Top Logo ---------- */
 
-    const semcmeLogo = await fetchPngBytes(
+    const baseUrl = getBaseUrlFromRequest(request);
+    const logoBytes = await fetchPngBytes(
       `${baseUrl}/cert-assets/semcmeLogo.png`,
     );
 
-    if (semcmeLogo) {
-      const img = await pdfDoc.embedPng(semcmeLogo);
-      const d = img.scale(0.4);
+    if (logoBytes) {
+      const img = await pdfDoc.embedPng(logoBytes);
+      const scaled = img.scale(0.28);
       page.drawImage(img, {
-        x: (width - d.width) / 2,
-        y: height - 150,
-        width: d.width,
-        height: d.height,
+        x: (width - scaled.width) / 2,
+        y: height - 95,
+        width: scaled.width,
+        height: scaled.height,
       });
     }
 
     /* -------------------------------
-       Text
+       TEXT SECTION
     -------------------------------- */
-    const titleY = height - 230;
-    const titleLine = center(
+
+    const titleY = height - 140;
+
+    const certTitle = center(
       "Certificate of Completion",
       titleY,
       28,
-      boldItalic,
+      helveticaBoldOblique,
+      black,
     );
 
     page.drawRectangle({
-      x: titleLine.x,
+      x: certTitle.x,
       y: titleY - 4,
-      width: titleLine.w,
+      width: certTitle.textWidth,
       height: 1,
-      color: navy,
+      color: black,
     });
+
     center(
       "Southeast Michigan Center for Medical Education",
-      height - 300,
+      titleY - 45,
       18,
-      font,
+      times,
+      navy,
     );
-    center("certifies that", height - 335, 18, font);
 
-    const nameY = height - 385;
-    const nameLine = center(fullName, nameY, 30, italic, lightBlue);
+    center("certifies that", titleY - 70, 16, times, navy);
+
+    const nameY = titleY - 115;
+
+    const nameLine = center(fullName, nameY, 28, helveticaOblique, lightBlue);
+
     page.drawRectangle({
       x: nameLine.x,
       y: nameY - 4,
-      width: nameLine.w,
+      width: nameLine.textWidth,
       height: 1,
       color: lightBlue,
     });
 
+    const activityLineY = nameY - 45;
+
     center(
       "has completed the following educational activity",
-      height - 430,
-      18,
-      font,
+      activityLineY,
+      16,
+      times,
+      navy,
     );
 
-    const maxTextWidth = width - 120;
-    const wrappedTitle = wrapText(moduleTitle, maxTextWidth, boldItalic, 22);
+    const initiativeY = activityLineY - 35;
 
-    const activityLineY = height - 430;
-    let startY = activityLineY - 50;
+    center(
+      "Michigan Electronic Health Record & Health Information Exchange Initiative:",
+      initiativeY,
+      14,
+      times,
+      navy,
+    );
+
+    let startY = initiativeY - 28;
+
+    const wrappedTitle = wrapText(moduleTitle, width - 260, timesBold, 18);
 
     wrappedTitle.forEach((line) => {
-      center(line, startY, 22, boldItalic);
-      startY -= 28;
+      center(line, startY, 18, timesBold, navy);
+      startY -= 26;
     });
 
-    /* -------------------------------
-   Bottom Logos
--------------------------------- */
+    /* ---------- Objectives (True Hanging Indent + Centered Block) ---------- */
 
-    const bottomLogoY = 35;
-    const sidePadding = 35;
+    if (objectiveText) {
+      startY -= 20;
 
-    // LEFT LOGO — Value Partnerships
-    const valuePartnersBytes = await fetchPngBytes(
-      `${baseUrl}/cert-assets/valuePartnershipsLogo.png`,
-    );
+      const columnWidth = width - 360;
+      const columnX = (width - columnWidth) / 2;
 
-    if (valuePartnersBytes) {
-      const leftImg = await pdfDoc.embedPng(valuePartnersBytes);
-      const scaledLeft = leftImg.scale(0.5);
+      const bulletSize = 13;
+      const bulletFont = times;
 
-      page.drawImage(leftImg, {
-        x: sidePadding,
-        y: bottomLogoY,
-        width: scaledLeft.width,
-        height: scaledLeft.height,
+      const bulletDash = "- ";
+      const dashWidth = bulletFont.widthOfTextAtSize(bulletDash, bulletSize);
+
+      const objectives = objectiveText
+        .split(/\r?\n/)
+        .map((o: string) => o.trim())
+        .filter(Boolean);
+
+      objectives.forEach((obj: string) => {
+        // Wrap WITHOUT dash
+        const wrappedLines = wrapText(
+          obj,
+          columnWidth - dashWidth,
+          bulletFont,
+          bulletSize,
+        );
+
+        wrappedLines.forEach((line: string, index: number) => {
+          const textToDraw = index === 0 ? bulletDash + line : line;
+          const xPosition = index === 0 ? columnX : columnX + dashWidth;
+
+          page.drawText(textToDraw, {
+            x: xPosition,
+            y: startY,
+            size: bulletSize,
+            font: bulletFont,
+            color: navy,
+          });
+
+          startY -= 19;
+        });
+
+        startY -= 6;
       });
     }
 
-    // RIGHT LOGO — Blue Cross
+    /* -------------------------------
+       Bottom Section (unchanged)
+    -------------------------------- */
+
+    const borderPadding = 18;
+    const bottomY = borderPadding + 6;
+
+    const valueBytes = await fetchPngBytes(
+      `${baseUrl}/cert-assets/valuePartnershipsLogo.png`,
+    );
+    if (valueBytes) {
+      const img = await pdfDoc.embedPng(valueBytes);
+      const scaled = img.scale(0.5);
+      page.drawImage(img, {
+        x: borderPadding + 6,
+        y: bottomY,
+        width: scaled.width,
+        height: scaled.height,
+      });
+    }
+
     const bcbsBytes = await fetchPngBytes(
       `${baseUrl}/cert-assets/blueCrossLogo.png`,
     );
-
     if (bcbsBytes) {
-      const rightImg = await pdfDoc.embedPng(bcbsBytes);
-      const scaledRight = rightImg.scale(0.5);
-
-      page.drawImage(rightImg, {
-        x: width - scaledRight.width - sidePadding,
-        y: bottomLogoY,
-        width: scaledRight.width,
-        height: scaledRight.height,
+      const img = await pdfDoc.embedPng(bcbsBytes);
+      const scaled = img.scale(0.65);
+      page.drawImage(img, {
+        x: width - borderPadding - scaled.width - 6,
+        y: bottomY - 6,
+        width: scaled.width,
+        height: scaled.height,
       });
     }
 
+    const labelWidth = times.widthOfTextAtSize("Date Completed:", 12);
+    const valueWidth = times.widthOfTextAtSize(completedDate, 14);
+
+    page.drawText("Date Completed:", {
+      x: (width - labelWidth) / 2,
+      y: bottomY + 22,
+      size: 12,
+      font: times,
+      color: navy,
+    });
+
+    page.drawText(completedDate, {
+      x: (width - valueWidth) / 2,
+      y: bottomY + 8,
+      size: 14,
+      font: times,
+      color: navy,
+    });
+
     const pdfBytes = await pdfDoc.save();
 
-    /* -------------------------------
-       Upload + DB record
-    -------------------------------- */
-    const filePath = `${userId}/${module_id}.pdf`;
+    const filePath = `${user_id}/${module_id}-${certNumber}.pdf`;
 
     await admin.storage.from("certificates").upload(filePath, pdfBytes, {
       contentType: "application/pdf",
@@ -306,7 +363,7 @@ export async function POST(request: Request) {
       .getPublicUrl(filePath);
 
     await admin.from("certificates").upsert({
-      user_id: userId,
+      user_id,
       module_id,
       issued_at: issuedAt,
       cert_number: certNumber,
@@ -315,10 +372,10 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (err: any) {
+  } catch (err) {
     console.error("Certificate generation failed:", err);
     return NextResponse.json(
-      { error: "Failed to generate certificate", details: String(err) },
+      { error: "Failed to generate certificate" },
       { status: 500 },
     );
   }
