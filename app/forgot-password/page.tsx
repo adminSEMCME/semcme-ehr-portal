@@ -22,7 +22,7 @@ export default function ForgotPasswordPage() {
     setErrorMsg(null);
 
     try {
-      const redirectTo = "https://semcme-ehr-portal.vercel.app/reset-password";
+      const redirectTo = `${window.location.origin}/reset-password`;
 
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo,

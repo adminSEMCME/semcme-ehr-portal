@@ -37,17 +37,31 @@ export default function ResetPasswordPage() {
   const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "PASSWORD_RECOVERY") {
-          setReady(true);
-        }
-      },
-    );
+    const init = async () => {
+      // First check if session already exists
+      const { data } = await supabase.auth.getSession();
 
-    return () => {
-      listener.subscription.unsubscribe();
+      if (data.session) {
+        setReady(true);
+      }
+
+      // Listen for recovery OR sign in
+      const { data: listener } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+            if (session) {
+              setReady(true);
+            }
+          }
+        },
+      );
+
+      return () => {
+        listener.subscription.unsubscribe();
+      };
     };
+
+    init();
   }, []);
 
   const handleUpdate = async (e: React.FormEvent) => {
