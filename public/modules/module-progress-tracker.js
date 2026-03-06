@@ -8,6 +8,8 @@
   let lastSentPercent = -1;
   let sending = false;
 
+  let lastVisited = 0;
+
   async function postProgress({ percent, completed }) {
     // avoid duplicate sends
     if (!completed && percent === lastSentPercent) return;
@@ -48,17 +50,17 @@
   function countTotals(outlineEl) {
     if (!outlineEl) return { visited: 0, total: 0, percent: 0 };
 
-    // Every clickable item in menu
-    const allItems = outlineEl.querySelectorAll(".cs-listitem.listitem");
-    const total = allItems.length;
+    // only count real slides
+    const allSlides = outlineEl.querySelectorAll(".cs-listitem[data-ref]");
+    const total = allSlides.length;
 
-    // Storyline marks visited with .cs-viewed
-    const visitedItems = outlineEl.querySelectorAll(
-      ".cs-listitem.listitem.cs-viewed"
+    const visitedSlides = outlineEl.querySelectorAll(
+      ".cs-listitem.cs-viewed[data-ref]",
     );
-    const visited = visitedItems.length;
+    const visited = visitedSlides.length;
 
     const percent = total ? Math.round((visited / total) * 100) : 0;
+
     return { visited, total, percent };
   }
 
@@ -68,7 +70,7 @@
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(
       () => postProgress({ percent, completed }),
-      delay
+      delay,
     );
   }
 
@@ -87,21 +89,27 @@
 
     console.info("📘 Tracker active for module:", moduleId);
 
-    // Initial send
-    const first = countTotals(outline);
-    // console.info(`📑 Found ${first.total} tabs`);
-    scheduleSend({ percent: first.percent });
+    // Initial send only after first slide interaction
+    setTimeout(() => {
+      const first = countTotals(outline);
+      lastVisited = first.visited;
+      scheduleSend({ percent: first.percent });
+    }, 1500);
 
     // Watch for visited/selected changes
     const observer = new MutationObserver((mutations) => {
       // Only react to class changes or node additions/removals
       const changed = mutations.some(
-        (m) => m.type === "attributes" || m.type === "childList"
+        (m) => m.type === "attributes" || m.type === "childList",
       );
       if (!changed || sending) return;
 
-      const { percent } = countTotals(outline);
-      scheduleSend({ percent });
+      const { visited, percent } = countTotals(outline);
+
+      if (visited > lastVisited) {
+        lastVisited = visited;
+        scheduleSend({ percent });
+      }
     });
 
     observer.observe(outline, {
@@ -114,7 +122,7 @@
     // Detect Exit button -> Completed
     function bindExitOnce() {
       const exitBtn = Array.from(
-        document.querySelectorAll("button, a, div")
+        document.querySelectorAll("button, a, div"),
       ).find((el) => {
         const t = (el.textContent || "").toLowerCase();
         const a = (el.getAttribute("aria-label") || "").toLowerCase();
