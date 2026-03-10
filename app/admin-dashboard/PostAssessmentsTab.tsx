@@ -144,9 +144,15 @@ export default function PostAssessmentsTab({
             key={moduleId}
             className="bg-white rounded-xl shadow-sm border border-gray-300 p-6"
           >
-            <h2 className="text-2xl font-semibold text-semcmeBlue mb-6">
-              {moduleId}
-            </h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-semcmeBlue">
+                {moduleId}
+              </h2>
+
+              <div className="text-sm font-semibold text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                {data.submissions.length} submissions
+              </div>
+            </div>
 
             {/* ================= AGGREGATED TOTALS ================= */}
 
