@@ -104,6 +104,9 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
+  const FADE_DURATION = 2500; // must match CSS transition
+  const SLIDE_DELAY = 5000; // how long image stays visible after fade
+
   const nextSlide = () => {
     setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
   };
@@ -113,14 +116,23 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   };
 
   useEffect(() => {
-    if (paused) return;
+    let timeout: NodeJS.Timeout;
 
-    const interval = setInterval(() => {
+    const runCarousel = () => {
+      timeout = setTimeout(() => {
+        setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+        runCarousel();
+      }, SLIDE_DELAY + FADE_DURATION);
+    };
+
+    // shorter first delay so the first slide doesn't linger
+    timeout = setTimeout(() => {
       setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-    }, 4500);
+      runCarousel();
+    }, SLIDE_DELAY);
 
-    return () => clearInterval(interval);
-  }, [paused]);
+    return () => clearTimeout(timeout);
+  }, []);
 
   // CLOSE FILTER DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
@@ -245,11 +257,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
       </div>
 
       {/* HERO SECTION */}
-      <section
-        className="w-full h-[600px] relative overflow-hidden z-0"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-      >
+      <section className="w-full h-[600px] relative overflow-hidden z-0">
         <div className="absolute inset-0">
           {images.map((img, i) => (
             <Image
@@ -258,7 +266,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               alt="Hero background"
               fill
               priority
-              className={`absolute inset-0 object-cover object-center transition-opacity duration-2000 ease-in-out ${
+              className={`absolute inset-0 object-cover object-center transition-opacity duration-2500 ease-in-out ${
                 i === index ? "opacity-100" : "opacity-0"
               } scale-110`}
             />
