@@ -266,7 +266,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               alt="Hero background"
               fill
               priority
-              className={`absolute inset-0 object-cover object-center transition-opacity duration-2500 ease-in-out ${
+              className={`absolute inset-0 object-cover object-center transition-opacity duration-2000 ease-in-out ${
                 i === index ? "opacity-100" : "opacity-0"
               } scale-110`}
             />
