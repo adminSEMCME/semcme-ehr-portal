@@ -179,7 +179,7 @@ export async function POST(request: Request) {
        TEXT SECTION
     -------------------------------- */
 
-    const titleY = height - 140;
+    const titleY = height - 150;
 
     const certTitle = center(
       "Certificate of Completion",
@@ -205,9 +205,9 @@ export async function POST(request: Request) {
       navy,
     );
 
-    center("certifies that", titleY - 70, 16, times, navy);
+    center("certifies that", titleY - 65, 16, times, navy);
 
-    const nameY = titleY - 115;
+    const nameY = titleY - 100;
 
     const nameLine = center(fullName, nameY, 28, helveticaOblique, lightBlue);
 
@@ -219,7 +219,7 @@ export async function POST(request: Request) {
       color: lightBlue,
     });
 
-    const activityLineY = nameY - 45;
+    const activityLineY = nameY - 35;
 
     center(
       "has completed the following educational activity",
@@ -229,7 +229,7 @@ export async function POST(request: Request) {
       navy,
     );
 
-    const initiativeY = activityLineY - 35;
+    const initiativeY = activityLineY - 27;
 
     center(
       "Michigan Electronic Health Record & Health Information Exchange Initiative:",
@@ -239,18 +239,20 @@ export async function POST(request: Request) {
       navy,
     );
 
-    let startY = initiativeY - 28;
+    let startY = initiativeY - 20;
 
     const wrappedTitle = wrapText(moduleTitle, width - 260, timesBold, 18);
 
     wrappedTitle.forEach((line) => {
       center(line, startY, 18, timesBold, navy);
-      startY -= 26;
+      startY -= 18;
     });
 
-    /* ---------- Objectives (True Hanging Indent + Centered Block) ---------- */
-
     if (objectiveText) {
+      startY -= 17;
+
+      // Learning Objectives title
+      center("Learning Objectives:", startY, 14, times, navy);
       startY -= 20;
 
       const columnWidth = width - 360;
