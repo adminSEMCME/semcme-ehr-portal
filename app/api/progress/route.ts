@@ -6,7 +6,8 @@ import { createClient } from "@supabase/supabase-js";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { module_id, progress_percent, status, date_completed } = body;
+    const { module_id, status, date_completed } = body;
+    let { progress_percent } = body;
 
     if (!module_id) {
       return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
@@ -29,8 +30,24 @@ export async function POST(request: Request) {
 
     const { data: userData } = await supabase.auth.getUser();
 
-    // ✅ Session path (most normal cases)
     if (userData?.user) {
+      const { data: existing } = await supabase
+        .from("module_progress")
+        .select("progress_percent,status")
+        .eq("user_id", userData.user.id)
+        .eq("module_id", module_id)
+        .single();
+
+      if (existing) {
+        if (existing.status === "completed") {
+          return NextResponse.json({ success: true });
+        }
+
+        if (progress_percent < existing.progress_percent) {
+          progress_percent = existing.progress_percent;
+        }
+      }
+
       await supabase.from("module_progress").upsert(
         {
           user_id: userData.user.id,

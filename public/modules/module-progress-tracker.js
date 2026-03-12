@@ -8,12 +8,16 @@
   let lastSentPercent = -1;
   let sending = false;
 
+  let maxPercentSent = 0;
+
   let lastVisited = 0;
 
   async function postProgress({ percent, completed }) {
-    // avoid duplicate sends
-    if (!completed && percent === lastSentPercent) return;
-    lastSentPercent = percent;
+    percent = Math.max(0, Math.min(100, Math.round(percent)));
+
+    if (percent < maxPercentSent && !completed) return;
+
+    maxPercentSent = Math.max(maxPercentSent, percent);
 
     const payload = {
       module_id: moduleId,
@@ -89,12 +93,9 @@
 
     console.info("📘 Tracker active for module:", moduleId);
 
-    // Initial send only after first slide interaction
-    setTimeout(() => {
-      const first = countTotals(outline);
-      lastVisited = first.visited;
-      scheduleSend({ percent: first.percent });
-    }, 1500);
+    const first = countTotals(outline);
+    lastVisited = first.visited;
+    maxPercentSent = first.percent;
 
     // Watch for visited/selected changes
     const observer = new MutationObserver((mutations) => {
@@ -121,30 +122,25 @@
 
     // Detect Exit button -> Completed
     function bindExitOnce() {
-      const exitBtn = Array.from(
-        document.querySelectorAll("button, a, div"),
-      ).find((el) => {
-        const t = (el.textContent || "").toLowerCase();
-        const a = (el.getAttribute("aria-label") || "").toLowerCase();
-        return t.includes("exit") || a.includes("exit");
-      });
+      const exitBtn = Array.from(document.querySelectorAll("button")).find(
+        (el) => {
+          const t = (el.textContent || "").toLowerCase();
+          const a = (el.getAttribute("aria-label") || "").toLowerCase();
+          return t.includes("exit") || a.includes("exit");
+        },
+      );
       if (!exitBtn || exitBtn.dataset._progressBound) return false;
       exitBtn.dataset._progressBound = "1";
       exitBtn.addEventListener("click", () => {
-        // On explicit exit, force 100% + completed
         scheduleSend({ percent: 100, completed: true }, 0);
       });
       return true;
     }
 
-    // Try immediately & also keep trying for late renders
     bindExitOnce();
     const exitFinder = new MutationObserver(() => bindExitOnce());
     exitFinder.observe(document.body, { childList: true, subtree: true });
 
-    // (Optional) If you ALSO want to auto-complete when all tabs are visited
-    // uncomment the block below.
-    /*
     const autoCompleteObserver = new MutationObserver(() => {
       const { visited, total } = countTotals(outline);
       if (total > 0 && visited === total) {
@@ -152,7 +148,11 @@
         autoCompleteObserver.disconnect();
       }
     });
-    autoCompleteObserver.observe(outline, { subtree: true, attributes: true, childList: true, attributeFilter: ["class"] });
-    */
+    autoCompleteObserver.observe(outline, {
+      subtree: true,
+      attributes: true,
+      childList: true,
+      attributeFilter: ["class"],
+    });
   })();
 })();
