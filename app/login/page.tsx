@@ -2,12 +2,14 @@
 import { cookies } from "next/headers";
 import { Suspense } from "react";
 import LoginClient from "./LoginClient";
+import Footer from "../../components/Footer";
 
 export default async function LoginPageWrapper() {
   const cookieStore = await cookies();
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LoginClient />
+      <Footer />
     </Suspense>
   );
 }

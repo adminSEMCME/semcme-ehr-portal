@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
+import Footer from "@/components/Footer";
 
 const preloadImages = (urls: string[], timeout = 800) => {
   return Promise.all(
@@ -152,6 +153,7 @@ export default function DashboardPage() {
   );
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showCEInfoModal, setShowCEInfoModal] = useState(false);
+  const [showPDF, setShowPDF] = useState(false);
 
   type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -493,89 +495,90 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen pb-20 bg-transparent flex flex-col items-center font-sans">
-      {/* HEADER */}
-      <div className="w-full flex items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center">
-          <div className="bg-white rounded-md shadow-sm px-3 py-2">
-            <div className="relative w-[170px] h-[45px]">
-              <Image
-                src="/logos/semcme_logo.jpg"
-                alt="SEMCME Logo"
-                fill
-                className="object-contain rounded-md"
-                priority
-              />
+    <>
+      <main className="min-h-screen pb-20 bg-transparent flex flex-col items-center font-sans">
+        {/* HEADER */}
+        <div className="w-full flex items-center justify-between px-4 py-3">
+          <Link href="/" className="flex items-center">
+            <div className="bg-white rounded-md shadow-sm px-3 py-2">
+              <div className="relative w-[170px] h-[45px]">
+                <Image
+                  src="/logos/semcme_logo.jpg"
+                  alt="SEMCME Logo"
+                  fill
+                  className="object-contain rounded-md"
+                  priority
+                />
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
 
-        <div className="flex items-center gap-3">
-          {/* LOG OUT */}
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold h-10"
-          >
-            Log Out
-          </button>
-        </div>
-      </div>
-
-      {/* PAGE TITLE */}
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mt-6 mb-8 text-center leading-tight px-4">
-        Improving EHR Use for Better Outcomes: <br />
-        User Dashboard
-      </h1>
-
-      {/* GROUP FILTER */}
-      <div className="w-full flex justify-center lg:mb-8 mb-4 px-4">
-        <div className="relative w-full max-w-md">
-          <button
-            type="button"
-            onClick={() => setGroupOpen((prev) => !prev)}
-            className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-2 text-sm text-semcmeBlue w-full h-10"
-          >
-            <span>Filter Modules: {groupFilter.toUpperCase()}</span>
-            <svg
-              className={`w-4 h-4 transition-transform ${
-                groupOpen ? "rotate-180" : ""
-              }`}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
+          <div className="flex items-center gap-3">
+            {/* LOG OUT */}
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold h-10"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {groupOpen && (
-            <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-md shadow-lg z-50">
-              {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
-                <button
-                  key={g}
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => {
-                    setGroupFilter(g);
-                    setGroupOpen(false);
-                  }}
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-slate-100 rounded-md text-semcmeBlue"
-                >
-                  {g.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          )}
+              Log Out
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* GRID OF MODULE CARDS */}
-      <div
-        className="
+        {/* PAGE TITLE */}
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mt-6 mb-8 text-center leading-tight px-4">
+          Improving EHR Use for Better Outcomes: <br />
+          User Dashboard
+        </h1>
+
+        {/* GROUP FILTER */}
+        <div className="w-full flex justify-center lg:mb-8 mb-4 px-4">
+          <div className="relative w-full max-w-md">
+            <button
+              type="button"
+              onClick={() => setGroupOpen((prev) => !prev)}
+              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-2 text-sm text-semcmeBlue w-full h-10"
+            >
+              <span>Filter Modules: {groupFilter.toUpperCase()}</span>
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  groupOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {groupOpen && (
+              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-md shadow-lg z-50">
+                {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
+                  <button
+                    key={g}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setGroupFilter(g);
+                      setGroupOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-slate-100 rounded-md text-semcmeBlue"
+                  >
+                    {g.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* GRID OF MODULE CARDS */}
+        <div
+          className="
           w-full max-w-7xl 
           grid 
           grid-cols-1 
@@ -584,29 +587,29 @@ export default function DashboardPage() {
           gap-6 
           px-4
         "
-      >
-        {sortModulesForGroup(filteredModules, groupFilter).map((module) => {
-          const status = getStatus(module.id);
-          const progressPercent = getProgress(module.id);
-          const cert = getCertificate(module.id);
+        >
+          {sortModulesForGroup(filteredModules, groupFilter).map((module) => {
+            const status = getStatus(module.id);
+            const progressPercent = getProgress(module.id);
+            const cert = getCertificate(module.id);
 
-          const thumbnailPath =
-            module.id === "mock-ehr"
-              ? "/images/mock-ehr-thumbnail.png"
-              : module.url.replace(
-                  "/story.html",
-                  "/story_content/thumbnail.jpg",
-                );
+            const thumbnailPath =
+              module.id === "mock-ehr"
+                ? "/images/mock-ehr-thumbnail.png"
+                : module.url.replace(
+                    "/story.html",
+                    "/story_content/thumbnail.jpg",
+                  );
 
-          const objectives: string[] = module.objective_description
-            ? module.objective_description.split("\n").filter(Boolean)
-            : [];
+            const objectives: string[] = module.objective_description
+              ? module.objective_description.split("\n").filter(Boolean)
+              : [];
 
-          return (
-            <div
-              key={module.id}
-              id={`module-${module.id}`}
-              className="
+            return (
+              <div
+                key={module.id}
+                id={`module-${module.id}`}
+                className="
                 bg-white 
                 rounded-lg 
                 overflow-hidden 
@@ -614,31 +617,31 @@ export default function DashboardPage() {
                 border border-gray-200/80
                 flex flex-col
               "
-            >
-              {/* HEADER BAR */}
-              <div className="bg-semcmeBlue text-white px-4 pt-4 h-28 flex flex-col">
-                {/* TITLE SLOT — fixed height */}
-                <div className="h-[3.2rem] flex items-center justify-center text-center px-3">
-                  <h2 className="font-semibold leading-tight text-[1.05rem]">
-                    {module.title}
-                  </h2>
-                </div>
-
-                {/* PROGRESS ROW — fixed height & position */}
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-sm">{progressPercent}%</span>
-
-                  <div className="flex-1 bg-white/30 h-1 rounded-full overflow-hidden">
-                    <div
-                      className={`h-1 rounded-full transition-all duration-700 ease-out ${
-                        status === "completed" ? "bg-green-400" : "bg-white"
-                      }`}
-                      style={{ width: `${progressPercent}%` }}
-                    />
+              >
+                {/* HEADER BAR */}
+                <div className="bg-semcmeBlue text-white px-4 pt-4 h-28 flex flex-col">
+                  {/* TITLE SLOT — fixed height */}
+                  <div className="h-[3.2rem] flex items-center justify-center text-center px-3">
+                    <h2 className="font-semibold leading-tight text-[1.05rem]">
+                      {module.title}
+                    </h2>
                   </div>
 
-                  <span
-                    className={`
+                  {/* PROGRESS ROW — fixed height & position */}
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-sm">{progressPercent}%</span>
+
+                    <div className="flex-1 bg-white/30 h-1 rounded-full overflow-hidden">
+                      <div
+                        className={`h-1 rounded-full transition-all duration-700 ease-out ${
+                          status === "completed" ? "bg-green-400" : "bg-white"
+                        }`}
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                    </div>
+
+                    <span
+                      className={`
                       text-xs px-4 py-1 rounded-full border
                       ${
                         status === "completed"
@@ -648,291 +651,316 @@ export default function DashboardPage() {
                             : "bg-gray-100 text-gray-700 border-gray-300"
                       }
                     `}
-                  >
-                    {status.replace("_", " ")}
-                  </span>
+                    >
+                      {status.replace("_", " ")}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              {/* IMAGE */}
-              <div className="w-full bg-white sm:h-[220px] sm:overflow-hidden">
-                <img
-                  src={thumbnailPath}
-                  alt={`${module.title} thumbnail`}
-                  className="w-full h-auto sm:h-full object-contain sm:object-cover"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.dataset.fallbackApplied) return;
+                {/* IMAGE */}
+                <div className="w-full bg-white sm:h-[220px] sm:overflow-hidden">
+                  <img
+                    src={thumbnailPath}
+                    alt={`${module.title} thumbnail`}
+                    className="w-full h-auto sm:h-full object-contain sm:object-cover"
+                    onError={(e) => {
+                      const img = e.currentTarget;
+                      if (img.dataset.fallbackApplied) return;
 
-                    img.dataset.fallbackApplied = "true";
-                    img.src = "/images/default-thumbnail.jpg";
-                  }}
-                />
-              </div>
+                      img.dataset.fallbackApplied = "true";
+                      img.src = "/images/default-thumbnail.jpg";
+                    }}
+                  />
+                </div>
 
-              {/* CONTENT SECTION */}
-              <div className="p-6 flex flex-col gap-4 grow min-h-[260px]">
-                {objectives.length > 0 ? (
-                  <ul className="text-gray-700 text-sm leading-relaxed list-disc pl-5 space-y-2">
-                    {objectives.map((line, idx) => (
-                      <li key={idx}>{line}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    No objectives available for this module.
-                  </p>
-                )}
+                {/* CONTENT SECTION */}
+                <div className="p-6 flex flex-col gap-4 grow min-h-[260px]">
+                  {objectives.length > 0 ? (
+                    <ul className="text-gray-700 text-sm leading-relaxed list-disc pl-5 space-y-2">
+                      {objectives.map((line, idx) => (
+                        <li key={idx}>{line}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-700 text-base leading-relaxed">
+                      No objectives available for this module.
+                    </p>
+                  )}
 
-                {/* BUTTONS STICK TO BOTTOM */}
-                <div className="mt-auto flex flex-col gap-3">
-                  <Button
-                    onClick={() => handleStart(module)}
-                    className="module-start-btn w-full px-6 py-3 rounded-md font-semibold text-base"
-                  >
-                    {status === "not_started"
-                      ? "Start Module"
-                      : status === "completed"
-                        ? "Review Module"
-                        : "Continue Module"}
-                  </Button>
+                  {/* BUTTONS STICK TO BOTTOM */}
+                  <div className="mt-auto flex flex-col gap-3">
+                    <Button
+                      onClick={() => handleStart(module)}
+                      className="module-start-btn w-full px-6 py-3 rounded-md font-semibold text-base"
+                    >
+                      {status === "not_started"
+                        ? "Start Module"
+                        : status === "completed"
+                          ? "Review Module"
+                          : "Continue Module"}
+                    </Button>
 
-                  {status === "completed" &&
-                    !hasAssessment(module.id) &&
-                    (canCollectCE ? (
-                      // 🔹 WITH CE → split row
-                      <div className="grid grid-cols-2 gap-3">
+                    {status === "completed" &&
+                      !hasAssessment(module.id) &&
+                      (canCollectCE ? (
+                        // 🔹 WITH CE → split row
+                        <div className="grid grid-cols-2 gap-3">
+                          <Button
+                            onClick={() =>
+                              router.push(
+                                `/post-assessment?module_id=${module.id}`,
+                              )
+                            }
+                            className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                          >
+                            Post Assessment
+                          </Button>
+
+                          <Button
+                            onClick={() => {
+                              setActiveCEModule(module);
+                              setShowCEModal(true);
+                            }}
+                            className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                          >
+                            Collect CE Credits
+                          </Button>
+                        </div>
+                      ) : (
+                        // 🔹 NO CE → full width (original behavior)
                         <Button
                           onClick={() =>
                             router.push(
                               `/post-assessment?module_id=${module.id}`,
                             )
                           }
-                          className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                          className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
                         >
                           Post Assessment
                         </Button>
+                      ))}
 
-                        <Button
-                          onClick={() => {
-                            setActiveCEModule(module);
-                            setShowCEModal(true);
-                          }}
-                          className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                    {status === "completed" &&
+                      hasAssessment(module.id) &&
+                      cert && (
+                        <a
+                          href={cert.cert_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full"
                         >
-                          Collect CE Credits
-                        </Button>
-                      </div>
-                    ) : (
-                      // 🔹 NO CE → full width (original behavior)
-                      <Button
-                        onClick={() =>
-                          router.push(`/post-assessment?module_id=${module.id}`)
-                        }
-                        className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
-                      >
-                        Post Assessment
-                      </Button>
-                    ))}
-
-                  {status === "completed" &&
-                    hasAssessment(module.id) &&
-                    cert && (
-                      <a
-                        href={cert.cert_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full"
-                      >
-                        <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
-                          Download Certificate
-                        </Button>
-                      </a>
-                    )}
+                          <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                            Download Certificate
+                          </Button>
+                        </a>
+                      )}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* 🔹 CE FIRST-COMPLETION INFO MODAL */}
-      {showCEInfoModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
-            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
-              Important: CE vs Post Assessment
-            </h2>
-
-            <p className="text-sm text-gray-700 mb-4">
-              You do NOT need to complete both options.
-            </p>
-
-            <ul className="text-sm text-gray-700 list-disc pl-5 space-y-2 mb-4">
-              <li>
-                If you want CE credit through McLaren, select
-                <strong> Collect CE Credits</strong>.
-              </li>
-              <li>
-                If you do NOT want CE credit, complete the
-                <strong> Post Assessment</strong> to receive a certificate of
-                completion.
-              </li>
-            </ul>
-
-            <div className="flex justify-end">
-              <Button
-                onClick={async () => {
-                  const { data: sessionData } =
-                    await supabase.auth.getSession();
-                  const user = sessionData?.session?.user;
-                  if (!user) return;
-
-                  await supabase.from("user_ce_preferences").upsert({
-                    user_id: user.id,
-                    ce_info_seen: true,
-                  });
-
-                  setShowCEInfoModal(false);
-                }}
-                className="bg-semcmeBlue text-white hover:bg-blue-800"
-              >
-                Got It
-              </Button>
-            </div>
-          </div>
+            );
+          })}
         </div>
-      )}
 
-      {showAccredModal && activeAccredModule && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
-            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
-              Accreditation Statement
-            </h2>
+        {/* 🔹 CE FIRST-COMPLETION INFO MODAL */}
+        {showCEInfoModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+              <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+                Important: CE vs Post Assessment
+              </h2>
 
-            <p className="text-sm text-gray-700 mb-4">
-              Each module has its own accreditation statement. You must review
-              the statement for this module before proceeding. After reviewing
-              it once, you may select
-              <strong> “Don't show this message again” </strong>
-              and it will not appear again for this module.
-            </p>
+              <p className="text-sm text-gray-700 mb-4">
+                You do NOT need to complete both options.
+              </p>
 
-            <a
-              href={`/accreditation/${activeAccredModule.id}.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mb-4 text-blue-600 underline font-medium"
-            >
-              {activeAccredModule.title} Accreditation Statement (PDF)
-            </a>
+              <ul className="text-sm text-gray-700 list-disc pl-5 space-y-2 mb-4">
+                <li>
+                  If you want CE credit through McLaren, select
+                  <strong> Collect CE Credits</strong>.
+                </li>
+                <li>
+                  If you do NOT want CE credit, complete the
+                  <strong> Post Assessment</strong> to receive a certificate of
+                  completion.
+                </li>
+              </ul>
 
-            <div className="flex items-center gap-2 mb-4">
-              <input
-                type="checkbox"
-                id="dontShow"
-                checked={dontShowAgain}
-                onChange={(e) => setDontShowAgain(e.target.checked)}
-              />
-              <label htmlFor="dontShow" className="text-sm text-gray-700">
-                Don't show this message again
-              </label>
-            </div>
+              <div className="flex justify-end">
+                <Button
+                  onClick={async () => {
+                    const { data: sessionData } =
+                      await supabase.auth.getSession();
+                    const user = sessionData?.session?.user;
+                    if (!user) return;
 
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowAccredModal(false);
-                  setActiveAccredModule(null);
-                }}
-              >
-                Cancel
-              </Button>
+                    await supabase.from("user_ce_preferences").upsert({
+                      user_id: user.id,
+                      ce_info_seen: true,
+                    });
 
-              <Button
-                onClick={handleConfirmAccreditation}
-                className="bg-semcmeBlue text-white hover:bg-blue-800"
-              >
-                Continue to Module
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showCEModal && activeCEModule && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
-            <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
-              Collect CE Credits
-            </h2>
-
-            <p className="text-sm text-gray-700 mb-4">
-              To claim continuing education (CE) credit for{" "}
-              <strong>{activeCEModule.title}</strong>, follow the steps below.
-            </p>
-
-            <ol className="text-sm text-gray-700 list-decimal pl-5 space-y-2 mb-4">
-              <li>
-                Sign in to CME Tracker:
-                <br />
-                <a
-                  href="https://cmetracker.net/MCLAREN"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline"
+                    setShowCEInfoModal(false);
+                  }}
+                  className="bg-semcmeBlue text-white hover:bg-blue-800"
                 >
-                  https://cmetracker.net/MCLAREN
-                </a>
-              </li>
-              <li>
-                Select <strong>Sign In / Create Account</strong>
-              </li>
-              <li>
-                Navigate to <strong>My Portal</strong>
-              </li>
-              <li>
-                Select <strong>Claim Credit</strong>
-              </li>
-              <li>
-                Enter activity code:
-                <div className="mt-1 font-mono bg-gray-100 px-2 py-1 rounded text-sm">
-                  {activeCEModule.ce_code || "CODE-TBD"}
-                </div>
-              </li>
-              <li>Complete the evaluation and attest to your credits</li>
-            </ol>
-
-            <p className="text-xs text-gray-500 mb-4">
-              Preferred browsers: Chrome, Firefox, Microsoft Edge
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowCEModal(false);
-                  setActiveCEModule(null);
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                onClick={() => {
-                  window.open("https://cmetracker.net/MCLAREN", "_blank");
-                  setShowCEModal(false);
-                  setActiveCEModule(null);
-                }}
-                className="bg-purple-600 text-white hover:bg-purple-700"
-              >
-                Go to CME Tracker
-              </Button>
+                  Got It
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </main>
+        )}
+
+        {showAccredModal && activeAccredModule && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+              <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+                Accreditation Statement
+              </h2>
+
+              <p className="text-sm text-gray-700 mb-4">
+                Each module has its own accreditation statement. You must review
+                the statement for this module before proceeding. After reviewing
+                it once, you may select
+                <strong> “Don't show this message again” </strong>
+                and it will not appear again for this module.
+              </p>
+
+              <button
+                onClick={() => setShowPDF(true)}
+                className="inline-block mb-4 text-blue-600 underline font-medium"
+              >
+                {activeAccredModule.title} Accreditation Statement (PDF)
+              </button>
+
+              <div className="flex items-center gap-2 mb-4">
+                <input
+                  type="checkbox"
+                  id="dontShow"
+                  checked={dontShowAgain}
+                  onChange={(e) => setDontShowAgain(e.target.checked)}
+                />
+                <label htmlFor="dontShow" className="text-sm text-gray-700">
+                  Don't show this message again
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowAccredModal(false);
+                    setActiveAccredModule(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  onClick={handleConfirmAccreditation}
+                  className="bg-semcmeBlue text-white hover:bg-blue-800"
+                >
+                  Continue to Module
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showPDF && activeAccredModule && (
+          <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/70">
+            <div className="bg-white w-[90vw] h-[90vh] rounded-md shadow-xl flex flex-col">
+              <div className="flex justify-between items-center px-4 py-2 border-b">
+                <h3 className="font-semibold text-semcmeBlue">
+                  Accreditation Statement
+                </h3>
+
+                <button
+                  onClick={() => setShowPDF(false)}
+                  className="text-gray-500 hover:text-black"
+                >
+                  Close
+                </button>
+              </div>
+
+              <iframe
+                src={`/accreditation/${activeAccredModule.id}.pdf`}
+                className="w-full flex-1"
+              />
+            </div>
+          </div>
+        )}
+        {showCEModal && activeCEModule && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+              <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+                Collect CE Credits
+              </h2>
+
+              <p className="text-sm text-gray-700 mb-4">
+                To claim continuing education (CE) credit for{" "}
+                <strong>{activeCEModule.title}</strong>, follow the steps below.
+              </p>
+
+              <ol className="text-sm text-gray-700 list-decimal pl-5 space-y-2 mb-4">
+                <li>
+                  Sign in to CME Tracker:
+                  <br />
+                  <a
+                    href="https://cmetracker.net/MCLAREN"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    https://cmetracker.net/MCLAREN
+                  </a>
+                </li>
+                <li>
+                  Select <strong>Sign In / Create Account</strong>
+                </li>
+                <li>
+                  Navigate to <strong>My Portal</strong>
+                </li>
+                <li>
+                  Select <strong>Claim Credit</strong>
+                </li>
+                <li>
+                  Enter activity code:
+                  <div className="mt-1 font-mono bg-gray-100 px-2 py-1 rounded text-sm">
+                    {activeCEModule.ce_code || "CODE-TBD"}
+                  </div>
+                </li>
+                <li>Complete the evaluation and attest to your credits</li>
+              </ol>
+
+              <p className="text-xs text-gray-500 mb-4">
+                Preferred browsers: Chrome, Firefox, Microsoft Edge
+              </p>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowCEModal(false);
+                    setActiveCEModule(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    window.open("https://cmetracker.net/MCLAREN", "_blank");
+                    setShowCEModal(false);
+                    setActiveCEModule(null);
+                  }}
+                  className="bg-purple-600 text-white hover:bg-purple-700"
+                >
+                  Go to CME Tracker
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+      <Footer />
+    </>
   );
 }
