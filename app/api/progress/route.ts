@@ -3,6 +3,48 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const module_id = searchParams.get("module_id");
+
+    if (!module_id) {
+      return NextResponse.json(null);
+    }
+
+    const cookieStore = await cookies();
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => cookieStore.getAll(),
+          setAll: () => {},
+        },
+      },
+    );
+
+    const { data: userData } = await supabase.auth.getUser();
+
+    if (!userData?.user) {
+      return NextResponse.json(null);
+    }
+
+    const { data } = await supabase
+      .from("module_progress")
+      .select("progress_percent,status")
+      .eq("user_id", userData.user.id)
+      .eq("module_id", module_id)
+      .single();
+
+    return NextResponse.json(data || null);
+  } catch (err) {
+    console.error("Progress fetch failed:", err);
+    return NextResponse.json(null);
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();

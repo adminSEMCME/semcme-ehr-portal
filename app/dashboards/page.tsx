@@ -148,12 +148,57 @@ export default function DashboardPage() {
   const [showCEModal, setShowCEModal] = useState(false);
   const [activeCEModule, setActiveCEModule] = useState<Module | null>(null);
   const [showAccredModal, setShowAccredModal] = useState(false);
+  const [announcement, setAnnouncement] = useState<any>(null);
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
   const [activeAccredModule, setActiveAccredModule] = useState<Module | null>(
     null,
   );
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showCEInfoModal, setShowCEInfoModal] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
+
+  /* ANNOUNCEMENTS */
+  useEffect(() => {
+    async function checkAnnouncements() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const userId = session.user.id;
+      const userCreated = session.user.created_at;
+
+      const { data: announcements } = await supabase
+        .from("announcements")
+        .select("*")
+        .eq("active", true);
+
+      if (!announcements || announcements.length === 0) return;
+
+      for (const a of announcements) {
+        if (a.target_users_created_before) {
+          if (new Date(userCreated) > new Date(a.target_users_created_before)) {
+            continue;
+          }
+        }
+
+        const { data: read } = await supabase
+          .from("announcement_reads")
+          .select("id")
+          .eq("announcement_id", a.id)
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (!read) {
+          setAnnouncement(a);
+          setShowAnnouncement(true);
+          break;
+        }
+      }
+    }
+
+    checkAnnouncements();
+  }, []);
 
   type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -884,6 +929,44 @@ export default function DashboardPage() {
                 src={`/accreditation/${activeAccredModule.id}.pdf`}
                 className="w-full flex-1"
               />
+            </div>
+          </div>
+        )}
+        {showAnnouncement && announcement && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="bg-white rounded-lg max-w-lg w-full p-6 shadow-xl">
+              <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
+                {announcement.title}
+              </h2>
+
+              <p className="text-sm text-gray-700 whitespace-pre-line mb-6">
+                {announcement.message}
+              </p>
+
+              <div className="flex justify-end">
+                <Button
+                  onClick={async () => {
+                    const {
+                      data: { session },
+                    } = await supabase.auth.getSession();
+
+                    if (!session?.user) return;
+
+                    await supabase.from("announcement_reads").upsert(
+                      {
+                        user_id: session.user.id,
+                        announcement_id: announcement.id,
+                      },
+                      { onConflict: "user_id,announcement_id" },
+                    );
+
+                    setShowAnnouncement(false);
+                  }}
+                  className="bg-semcmeBlue text-white hover:bg-blue-800"
+                >
+                  Got It
+                </Button>
+              </div>
             </div>
           </div>
         )}
