@@ -117,10 +117,101 @@ export default function PostAssessmentsTab({
 
   const moduleEntries = Object.entries(grouped);
 
+  const exportAllResponsesCSV = () => {
+    if (!assessments || assessments.length === 0) return;
+
+    const questions = Object.keys(assessments[0].responses || {});
+
+    // Sort by module so rows group together
+    const sorted = [...assessments].sort((a, b) => {
+      const moduleA = moduleMap[a.module_id] ?? a.module_id;
+      const moduleB = moduleMap[b.module_id] ?? b.module_id;
+      return moduleA.localeCompare(moduleB);
+    });
+
+    const headers = [
+      "Module",
+      ...questions.map((q) => `"${questionLabels[q] ?? q}"`),
+      "Submitted Time",
+    ];
+
+    const rows = sorted.map((entry) => {
+      const moduleName = moduleMap[entry.module_id] ?? entry.module_id;
+
+      return [
+        `"${moduleName}"`,
+        ...questions.map(
+          (q) => `"${(entry.responses?.[q] || "").replace(/"/g, '""')}"`,
+        ),
+        `"${new Date(entry.submitted_at).toLocaleString()}"`,
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.join(",")),
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `ALL_post_assessment_responses_${new Date()
+      .toISOString()
+      .slice(0, 10)}.csv`;
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  const exportCSV = (moduleName: string, submissions: any[]) => {
+    if (!submissions || submissions.length === 0) return;
+
+    const questions = Object.keys(submissions[0].responses || {});
+
+    // Use full question text instead of short keys
+    const headers = [
+      ...questions.map((q) => `"${questionLabels[q] ?? q}"`),
+      "Submitted Time",
+    ];
+
+    const rows = submissions.map((s) => [
+      ...questions.map(
+        (q) => `"${(s.responses?.[q] || "").replace(/"/g, '""')}"`,
+      ),
+
+      // nicer timestamp
+      `"${new Date(s.submitted_at).toLocaleString()}"`,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((r) => r.join(",")),
+    ].join("\n");
+
+    const blob = new Blob(["\ufeff" + csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${moduleName.replace(/\s+/g, "_")}_post_assessments_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-12">
       {/* ===== MODULE FILTER ===== */}
-      <div className="flex justify-center">
+      <div className="flex justify-center items-center gap-4">
         <select
           value={selectedModule}
           onChange={(e) => setSelectedModule(e.target.value)}
@@ -133,6 +224,13 @@ export default function PostAssessmentsTab({
             </option>
           ))}
         </select>
+
+        <button
+          onClick={exportAllResponsesCSV}
+          className="px-4 py-2 bg-semcmeBlue text-white rounded-md text-sm font-semibold hover:bg-blue-800"
+        >
+          Export All Responses
+        </button>
       </div>
 
       {moduleEntries
@@ -239,9 +337,18 @@ export default function PostAssessmentsTab({
             {/* ================= RAW RESPONSES ================= */}
 
             <div className="mt-12">
-              <h3 className="text-lg font-semibold mb-4 text-semcmeBlue">
-                Raw Submissions
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-semcmeBlue">
+                  Raw Submissions
+                </h3>
+
+                <button
+                  onClick={() => exportCSV(moduleId, data.submissions)}
+                  className="px-4 py-2 bg-semcmeBlue text-white rounded-md text-sm font-semibold hover:bg-blue-800"
+                >
+                  Export CSV
+                </button>
+              </div>
 
               <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
                 <div className="max-h-[420px] overflow-y-auto">
