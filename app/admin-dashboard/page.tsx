@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import React from "react";
 import PostAssessmentsTab from "./PostAssessmentsTab";
 import { Link } from "lucide-react";
+import AnnouncementsTab from "./AnnouncementsTab";
 
 /* ---------------- CSV EXPORT HELPER ---------------- */
 
@@ -132,6 +133,7 @@ export default function AdminDashboardPage() {
     | "assessments"
     | "dataRequests"
     | "adminApprovals"
+    | "announcements"
   >("users");
 
   const [search, setSearch] = useState("");
@@ -610,6 +612,7 @@ export default function AdminDashboardPage() {
           "assessments",
           "dataRequests",
           "adminApprovals",
+          "announcements",
         ].map((t) => (
           <button
             key={t}
@@ -957,6 +960,7 @@ export default function AdminDashboardPage() {
 
       {tab === "dataRequests" && <DataRequestsTab />}
       {tab === "adminApprovals" && <AdminApprovalsTab />}
+      {tab === "announcements" && <AnnouncementsTab />}
     </div>
   );
 }
