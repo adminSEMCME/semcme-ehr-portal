@@ -5,10 +5,23 @@ import { useState, useEffect } from "react";
 export default function AnnouncementsTab() {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [targetType, setTargetType] = useState<"all" | "existing">("all");
   const [cutoffDate, setCutoffDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [announcements, setAnnouncements] = useState<any[]>([]);
+  const [targetType, setTargetType] = useState<
+    "all" | "existing" | "role" | "user"
+  >("all");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [targetEmail, setTargetEmail] = useState("");
+
+  const ROLES = [
+    "Medical Student",
+    "Resident",
+    "Practicing Physician/Faculty",
+    "Nursing",
+    "Institution Administrator",
+    "Other",
+  ];
 
   async function loadAnnouncements() {
     const res = await fetch("/api/admin/get-announcements");
@@ -31,6 +44,16 @@ export default function AnnouncementsTab() {
       return;
     }
 
+    if (targetType === "role" && selectedRoles.length === 0) {
+      alert("Please select at least one role.");
+      return;
+    }
+
+    if (targetType === "user" && !targetEmail.trim()) {
+      alert("Please enter a user email.");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -44,6 +67,8 @@ export default function AnnouncementsTab() {
           message,
           target_type: targetType,
           cutoff_date: targetType === "existing" ? cutoffDate : null,
+          target_roles: targetType === "role" ? selectedRoles : [],
+          target_email: targetType === "user" ? targetEmail : null,
         }),
       });
 
@@ -118,7 +143,7 @@ export default function AnnouncementsTab() {
         <div>
           <label className="block text-sm font-medium mb-2">Target Users</label>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-2">
             <label className="flex items-center gap-2">
               <input
                 type="radio"
@@ -136,8 +161,68 @@ export default function AnnouncementsTab() {
               />
               Existing Users Only
             </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                checked={targetType === "role"}
+                onChange={() => setTargetType("role")}
+              />
+              Target by Role
+            </label>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="radio"
+                checked={targetType === "user"}
+                onChange={() => setTargetType("user")}
+              />
+              Specific User
+            </label>
           </div>
         </div>
+
+        {targetType === "role" && (
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Select Roles
+            </label>
+
+            <div className="grid grid-cols-2 gap-2">
+              {ROLES.map((role) => (
+                <label key={role} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={selectedRoles.includes(role)}
+                    onChange={() => {
+                      setSelectedRoles((prev) =>
+                        prev.includes(role)
+                          ? prev.filter((r) => r !== role)
+                          : [...prev, role],
+                      );
+                    }}
+                  />
+                  {role}
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {targetType === "user" && (
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Target User Email
+            </label>
+            <input
+              type="email"
+              className="w-full border rounded-md px-3 py-2"
+              placeholder="Enter user email"
+              value={targetEmail}
+              onChange={(e) => setTargetEmail(e.target.value)}
+            />
+          </div>
+        )}
 
         {/* CUTOFF DATE */}
         {targetType === "existing" && (
@@ -192,10 +277,12 @@ export default function AnnouncementsTab() {
                     </p>
 
                     <p className="text-xs mt-1">
-                      Target:{" "}
-                      {a.target_users_created_before
-                        ? "Existing Users Only"
-                        : "All Users"}
+                      Target: {a.target_type === "all" && "All Users"}
+                      {a.target_type === "existing" && "Existing Users Only"}
+                      {a.target_type === "role" &&
+                        `Roles: ${a.target_roles?.join(", ")}`}
+                      {a.target_type === "user" &&
+                        `User: ${a.target_user_email}`}
                     </p>
 
                     <p className="text-xs mt-1">

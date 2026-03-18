@@ -163,11 +163,12 @@ export default function DashboardPage() {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
       if (!session?.user) return;
 
       const userId = session.user.id;
-      const userCreated = session.user.created_at;
 
+      // 🔹 Get announcements
       const { data: announcements } = await supabase
         .from("announcements")
         .select("*")
@@ -175,13 +176,52 @@ export default function DashboardPage() {
 
       if (!announcements || announcements.length === 0) return;
 
+      // 🔹 Get full user profile (needed for targeting)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role, email, created_at")
+        .eq("id", userId)
+        .single();
+
+      const userRole = profile?.role;
+      const userEmail = profile?.email || session.user.email;
+      const userCreatedAt = profile?.created_at || session.user.created_at;
+
       for (const a of announcements) {
-        if (a.target_users_created_before) {
-          if (new Date(userCreated) > new Date(a.target_users_created_before)) {
-            continue;
+        let shouldShow = false;
+
+        // ✅ 1. ALL USERS
+        if (a.target_type === "all") {
+          shouldShow = true;
+        }
+
+        // ✅ 2. EXISTING USERS
+        else if (a.target_type === "existing") {
+          if (a.target_users_created_before && userCreatedAt) {
+            shouldShow =
+              new Date(userCreatedAt) <=
+              new Date(a.target_users_created_before);
           }
         }
 
+        // ✅ 3. ROLE TARGETING
+        else if (a.target_type === "role") {
+          if (a.target_roles && userRole) {
+            shouldShow = a.target_roles.includes(userRole);
+          }
+        }
+
+        // ✅ 4. SPECIFIC USER
+        else if (a.target_type === "user") {
+          if (a.target_user_email && userEmail) {
+            shouldShow =
+              a.target_user_email.toLowerCase() === userEmail.toLowerCase();
+          }
+        }
+
+        if (!shouldShow) continue;
+
+        // 🔹 Check if user already saw this announcement
         const { data: read } = await supabase
           .from("announcement_reads")
           .select("id")
