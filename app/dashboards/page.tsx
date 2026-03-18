@@ -779,10 +779,11 @@ export default function DashboardPage() {
 
                     {status === "completed" && (
                       <>
-                        {/* 1. NO assessment → show post assessment */}
-                        {!hasAssessment(module.id) &&
-                          (canCollectCE ? (
-                            <div className="grid grid-cols-2 gap-3">
+                        {/* CE USERS */}
+                        {canCollectCE ? (
+                          <div className="grid grid-cols-2 gap-3">
+                            {/* LEFT BUTTON LOGIC */}
+                            {!hasAssessment(module.id) ? (
                               <Button
                                 onClick={() =>
                                   router.push(
@@ -793,52 +794,79 @@ export default function DashboardPage() {
                               >
                                 Post Assessment
                               </Button>
-
+                            ) : !cert?.cert_url ? (
                               <Button
-                                onClick={() => {
-                                  setActiveCEModule(module);
-                                  setShowCEModal(true);
-                                }}
-                                className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                                onClick={() =>
+                                  handleGenerateCertificate(module.id)
+                                }
+                                className="px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
                               >
-                                Collect CE Credits
+                                Generate Certificate
                               </Button>
-                            </div>
-                          ) : (
+                            ) : (
+                              <a
+                                href={cert.cert_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full"
+                              >
+                                <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                                  Download Certificate
+                                </Button>
+                              </a>
+                            )}
+
+                            {/* RIGHT BUTTON — ALWAYS CE */}
                             <Button
-                              onClick={() =>
-                                router.push(
-                                  `/post-assessment?module_id=${module.id}`,
-                                )
-                              }
-                              className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                              onClick={() => {
+                                setActiveCEModule(module);
+                                setShowCEModal(true);
+                              }}
+                              className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
                             >
-                              Post Assessment
+                              Collect CE Credits
                             </Button>
-                          ))}
+                          </div>
+                        ) : (
+                          /* NON-CE USERS */
+                          <>
+                            {!hasAssessment(module.id) && (
+                              <Button
+                                onClick={() =>
+                                  router.push(
+                                    `/post-assessment?module_id=${module.id}`,
+                                  )
+                                }
+                                className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                              >
+                                Post Assessment
+                              </Button>
+                            )}
 
-                        {/* 2. HAS assessment but NO certificate → generate */}
-                        {hasAssessment(module.id) && !cert?.cert_url && (
-                          <Button
-                            onClick={() => handleGenerateCertificate(module.id)}
-                            className="w-full px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
-                          >
-                            Generate Certificate
-                          </Button>
-                        )}
+                            {hasAssessment(module.id) && !cert?.cert_url && (
+                              <Button
+                                onClick={() =>
+                                  handleGenerateCertificate(module.id)
+                                }
+                                className="w-full px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
+                              >
+                                Generate Certificate
+                              </Button>
+                            )}
 
-                        {/* 3. HAS certificate → download */}
-                        {cert && (
-                          <a
-                            href={cert.cert_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full"
-                          >
-                            <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
-                              Download Certificate
-                            </Button>
-                          </a>
+                            {cert && (
+                              <a
+                                href={cert.cert_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full"
+                              >
+                                <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                                  Download Certificate
+                                </Button>
+                              </a>
+                            )}
+                          </>
                         )}
                       </>
                     )}
