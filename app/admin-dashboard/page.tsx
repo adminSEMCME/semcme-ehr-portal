@@ -7,6 +7,26 @@ import PostAssessmentsTab from "./PostAssessmentsTab";
 import { Link } from "lucide-react";
 import AnnouncementsTab from "./AnnouncementsTab";
 
+const ALLOWED_INSTITUTIONS = [
+  "CMU Med Ed Partners",
+  "Corewell Health Dearborn",
+  "Corewell Health Farmington Hills",
+  "Corewell Health Royal Oak",
+  "Detroit Medical Center",
+  "Garden City Hospital",
+  "Henry Ford Health",
+  "Henry Ford Providence",
+  "Henry Ford Rochester",
+  "Henry Ford St. John",
+  "McLaren Health Care",
+  "Michigan State University CHM",
+  "Oakland University William Beaumont SOM",
+  "Trinity Health Ann Arbor",
+  "Trinity Health Livonia",
+  "Trinity Health Oakland",
+  "Wayne State University SOM",
+];
+
 /* ---------------- CSV EXPORT HELPER ---------------- */
 
 function exportCSV(filename: string, rows: Record<string, any>[]) {
@@ -366,10 +386,12 @@ export default function AdminDashboardPage() {
         value: m.id,
         label: m.title,
       })),
-      institutionOptions: Array.from(institutionMap.values()).map((i) => ({
-        value: i.institution,
-        label: i.institution,
-      })),
+      institutionOptions: Array.from(institutionMap.values())
+        .filter((i) => ALLOWED_INSTITUTIONS.includes(i.institution))
+        .map((i) => ({
+          value: i.institution,
+          label: i.institution,
+        })),
       allModules,
     };
   }, [analytics]);

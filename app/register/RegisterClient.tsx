@@ -8,6 +8,26 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft } from "lucide-react";
 
+const ALLOWED_INSTITUTIONS = [
+  "CMU Med Ed Partners",
+  "Corewell Health Dearborn",
+  "Corewell Health Farmington Hills",
+  "Corewell Health Royal Oak",
+  "Detroit Medical Center",
+  "Garden City Hospital",
+  "Henry Ford Health",
+  "Henry Ford Providence",
+  "Henry Ford Rochester",
+  "Henry Ford St. John",
+  "McLaren Health Care",
+  "Michigan State University CHM",
+  "Oakland University William Beaumont SOM",
+  "Trinity Health Ann Arbor",
+  "Trinity Health Livonia",
+  "Trinity Health Oakland",
+  "Wayne State University SOM",
+];
+
 /* ============================================================
    TYPE FIX — ALLOWS form[field] WITHOUT TS ERRORS
    ============================================================ */
@@ -157,7 +177,11 @@ export default function RegisterClient() {
         .order("name");
 
       if (!error && data) {
-        setInstitutions(data);
+        const filtered = data.filter((inst) =>
+          ALLOWED_INSTITUTIONS.includes(inst.name),
+        );
+
+        setInstitutions(filtered);
       }
     };
 
