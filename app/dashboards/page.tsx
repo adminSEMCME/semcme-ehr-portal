@@ -47,7 +47,7 @@ interface Module {
   description?: string;
   objective_description?: string;
   url: string;
-  ce_code?: string;
+  ce_activity_code?: string;
 }
 
 interface ModuleProgress {
@@ -430,7 +430,7 @@ export default function DashboardPage() {
         if (!data?.dont_show_again) {
           setActiveAccredModule(module);
           setShowAccredModal(true);
-          return; // ⛔ STOP here until modal confirmed
+          return;
         }
       }
 
@@ -1078,7 +1078,7 @@ export default function DashboardPage() {
                 <li>
                   Enter activity code:
                   <div className="mt-1 font-mono bg-gray-100 px-2 py-1 rounded text-sm">
-                    {activeCEModule.ce_code || "CODE-TBD"}
+                    {activeCEModule.ce_activity_code || "CODE-TBD"}
                   </div>
                 </li>
                 <li>Complete the evaluation and attest to your credits</li>
