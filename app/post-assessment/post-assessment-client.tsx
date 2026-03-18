@@ -88,7 +88,6 @@ export default function PostAssessmentClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         module_id: moduleId,
-        user_id: user.id,
       }),
     });
 

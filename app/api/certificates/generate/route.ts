@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 
 /* -------------------------------
    Helpers
@@ -24,7 +26,9 @@ function getBaseUrlFromRequest(req: Request) {
 }
 
 function wrapText(text: string, maxWidth: number, font: any, fontSize: number) {
-  const words = text.split(" ");
+  const cleanedText = text.replace(/\n/g, " ");
+  const words = cleanedText.split(" ");
+  
   const lines: string[] = [];
   let currentLine = "";
 
@@ -61,19 +65,52 @@ async function fetchPngBytes(url: string): Promise<Uint8Array | null> {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { module_id, user_id } = body;
+    const { module_id } = body;
 
-    if (!module_id || !user_id) {
-      return NextResponse.json(
-        { error: "Missing module_id or user_id" },
-        { status: 400 },
-      );
+    if (!module_id) {
+      return NextResponse.json({ error: "Missing module_id" }, { status: 400 });
     }
+
+    // ✅ Get user from session
+    const cookieStore = await cookies();
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll: () => cookieStore.getAll(),
+          setAll: () => {},
+        },
+      },
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user_id = user.id;
 
     const admin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
+
+    // check for existing certificate
+    const { data: existingCert } = await admin
+      .from("certificates")
+      .select("id")
+      .eq("user_id", user_id)
+      .eq("module_id", module_id)
+      .maybeSingle();
+
+    if (existingCert) {
+      return NextResponse.json({ success: true, alreadyExists: true });
+    }
 
     const issuedAt = new Date().toISOString();
     const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;

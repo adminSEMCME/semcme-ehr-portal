@@ -409,6 +409,9 @@ export default function DashboardPage() {
   const hasAssessment = (id: string) =>
     assessments.some((a) => a.module_id === id);
 
+  const hasCertificate = (id: string) =>
+    certificates.some((c) => c.module_id === id && c.cert_url);
+
   const handleStart = async (module: Module) => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
@@ -511,6 +514,35 @@ export default function DashboardPage() {
     setShowAccredModal(false);
     setActiveAccredModule(null);
     setDontShowAgain(false);
+  };
+
+  const handleGenerateCertificate = async (moduleId: string) => {
+    try {
+      const res = await fetch("/api/certificates/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ module_id: moduleId }),
+      });
+
+      if (!res.ok) throw new Error("Failed to generate certificate");
+
+      // 🔄 Refresh dashboard data
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (!user) return;
+
+      const { data: certData } = await supabase
+        .from("certificates")
+        .select("module_id, cert_url, issued_at")
+        .eq("user_id", user.id);
+
+      setCertificates(certData || []);
+    } catch (err) {
+      console.error(err);
+      alert("Error generating certificate");
+    }
   };
 
   /* LOGOUT */
@@ -745,60 +777,71 @@ export default function DashboardPage() {
                           : "Continue Module"}
                     </Button>
 
-                    {status === "completed" &&
-                      !hasAssessment(module.id) &&
-                      (canCollectCE ? (
-                        // 🔹 WITH CE → split row
-                        <div className="grid grid-cols-2 gap-3">
-                          <Button
-                            onClick={() =>
-                              router.push(
-                                `/post-assessment?module_id=${module.id}`,
-                              )
-                            }
-                            className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
-                          >
-                            Post Assessment
-                          </Button>
+                    {status === "completed" && (
+                      <>
+                        {/* 1. NO assessment → show post assessment */}
+                        {!hasAssessment(module.id) &&
+                          (canCollectCE ? (
+                            <div className="grid grid-cols-2 gap-3">
+                              <Button
+                                onClick={() =>
+                                  router.push(
+                                    `/post-assessment?module_id=${module.id}`,
+                                  )
+                                }
+                                className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                              >
+                                Post Assessment
+                              </Button>
 
-                          <Button
-                            onClick={() => {
-                              setActiveCEModule(module);
-                              setShowCEModal(true);
-                            }}
-                            className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
-                          >
-                            Collect CE Credits
-                          </Button>
-                        </div>
-                      ) : (
-                        // 🔹 NO CE → full width (original behavior)
-                        <Button
-                          onClick={() =>
-                            router.push(
-                              `/post-assessment?module_id=${module.id}`,
-                            )
-                          }
-                          className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
-                        >
-                          Post Assessment
-                        </Button>
-                      ))}
+                              <Button
+                                onClick={() => {
+                                  setActiveCEModule(module);
+                                  setShowCEModal(true);
+                                }}
+                                className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                              >
+                                Collect CE Credits
+                              </Button>
+                            </div>
+                          ) : (
+                            <Button
+                              onClick={() =>
+                                router.push(
+                                  `/post-assessment?module_id=${module.id}`,
+                                )
+                              }
+                              className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                            >
+                              Post Assessment
+                            </Button>
+                          ))}
 
-                    {status === "completed" &&
-                      hasAssessment(module.id) &&
-                      cert && (
-                        <a
-                          href={cert.cert_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full"
-                        >
-                          <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
-                            Download Certificate
+                        {/* 2. HAS assessment but NO certificate → generate */}
+                        {hasAssessment(module.id) && !cert?.cert_url && (
+                          <Button
+                            onClick={() => handleGenerateCertificate(module.id)}
+                            className="w-full px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
+                          >
+                            Generate Certificate
                           </Button>
-                        </a>
-                      )}
+                        )}
+
+                        {/* 3. HAS certificate → download */}
+                        {cert && (
+                          <a
+                            href={cert.cert_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full"
+                          >
+                            <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                              Download Certificate
+                            </Button>
+                          </a>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
