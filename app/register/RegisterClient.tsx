@@ -41,6 +41,7 @@ type FormData = {
   degree: string;
   institution: string;
   department: string;
+  overseeRole: string;
   title: string;
   phone: string;
   medicalId: string;
@@ -125,6 +126,7 @@ export default function RegisterClient() {
       "lastName",
       "title",
       "institution",
+      "overseeRole",
       "phone",
     ],
     Other: [
@@ -154,6 +156,7 @@ export default function RegisterClient() {
     degree: "",
     institution: "",
     department: "",
+    overseeRole: "",
     title: "",
     phone: "",
     medicalId: "",
@@ -298,6 +301,7 @@ export default function RegisterClient() {
           last_name: formatName(form.lastName),
           degree: form.degree || null,
           institution_id: institutionId || null,
+          oversee_role: form.overseeRole || null,
           department: form.department || null,
           title: form.title || null,
           phone: form.phone || null,
@@ -542,8 +546,11 @@ export default function RegisterClient() {
             />
           )}
 
-          {(showField("institution") || showField("department")) && (
+          {(showField("institution") ||
+            showField("department") ||
+            showField("overseeRole")) && (
             <div className="grid md:grid-cols-2 gap-4">
+              {/* INSTITUTION */}
               {showField("institution") && (
                 <div>
                   <label className={labelRequired}>
@@ -580,6 +587,33 @@ export default function RegisterClient() {
                   )}
                 </div>
               )}
+
+              {/* 🔥 NEW: OVERSEE ROLE */}
+              {showField("overseeRole") && (
+                <div>
+                  <label className={labelRequired}>
+                    Role to Oversee <span className={requiredStar}>*</span>
+                  </label>
+
+                  <select
+                    required
+                    name="overseeRole"
+                    value={form.overseeRole}
+                    onChange={handleChange}
+                    className={inputClass}
+                  >
+                    <option value="">Select role</option>
+                    <option value="Medical Student">Medical Student</option>
+                    <option value="Resident">Resident / Fellow</option>
+                    <option value="Practicing Physician/Faculty">
+                      Practicing Physician / Faculty
+                    </option>
+                    <option value="Nursing">Nursing</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              )}
+
               {showField("department") && (
                 <FieldInput
                   label="Department"
