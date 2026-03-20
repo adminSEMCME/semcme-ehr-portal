@@ -75,7 +75,31 @@ const sortModulesForGroup = (
     (a, b) => (a.order_index ?? 0) - (b.order_index ?? 0),
   );
 
-  if (group === "all" || group === "ume") return baseSorted;
+  if (group === "all") return baseSorted;
+
+  // ---------- UME ORDER ----------
+  if (group === "ume") {
+    const umeOrder = [
+      "Introduction to EHR Educational Series",
+      "Electronic Health Records: An Introduction",
+      "The Note: Documentation in an EHR",
+      "Introduction to Coding and Billing: ICD-10, CPT, E/M Codes",
+      "Order Entry and Order Sets",
+      "Documenting Social Determinants of Health",
+    ];
+
+    return baseSorted.sort((a, b) => {
+      const aIndex = umeOrder.indexOf(a.title);
+      const bIndex = umeOrder.indexOf(b.title);
+
+      if (aIndex === -1 && bIndex === -1)
+        return (a.order_index ?? 0) - (b.order_index ?? 0);
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+
+      return aIndex - bIndex;
+    });
+  }
 
   // ---------- GME ORDER ----------
   if (group === "gme") {
