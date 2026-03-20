@@ -43,7 +43,6 @@ type FormData = {
   department: string;
   overseeRole: string;
   title: string;
-  phone: string;
   medicalId: string;
   pgyLevel: string;
   medicalSchoolYear: string;
@@ -77,25 +76,22 @@ export default function RegisterClient() {
       "password",
       "firstName",
       "lastName",
-      "title",
       "institution",
-      "department",
-      "phone",
       "medicalSchoolYear",
     ],
+
     Resident: [
       "email",
       "password",
       "firstName",
       "lastName",
       "degree",
-      "title",
-      "medicalId",
+      "medicalId", // optional
       "institution",
       "department",
-      "phone",
       "pgyLevel",
     ],
+
     "Practicing Physician/Faculty": [
       "email",
       "password",
@@ -103,11 +99,11 @@ export default function RegisterClient() {
       "lastName",
       "degree",
       "title",
-      "medicalId",
+      "medicalId", // required
       "institution",
       "department",
-      "phone",
     ],
+
     Nursing: [
       "email",
       "password",
@@ -117,8 +113,8 @@ export default function RegisterClient() {
       "title",
       "institution",
       "department",
-      "phone",
     ],
+
     "Institution Administrator": [
       "email",
       "password",
@@ -127,8 +123,8 @@ export default function RegisterClient() {
       "title",
       "institution",
       "overseeRole",
-      "phone",
     ],
+
     Other: [
       "profession",
       "email",
@@ -136,10 +132,8 @@ export default function RegisterClient() {
       "firstName",
       "lastName",
       "degree",
-      "title",
       "institution",
       "department",
-      "phone",
     ],
   };
 
@@ -158,7 +152,6 @@ export default function RegisterClient() {
     department: "",
     overseeRole: "",
     title: "",
-    phone: "",
     medicalId: "",
     pgyLevel: "",
     medicalSchoolYear: "",
@@ -227,6 +220,9 @@ export default function RegisterClient() {
     const required = roleFieldMap[form.role] || [];
 
     for (const field of required) {
+      // ✅ Resident medicalId is optional
+      if (field === "medicalId" && form.role === "Resident") continue;
+
       if (!form[field] || form[field].trim() === "") {
         alert("Please fill in all required fields.");
         return false;
@@ -301,10 +297,12 @@ export default function RegisterClient() {
           last_name: formatName(form.lastName),
           degree: form.degree || null,
           institution_id: institutionId || null,
-          oversee_role: form.overseeRole || null,
+          oversee_role:
+            form.role === "Institution Administrator"
+              ? form.overseeRole || null
+              : null,
           department: form.department || null,
           title: form.title || null,
-          phone: form.phone || null,
           profession: form.profession || null,
           medical_id: form.medicalId || null,
           pgy_level: form.pgyLevel || null,
@@ -538,7 +536,7 @@ export default function RegisterClient() {
           {showField("medicalId") && (
             <FieldInput
               label="NPI #"
-              required={false}
+              required={form.role === "Practicing Physician/Faculty"}
               name="medicalId"
               value={form.medicalId}
               onChange={handleChange}
@@ -616,7 +614,11 @@ export default function RegisterClient() {
 
               {showField("department") && (
                 <FieldInput
-                  label="Department"
+                  label={
+                    form.role === "Medical Student"
+                      ? "Department"
+                      : "Department / Specialty"
+                  }
                   required
                   name="department"
                   value={form.department}
@@ -625,17 +627,6 @@ export default function RegisterClient() {
                 />
               )}
             </div>
-          )}
-
-          {showField("phone") && (
-            <FieldInput
-              label="Phone Number"
-              required
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              inputClass={inputClass}
-            />
           )}
 
           {showField("pgyLevel") && (
