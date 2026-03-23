@@ -1,5 +1,10 @@
-export default function ModulePage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function ModulePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   return (
     <div className="text-center">
       <h1 className="text-4xl font-bold text-semcmeBlue mb-4">

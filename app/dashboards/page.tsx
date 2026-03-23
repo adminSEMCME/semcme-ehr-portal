@@ -41,6 +41,8 @@ const preloadImages = (urls: string[], timeout = 800) => {
   );
 };
 
+const CE_EXCLUDED_MODULE_IDS = ["CME1", "CME2", "intro", "mock-ehr"];
+
 interface Module {
   id: string;
   title: string;
@@ -482,8 +484,10 @@ export default function DashboardPage() {
       const user = sessionData?.session?.user;
       if (!user) return router.push("/login");
 
+      // 🔹 Check if module is in CE exclusion list
+      const isCEExcluded = CE_EXCLUDED_MODULE_IDS.includes(module.id);
       // 🔹 If CE user, check if they skipped accreditation before
-      if (canCollectCE) {
+      if (canCollectCE && !isCEExcluded) {
         const { data } = await supabase
           .from("module_accreditation_views")
           .select("dont_show_again")
@@ -844,7 +848,8 @@ export default function DashboardPage() {
                     {status === "completed" && (
                       <>
                         {/* CE USERS */}
-                        {canCollectCE ? (
+                        {canCollectCE &&
+                        !CE_EXCLUDED_MODULE_IDS.includes(module.id) ? (
                           <div className="grid grid-cols-2 gap-3">
                             {/* LEFT BUTTON LOGIC */}
                             {!hasAssessment(module.id) ? (
