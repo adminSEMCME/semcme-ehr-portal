@@ -14,15 +14,16 @@ export async function GET() {
       .from("profiles")
       .select(
         `
-        id,
-        first_name,
-        last_name,
-        email,
-        is_approved,
-        is_denied,
-        institution_id,
-        institutions(name)
-      `,
+          id,
+          first_name,
+          last_name,
+          email,
+          oversee_role,
+          is_approved,
+          is_denied,
+          institution_id,
+          institutions(name)
+        `,
       )
       .eq("role", "Institution Administrator");
 
@@ -35,6 +36,7 @@ export async function GET() {
       first_name: a.first_name,
       last_name: a.last_name,
       email: a.email,
+      oversee_role: a.oversee_role,
       is_approved: a.is_approved,
       is_denied: a.is_denied,
       institution_name: (a.institutions as any)?.name ?? "Unknown",

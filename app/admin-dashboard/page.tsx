@@ -151,7 +151,6 @@ export default function AdminDashboardPage() {
     | "modules"
     | "institutions"
     | "assessments"
-    | "dataRequests"
     | "adminApprovals"
     | "announcements"
   >("users");
@@ -632,7 +631,6 @@ export default function AdminDashboardPage() {
           "modules",
           "institutions",
           "assessments",
-          "dataRequests",
           "adminApprovals",
           "announcements",
         ].map((t) => (
@@ -645,11 +643,9 @@ export default function AdminDashboardPage() {
                 : "bg-white text-semcmeBlue border-semcmeBlue/40"
             }`}
           >
-            {t === "dataRequests"
-              ? "Data Requests"
-              : t === "adminApprovals"
-                ? "Admin Approvals"
-                : t[0].toUpperCase() + t.slice(1)}
+            {t === "adminApprovals"
+              ? "Admin Approvals"
+              : t[0].toUpperCase() + t.slice(1)}
           </button>
         ))}
       </div>
@@ -979,8 +975,6 @@ export default function AdminDashboardPage() {
           modules={analytics?.modules ?? []}
         />
       )}
-
-      {tab === "dataRequests" && <DataRequestsTab />}
       {tab === "adminApprovals" && <AdminApprovalsTab />}
       {tab === "announcements" && <AnnouncementsTab />}
     </div>
@@ -1013,82 +1007,98 @@ function UserDetailPanel({
   );
 
   return (
-    <div className="space-y-3 text-sm text-gray-700">
-      <h2 className="text-xl font-semibold text-semcmeBlue">{user.name}</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+      {/* LEFT COLUMN */}
+      <div className="space-y-3">
+        <h2 className="text-xl font-semibold text-semcmeBlue">{user.name}</h2>
 
-      <p>
-        <strong>Email:</strong> {user.email}
-      </p>
-      <p>
-        <strong>Institution:</strong> {user.institution}
-      </p>
-      <p>
-        <strong>Account Created:</strong>{" "}
-        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
-      </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
 
-      <p>
-        <strong>Total Modules Completed:</strong> {user.completedCount}
-      </p>
+        <p>
+          <strong>Institution:</strong> {user.institution}
+        </p>
 
-      <div>
-        <h3 className="font-semibold text-gray-800">Completed Modules</h3>
-        {completed.length === 0 ? (
-          <p className="text-xs text-gray-500">None completed.</p>
-        ) : (
-          <ul className="text-xs">
-            {completed.map((m, idx) => (
-              <li key={idx}>
-                <strong>{m.module_title ?? m.module_id}</strong>
+        <p>
+          <strong>Account Created:</strong>{" "}
+          {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
+        </p>
 
-                <div>
-                  • Completed:{" "}
-                  {m.date_completed
-                    ? new Date(m.date_completed).toLocaleDateString()
-                    : "date unknown"}
-                </div>
+        <p>
+          <strong>Total Modules Completed:</strong> {user.completedCount}
+        </p>
 
-                <div>• Certificate Issued: {m.cert_url ? "Yes" : "No"}</div>
+        {/* IN PROGRESS */}
+        <div className="mt-10">
+          <h3 className="font-semibold text-semcmeBlue">Modules In Progress</h3>
 
-                {m.cert_issued_at && (
+          {inProgress.length === 0 ? (
+            <p className="text-xs text-gray-500">None.</p>
+          ) : (
+            <ul className="text-xs">
+              {inProgress.map((m, idx) => (
+                <li key={idx}>
+                  <strong>{m.module_title ?? m.module_id}</strong> —{" "}
+                  {m.progress_percent ?? 0}% complete
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* NOT STARTED */}
+        <div>
+          <h3 className="font-semibold text-semcmeBlue">Modules Not Started</h3>
+
+          {notStarted.length === 0 ? (
+            <p className="text-xs text-gray-500">None.</p>
+          ) : (
+            <ul className="text-xs">
+              {notStarted.map((m) => (
+                <li key={m.id}>{m.title}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* RIGHT COLUMN */}
+      <div className="space-y-4">
+        {/* COMPLETED */}
+        <div>
+          <h3 className="font-semibold text-lg text-semcmeBlue mb-2">
+            Completed Modules
+          </h3>
+
+          {completed.length === 0 ? (
+            <p className="text-xs text-gray-500">None completed.</p>
+          ) : (
+            <ul className="text-xs space-y-2">
+              {completed.map((m, idx) => (
+                <li key={idx}>
+                  <strong>{m.module_title ?? m.module_id}</strong>
+
                   <div>
-                    • Certificate Issue Date:{" "}
-                    {new Date(m.cert_issued_at).toLocaleDateString()}
+                    - Completed:{" "}
+                    {m.date_completed
+                      ? new Date(m.date_completed).toLocaleDateString()
+                      : "date unknown"}
                   </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
 
-      <div>
-        <h3 className="font-semibold text-gray-800">Modules In Progress</h3>
-        {inProgress.length === 0 ? (
-          <p className="text-xs text-gray-500">None.</p>
-        ) : (
-          <ul className="text-xs">
-            {inProgress.map((m, idx) => (
-              <li key={idx}>
-                <strong>{m.module_title ?? m.module_id}</strong> —{" "}
-                {m.progress_percent ?? 0}% complete
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+                  <div>- Certificate Issued: {m.cert_url ? "Yes" : "No"}</div>
 
-      <div>
-        <h3 className="font-semibold text-gray-800">Modules Not Started</h3>
-        {notStarted.length === 0 ? (
-          <p className="text-xs text-gray-500">None.</p>
-        ) : (
-          <ul className="text-xs">
-            {notStarted.map((m) => (
-              <li key={m.id}>{m.title}</li>
-            ))}
-          </ul>
-        )}
+                  {m.cert_issued_at && (
+                    <div>
+                      - Certificate Issue Date:{" "}
+                      {new Date(m.cert_issued_at).toLocaleDateString()}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -1245,162 +1255,6 @@ function InstitutionDetailPanel({
   );
 }
 
-function DataRequestsTab() {
-  const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    loadRequests();
-  }, []);
-
-  async function loadRequests() {
-    setLoading(true);
-    const res = await fetch("/api/admin/data-requests");
-    const data = await res.json();
-    setRequests(data || []);
-    setLoading(false);
-  }
-
-  async function markCompleted(id: string) {
-    await fetch("/api/admin/update-request-status", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id }),
-    });
-
-    loadRequests();
-  }
-
-  if (loading) return <p className="text-center py-6">Loading requests...</p>;
-
-  if (requests.length === 0)
-    return (
-      <p className="text-center py-6 text-gray-500">No data requests found.</p>
-    );
-
-  const pendingRequests = requests.filter((r) => r.status === "pending");
-
-  const completedRequests = requests.filter((r) => r.status === "completed");
-
-  return (
-    <div className="space-y-10 mt-6">
-      {/* ================== PENDING SECTION ================== */}
-      <div>
-        <h2 className="text-xl font-semibold text-semcmeBlue mb-4">
-          Pending Requests
-        </h2>
-
-        {pendingRequests.length === 0 ? (
-          <p className="text-gray-500 text-sm">No pending requests.</p>
-        ) : (
-          <div className="space-y-6">
-            {pendingRequests.map((r) => (
-              <RequestCard
-                key={r.id}
-                request={r}
-                showCompleteButton
-                onComplete={markCompleted}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ================== COMPLETED SECTION ================== */}
-      <div>
-        <h2 className="text-xl font-semibold text-semcmeBlue mb-4">
-          Completed Requests
-        </h2>
-
-        {completedRequests.length === 0 ? (
-          <p className="text-gray-500 text-sm">No completed requests yet.</p>
-        ) : (
-          <div className="space-y-6">
-            {completedRequests.map((r) => (
-              <RequestCard key={r.id} request={r} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function RequestCard({
-  request,
-  showCompleteButton = false,
-  onComplete,
-}: {
-  request: any;
-  showCompleteButton?: boolean;
-  onComplete?: (id: string) => void;
-}) {
-  return (
-    <div className="border border-gray-300 shadow-sm bg-white p-6 rounded-md">
-      <div className="flex justify-between items-start mb-4">
-        <div className="space-y-2">
-          <p className="font-semibold text-semcmeBlue text-lg">
-            Report Type: {request.report_type.toUpperCase()}
-          </p>
-
-          <p className="text-sm text-gray-600">
-            Date Requested: {new Date(request.created_at).toLocaleDateString()}
-          </p>
-
-          <p className="text-sm">
-            <strong>Institution:</strong> {request.institution_name}
-          </p>
-
-          <p className="text-sm">
-            <strong>Requestor Email:</strong> {request.requestor_email}
-          </p>
-        </div>
-
-        <div className="capitalize font-medium text-sm px-3 py-1 rounded bg-gray-100">
-          {request.status}
-        </div>
-      </div>
-
-      <div className="space-y-2 text-sm">
-        {request.individual_user_email && (
-          <p>
-            <strong>Individual User Email:</strong>{" "}
-            {request.individual_user_email}
-          </p>
-        )}
-
-        <p>
-          <strong>Module Scope:</strong> {request.module_scope}
-        </p>
-
-        {request.selected_modules?.length > 0 && (
-          <p>
-            <strong>Selected Modules:</strong>{" "}
-            {request.selected_modules.join(", ")}
-          </p>
-        )}
-
-        {request.additional_notes && (
-          <p>
-            <strong>Additional Notes:</strong> {request.additional_notes}
-          </p>
-        )}
-      </div>
-
-      {showCompleteButton && (
-        <div className="pt-4">
-          <button
-            onClick={() => onComplete?.(request.id)}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Mark Completed
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function AdminApprovalsTab() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1499,12 +1353,16 @@ function AdminSection({
                     {a.first_name} {a.last_name}
                   </p>
 
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm">
                     <strong>Email:</strong> {a.email}
                   </p>
 
                   <p className="text-sm">
                     <strong>Institution:</strong> {a.institution_name}
+                  </p>
+
+                  <p className="text-sm">
+                    <strong>Role Overseen:</strong> {a.oversee_role}
                   </p>
                 </div>
 
