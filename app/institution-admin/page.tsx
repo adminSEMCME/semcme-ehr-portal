@@ -599,10 +599,22 @@ export default function InstitutionAdminPage() {
         )}
       </div>
 
-      {/* SUPPORT */}
-      <div className="text-center text-sm text-gray-600">
-        Need help? your@email.com | your@email.com
-      </div>
+      <p className="text-sm text-gray-600 text-center">
+        <strong>Need Help?</strong>{" "}
+        <a
+          href="/support/program"
+          className="text-semcmeBlue hover:underline font-medium"
+        >
+          Program Support
+        </a>{" "}
+        |{" "}
+        <a
+          href="/support/technical"
+          className="text-semcmeBlue hover:underline font-medium"
+        >
+          Technical Support
+        </a>
+      </p>
     </div>
   );
 }

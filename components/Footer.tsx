@@ -6,13 +6,24 @@ export default function Footer() {
         <div>
           <h3 className="text-white font-semibold mb-3">Contact Support</h3>
 
-          <p className="font-normal mb-2">Technical Support</p>
-          <p>Shane Ross</p>
-          <p className="mb-3">shanectr3@gmail.com</p>
+          <p className="mb-3">
+            <a
+              href="/support/technical"
+              className="text-blue-700 underline hover:no-underline font-medium"
+            >
+              Technical Support Form
+            </a>
+          </p>
 
-          <p className="font-normal mb-2">Program Support</p>
-          <p>Veronica Haque</p>
-          <p className="mb-3">VHaque@semcme.org</p>
+          <p className="mb-3">
+            {" "}
+            <a
+              href="/support/program"
+              className="text-blue-700 underline hover:no-underline font-medium"
+            >
+              Program Support Form
+            </a>
+          </p>
         </div>
 
         {/* Organization */}
@@ -34,7 +45,18 @@ export default function Footer() {
           </p>
 
           <h3 className="text-white font-semibold mb-3 mt-3">Learn More</h3>
-            <p>Want to learn more about SEMCME and our mission? Visit <a href="https://www.semcme.org" target="_blank" rel="noopener noreferrer" className="underline">semcme.org</a> for more information about us.</p>
+          <p>
+            Want to learn more about SEMCME and our mission? Visit{" "}
+            <a
+              href="https://www.semcme.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              semcme.org
+            </a>{" "}
+            for more information about us.
+          </p>
         </div>
       </div>
 
