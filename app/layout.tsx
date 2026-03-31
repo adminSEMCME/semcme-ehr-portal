@@ -7,7 +7,7 @@ import { GlobalToast } from "@/components/GlobalToast";
 export const metadata: Metadata = {
   title: "SEMCME EHR Learning Portal",
   description:
-    "Electronic Health Record learning modules for CME and Non-CME participants.",
+    "Electronic Health Record learning modules for CE and Non-CE participants.",
 };
 
 export default function RootLayout({

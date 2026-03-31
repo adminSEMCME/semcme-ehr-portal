@@ -9,7 +9,7 @@ export default function Footer() {
           <p className="mb-3">
             <a
               href="/support/technical"
-              className="text-blue-700 underline hover:no-underline font-medium"
+              className="text-blue-500 underline hover:no-underline font-medium"
             >
               Technical Support Form
             </a>
@@ -19,7 +19,7 @@ export default function Footer() {
             {" "}
             <a
               href="/support/program"
-              className="text-blue-700 underline hover:no-underline font-medium"
+              className="text-blue-500 underline hover:no-underline font-medium"
             >
               Program Support Form
             </a>

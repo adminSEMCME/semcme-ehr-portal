@@ -389,9 +389,25 @@ export default function RegisterClient() {
 
       {/* FORM */}
       <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mt-5 mb-20 lg:mt-10 border border-gray-200">
-        <h1 className="text-2xl sm:text-3xl font-bold text-semcmeBlue mb-6 text-center">
+        <h1 className="text-2xl sm:text-3xl font-bold text-semcmeBlue mb-3 text-center">
           EHR Account Registration
         </h1>
+        <div>
+          <p className="text-gray-800 text-center text-xs mb-6">
+            Please note that selecting{" "}
+            <strong>Practicing Physician/Faculty</strong> or{" "}
+            <strong>Nursing</strong> will grant access to{" "}
+            <strong>CE credits</strong> after completion of modules. All Other
+            Roles will <strong>not</strong> have access to CE credits.
+          </p>
+
+          <p className="text-gray-800 text-center text-xs mb-6">
+            Only select <strong>Institution Administrator</strong> if you are an
+            administrator at your institution. This role requires{" "}
+            <strong>additional approval</strong> and is intended for designated{" "}
+            <strong>institutional representatives</strong>.
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
           {/* ROLE */}
@@ -414,7 +430,7 @@ export default function RegisterClient() {
               </option>
               <option value="Nursing">Nursing</option>
               <option value="Institution Administrator">
-                Institution Administrator
+                Institution Administrator (Designated Representatives Only)
               </option>
               <option value="Other">Other (Please specify)</option>
             </select>
