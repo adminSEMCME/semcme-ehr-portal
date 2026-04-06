@@ -24,6 +24,11 @@ export async function GET(request: Request) {
     },
   );
 
+  const serviceSupabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+
   // AUTH CHECK
   const { data: userData, error } = await supabase.auth.getUser();
   if (error || !userData?.user)
@@ -33,7 +38,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // MAIN JOIN VIEW
-  const { data: userModules, error: joinErr } = await supabase
+  const { data: userModules, error: joinErr } = await serviceSupabase
     .from("admin_user_module_join")
     .select("*");
 
@@ -46,16 +51,10 @@ export async function GET(request: Request) {
   }
 
   // ALL MODULES (for filters + "not started")
-  const { data: modules, error: modulesErr } = await supabase
+  const { data: modules, error: modulesErr } = await serviceSupabase
     .from("modules")
     .select("id, title, order_index, skill_level")
     .order("order_index", { ascending: true });
-
-  // POST ASSESSMENTS
-  const serviceSupabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  );
 
   const { data: postAssessments, error: postAssessmentsErr } =
     await serviceSupabase
