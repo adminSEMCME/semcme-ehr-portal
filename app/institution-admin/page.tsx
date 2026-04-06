@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
 type Tab = "users" | "modules";
@@ -40,14 +40,24 @@ export default function InstitutionAdminPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select(`oversee_role, institutions ( name )`)
+        .select("oversee_role, institution_id")
         .eq("id", user.id)
         .single();
 
-      if (profile) {
-        setInstitution((profile.institutions as any)?.name || null);
-        setOverseeRole(profile.oversee_role || null);
+      let institutionName = null;
+
+      if (profile?.institution_id) {
+        const { data: inst } = await supabase
+          .from("institutions")
+          .select("name")
+          .eq("id", profile.institution_id)
+          .single();
+
+        institutionName = inst?.name ?? null;
       }
+
+      setInstitution(institutionName);
+      setOverseeRole(profile?.oversee_role ?? null);
     }
 
     loadProfile();
@@ -71,12 +81,7 @@ export default function InstitutionAdminPage() {
   }, []);
 
   /* ---------------- PRELOAD FILTER (IMPORTANT) ---------------- */
-  const filteredRows = (analytics?.userModules ?? []).filter((row: any) => {
-    return (
-      row.institution === institution &&
-      row.role?.toLowerCase() === overseeRole?.toLowerCase()
-    );
-  });
+  const filteredRows = analytics?.userModules ?? [];
 
   /* ---------------- BUILD USERS ---------------- */
   const users = useMemo(() => {
@@ -521,36 +526,37 @@ export default function InstitutionAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((u: any) => (
-                <>
-                  {/* MAIN ROW */}
-                  <tr
-                    key={u.user_id}
-                    className="border-b cursor-pointer hover:bg-gray-100"
-                    onClick={() =>
-                      setSelectedUserId(
-                        selectedUserId === u.user_id ? null : u.user_id,
-                      )
-                    }
-                  >
-                    <td className="p-3">{u.name}</td>
-                    <td>{u.email}</td>
-                    <td>{u.institution}</td>
-                    <td>{u.role}</td>
-                    <td>{u.completedCount}</td>
-                    <td>{u.inProgressCount}</td>
-                  </tr>
-
-                  {/* EXPANDED ROW */}
-                  {selectedUserId === u.user_id && (
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <td colSpan={6} className="p-4">
-                        <UserDetailPanel user={u} allModules={allModules} />
-                      </td>
+              {filteredUsers.map((u: any) => {
+                return (
+                  <React.Fragment key={`user-${u.user_id}`}>
+                    {/* MAIN ROW */}
+                    <tr
+                      className="border-b cursor-pointer hover:bg-gray-100"
+                      onClick={() =>
+                        setSelectedUserId(
+                          selectedUserId === u.user_id ? null : u.user_id,
+                        )
+                      }
+                    >
+                      <td className="p-3">{u.name}</td>
+                      <td>{u.email}</td>
+                      <td>{u.institution}</td>
+                      <td>{u.role}</td>
+                      <td>{u.completedCount}</td>
+                      <td>{u.inProgressCount}</td>
                     </tr>
-                  )}
-                </>
-              ))}
+
+                    {/* EXPANDED ROW */}
+                    {selectedUserId === u.user_id && (
+                      <tr className="bg-gray-50 border-b border-gray-200">
+                        <td colSpan={6} className="p-4">
+                          <UserDetailPanel user={u} allModules={allModules} />
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         ) : (
