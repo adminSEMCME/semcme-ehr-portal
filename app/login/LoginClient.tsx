@@ -122,7 +122,7 @@ export default function LoginClient() {
           onClick={() =>
             window.history.length > 1 ? router.back() : router.push("/")
           }
-          className="bg-white border-2 border-semcmeBlue rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
+          className="bg-white rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
         >
           <ArrowLeft size={18} /> Back
         </button>
