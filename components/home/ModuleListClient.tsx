@@ -246,13 +246,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             ref={guidesRef}
             className="relative flex justify-center lg:justify-end mt-3 lg:mt-0 transition-all duration-200 cursor-pointer p-0.5"
           >
-            <Link
-              href="/demo"
-              className="mr-4 text-white font-semibold text-md hover:no-underline underline transition-all duration-200"
-            >
-              Demo
-            </Link>
-
             <button
               onClick={() => setGuidesOpen((prev) => !prev)}
               className="text-white font-semibold text-md flex items-center gap-1 hover:underline transition-all duration-200"
