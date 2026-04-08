@@ -397,8 +397,9 @@ export default function RegisterClient() {
             Please note that selecting{" "}
             <strong>Practicing Physician/Faculty</strong> or{" "}
             <strong>Nursing</strong> will grant access to{" "}
-            <strong>CE credits</strong> after completion of modules. All Other
-            Roles will <strong>not</strong> have access to CE credits.
+            <strong>Continuing Education (CE) credits</strong> after completion
+            of modules. All other groups will <strong>NOT</strong> have access
+            to (CE) credits.
           </p>
 
           <p className="text-gray-800 text-center text-xs mb-6">
@@ -406,6 +407,12 @@ export default function RegisterClient() {
             administrator at your institution. This role requires{" "}
             <strong>additional approval</strong> and is intended for designated{" "}
             <strong>institutional representatives</strong>.
+          </p>
+
+          <p className="text-gray-800 text-center text-xs mb-6">
+            The <strong>Institution Administrator</strong> role does{" "}
+            <strong>NOT</strong> have access to modules. Please select a
+            different role to access learning modules.
           </p>
         </div>
 
