@@ -1,4 +1,3 @@
-// app/api/admin/analytics/route.ts
 import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -37,10 +36,33 @@ export async function GET(request: Request) {
   if (userData.user.user_metadata?.role !== "admin")
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  // MAIN JOIN VIEW
-  const { data: userModules, error: joinErr } = await serviceSupabase
-    .from("admin_user_module_join")
-    .select("*");
+  // MAIN DATA (REPLACES VIEW)
+  const { data: profiles, error: joinErr } = await serviceSupabase.from(
+    "profiles",
+  ).select(`
+      id,
+      first_name,
+      last_name,
+      email,
+      role,
+      created_at,
+      institution_id,
+      institutions ( name ),
+      module_progress (
+        module_id,
+        status,
+        progress_percent,
+        date_started,
+        date_completed,
+        last_accessed,
+        modules (
+          id,
+          title,
+          order_index,
+          skill_level
+        )
+      )
+    `);
 
   if (joinErr) {
     console.error("join error:", joinErr);
@@ -49,6 +71,65 @@ export async function GET(request: Request) {
       { status: 500 },
     );
   }
+
+  // ✅ ADD THIS (separate certificates fetch)
+  const { data: certificates } = await serviceSupabase
+    .from("certificates")
+    .select("user_id, module_id, cert_url, issued_at");
+
+  // FLATTEN DATA (MATCHES OLD VIEW STRUCTURE)
+  const userModules =
+    profiles?.flatMap((user: any) => {
+      const base = {
+        user_id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        institution: user.institutions?.name ?? null,
+        role: user.role,
+        user_created_at: user.created_at,
+      };
+
+      if (!user.module_progress || user.module_progress.length === 0) {
+        return [
+          {
+            ...base,
+            module_id: null,
+            module_title: null,
+            order_index: null,
+            skill_level: null,
+            status: null,
+            progress_percent: null,
+            date_started: null,
+            date_completed: null,
+            last_accessed: null,
+            cert_url: null,
+            cert_issued_at: null,
+          },
+        ];
+      }
+
+      return user.module_progress.map((mp: any) => {
+        const cert = certificates?.find(
+          (c) => c.user_id === user.id && c.module_id === mp.module_id,
+        );
+
+        return {
+          ...base,
+          module_id: mp.module_id,
+          module_title: mp.modules?.title ?? null,
+          order_index: mp.modules?.order_index ?? null,
+          skill_level: mp.modules?.skill_level ?? null,
+          status: mp.status,
+          progress_percent: mp.progress_percent,
+          date_started: mp.date_started,
+          date_completed: mp.date_completed,
+          last_accessed: mp.last_accessed,
+          cert_url: cert?.cert_url ?? null,
+          cert_issued_at: cert?.issued_at ?? null,
+        };
+      });
+    }) ?? [];
 
   // ALL MODULES (for filters + "not started")
   const { data: modules, error: modulesErr } = await serviceSupabase
