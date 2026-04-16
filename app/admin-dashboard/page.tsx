@@ -4,8 +4,8 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import React from "react";
 import PostAssessmentsTab from "./PostAssessmentsTab";
-import { Link } from "lucide-react";
 import AnnouncementsTab from "./AnnouncementsTab";
+import UserManagementTab from "./UserManagementTab";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -153,6 +153,7 @@ export default function AdminDashboardPage() {
     | "assessments"
     | "adminApprovals"
     | "announcements"
+    | "userManagement"
   >("users");
 
   const [search, setSearch] = useState("");
@@ -633,6 +634,7 @@ export default function AdminDashboardPage() {
           "assessments",
           "adminApprovals",
           "announcements",
+          "userManagement",
         ].map((t) => (
           <button
             key={t}
@@ -645,7 +647,9 @@ export default function AdminDashboardPage() {
           >
             {t === "adminApprovals"
               ? "Admin Approvals"
-              : t[0].toUpperCase() + t.slice(1)}
+              : t === "userManagement"
+                ? "User Management"
+                : t[0].toUpperCase() + t.slice(1)}
           </button>
         ))}
       </div>
@@ -977,6 +981,7 @@ export default function AdminDashboardPage() {
       )}
       {tab === "adminApprovals" && <AdminApprovalsTab />}
       {tab === "announcements" && <AnnouncementsTab />}
+      {tab === "userManagement" && <UserManagementTab />}
     </div>
   );
 }
