@@ -1,3 +1,4 @@
+// app/institution-admin/page.tsx
 "use client";
 
 import React, { useEffect, useMemo, useState, useRef } from "react";
@@ -81,13 +82,15 @@ export default function InstitutionAdminPage() {
   }, []);
 
   /* ---------------- PRELOAD FILTER (IMPORTANT) ---------------- */
-  const filteredRows = analytics?.userModules ?? [];
+  const userModuleRows = useMemo(() => {
+    return analytics?.userModules ?? [];
+  }, [analytics]);
 
   /* ---------------- BUILD USERS ---------------- */
   const users = useMemo(() => {
     const map = new Map();
 
-    for (const row of filteredRows) {
+    for (const row of userModuleRows) {
       if (!map.has(row.user_id)) {
         map.set(row.user_id, {
           user_id: row.user_id,
@@ -113,33 +116,35 @@ export default function InstitutionAdminPage() {
     }
 
     return Array.from(map.values());
-  }, [filteredRows]);
+  }, [userModuleRows]);
 
   /* ---------------- FILTER USERS (UI FILTER) ---------------- */
-  const filteredUsers = users.filter((u: any) => {
-    if (search) {
-      const q = search.toLowerCase();
-      if (
-        !u.name.toLowerCase().includes(q) &&
-        !u.email.toLowerCase().includes(q)
-      ) {
-        return false;
+  const filteredUsers = useMemo(() => {
+    return users.filter((u: any) => {
+      if (search) {
+        const q = search.toLowerCase();
+        if (
+          !u.name.toLowerCase().includes(q) &&
+          !u.email.toLowerCase().includes(q)
+        ) {
+          return false;
+        }
       }
-    }
 
-    if (filterModuleId !== "all") {
-      return u.modules.some((m: any) => m.module_id === filterModuleId);
-    }
+      if (filterModuleId !== "all") {
+        return u.modules.some((m: any) => m.module_id === filterModuleId);
+      }
 
-    return true;
-  });
+      return true;
+    });
+  }, [users, search, filterModuleId]);
 
   /* ---------------- BUILD MODULES ---------------- */
   const modules = useMemo(() => {
     const allModules = analytics?.modules ?? [];
 
     let base = allModules.map((mod: any) => {
-      const rows = filteredRows.filter((r: any) => r.module_id === mod.id);
+      const rows = userModuleRows.filter((r: any) => r.module_id === mod.id);
 
       return {
         id: mod.id,
@@ -160,7 +165,7 @@ export default function InstitutionAdminPage() {
     }
 
     return base;
-  }, [analytics, filteredRows, filterSelectedModules]);
+  }, [analytics, userModuleRows, filterSelectedModules]);
 
   /* ---------------- ALL MODULES (FOR DETAIL PANEL) ---------------- */
   const allModules = analytics?.modules ?? [];
@@ -572,7 +577,7 @@ export default function InstitutionAdminPage() {
             </thead>
             <tbody>
               {modules.map((m: any) => (
-                <>
+                <React.Fragment key={m.id}>
                   {/* MAIN ROW */}
                   <tr
                     key={m.id}
@@ -598,7 +603,7 @@ export default function InstitutionAdminPage() {
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </tbody>
           </table>
