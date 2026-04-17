@@ -41,6 +41,8 @@ export default function DemoDashboard() {
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const [activeModal, setActiveModal] = useState<
     "assessment" | "ce" | "certificate" | null
   >(null);
@@ -79,7 +81,7 @@ export default function DemoDashboard() {
         </div>
 
         {/* TITLE */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mt-6 mb-4 text-center leading-tight px-4">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 text-center leading-tight px-4">
           Demo Dashboard
         </h1>
 
@@ -88,6 +90,188 @@ export default function DemoDashboard() {
           You are viewing a demo version of the EHR Learning Portal. Progress
           shown here is simulated. Register for full access to all 18 modules
           and features.
+        </div>
+
+        {/* DEMO DESCRIPTION SECTION */}
+        <div className="max-w-6xl mx-auto mb-10">
+          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg pt-6 md:pt-8 text-gray-700 text-sm md:text-base leading-relaxed">
+            {/* TITLE */}
+            <div
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <h2 className="text-xl md:text-2xl font-bold text-semcmeBlue text-center mb-2">
+                Improving EHR Use for Better Outcomes: User Guide
+              </h2>
+
+              <p className="text-center text-sm text-semcmeBlue mb-6">
+                {isExpanded ? "Show less ↑" : "Click to expand ↓"}
+              </p>
+            </div>
+
+            {/* COLLAPSIBLE CONTENT */}
+            <div
+              className={`transition-all duration-500 overflow-hidden ${
+                isExpanded ? "max-h-[3000px]" : "max-h-[120px]"
+              }`}
+            >
+              {/* PARAGRAPHS */}
+              <div className="space-y-4 max-w-5xl mx-auto">
+                <p>
+                  Improving Documentation for Better Outcomes educational
+                  curriculum is designed to help practicing physicians, faculty,
+                  learners, and other healthcare professionals strengthen their
+                  documentation skills within electronic health records (EHRs).
+                  As EHRs have become the central link across every area of
+                  clinical practice, accurate and meaningful documentation plays
+                  a critical role in improving patient safety, supporting
+                  quality measures, enhancing communication, and promoting more
+                  cost-effective care. By improving the quality of data entered
+                  into the EHR, clinicians also improve the reliability of the
+                  data used to guide decisions, measure outcomes, and ultimately
+                  deliver better patient care.
+                </p>
+
+                <p>
+                  This curriculum offers a continuum of learning modules
+                  tailored to all stages of medical education and clinical
+                  practice, from undergraduate medical students to residents,
+                  fellows, and experienced practicing clinicians. The program is
+                  organized into three progressive learning levels:
+                </p>
+              </div>
+
+              {/* LEARNING LEVELS */}
+              <div className="mt-4 max-w-4xl mx-auto">
+                <ul className="list-disc pl-6 space-y-2">
+                  <li>
+                    <strong>Fundamental Concepts (UME)</strong> for early
+                    learners developing core EHR skills.
+                  </li>
+                  <li>
+                    <strong>Intermediate Modules (GME)</strong> for graduate
+                    medical education focused on advanced documentation and
+                    workflow integration.
+                  </li>
+                  <li>
+                    <strong>Advanced CME Modules (CME)</strong> for practicing
+                    clinicians seeking to optimize efficiency, quality metrics,
+                    transitions of care, and performance measures in areas such
+                    as diabetes, obesity, and social determinants of health.
+                  </li>
+                </ul>
+              </div>
+
+              {/* CONTINUED TEXT */}
+              <div className="mt-4 space-y-4 max-w-5xl mx-auto">
+                <p>
+                  The complete series is designed to support teachers,
+                  instructors, residency leadership, and faculty in implementing
+                  these modules at the appropriate learner level. Each module
+                  includes detailed objectives, key concepts, and guidance for
+                  curricular integration, making it easy to align content with
+                  educational goals across UME, GME, and CME settings. For
+                  practicing physicians and nurses, many modules also offer
+                  continuing education credit opportunities, further supporting
+                  lifelong learning and excellence in clinical documentation.
+                </p>
+
+                <p className="font-semibold">
+                  Improving EHR Use for Better Outcomes Allows You to:
+                </p>
+              </div>
+
+              {/* FEATURES LIST */}
+              <div className="mt-2 max-w-4xl mx-auto">
+                <ul className="list-disc pl-6 space-y-1">
+                  <li>
+                    Explore 18 learning modules designed to improve your
+                    knowledge and application of EHRs.
+                  </li>
+                  <li>
+                    Filter modules to access services designed to target
+                    different learning levels.
+                  </li>
+                  <li>
+                    Follow multiple case studies and complete practice
+                    exercises.
+                  </li>
+                  <li>
+                    Access your own personalized dashboard with saved progress.
+                  </li>
+                  <li>Download certificates for proof of completion.</li>
+                  <li>
+                    Obtain CME (available for practicing physicians and nurses).
+                  </li>
+                </ul>
+              </div>
+
+              {/* AVAILABLE MODULES */}
+              <div className="mt-6 px-10">
+                <h3 className="text-lg font-semibold text-semcmeBlue text-center mb-4">
+                  Available Modules
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2 text-sm">
+                  <ul className="space-y-1">
+                    <li>
+                      • Introduction to EHR Educational Series - Improving EHR
+                      Use for Better Outcomes
+                    </li>
+                    <li>• Electronic Health Records: An Introduction</li>
+                    <li>• Practicing Fundamental Skills</li>
+                    <li>• The Note: Documentation in an EHR</li>
+                    <li>
+                      • Introduction to Coding and Billing: ICD-10, CPT, E/M
+                      Codes
+                    </li>
+                    <li>• Order Entry and Order Sets</li>
+                    <li>• Effective Use of EHRs</li>
+                    <li>• Practice Documentation - Hypertension Case</li>
+                    <li>• High-Yield Notes</li>
+                    <li>• Coding and Billing: Office Workflow</li>
+                  </ul>
+
+                  <ul className="space-y-1">
+                    <li>• Coding and Billing: CPT Coding</li>
+                    <li>
+                      • Coding and Billing: ICD-10 and How to Build Diagnoses
+                    </li>
+                    <li>• Documentation of Social Determinants of Health</li>
+                    <li>
+                      • Improving Efficiency and Effectiveness in the Use of
+                      EHRs
+                    </li>
+                    <li>
+                      • Improving Quality Metrics for Readmission, Transition of
+                      Care and Medication Reconciliation (Emergency Department
+                      to PCP)
+                    </li>
+                    <li>
+                      • Improving Quality Metrics for Readmission, Transition of
+                      Care and Medication Reconciliation (Hospital to PCP)
+                    </li>
+                    <li>
+                      • Documentation of Evidence-Based Management of Obesity
+                      and Performance Measures
+                    </li>
+                    <li>
+                      • Documentation of Evidence-Based Management of Diabetes
+                      and Performance Measures
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* FOOTER TEXT */}
+              <p className="mt-4 p-8 text-center text-gray-700 text-xs md:text-sm">
+                The Educator Demo Site provides a sample of the modules for
+                review. For further information, or to request information on
+                subscription to the complete series of modules, please contact
+                jnzyrsh@semcme.org
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* MODULE GRID */}
@@ -203,171 +387,7 @@ export default function DemoDashboard() {
           })}
         </div>
 
-        {/* DEMO DESCRIPTION SECTION */}
-        <div className="max-w-6xl mx-auto mt-12">
-          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg p-8 md:p-10 text-gray-700 text-sm md:text-base leading-relaxed">
-            {/* TITLE */}
-            <h2 className="text-2xl md:text-3xl font-bold text-semcmeBlue text-center mb-6">
-              Improving EHR Use for Better Outcomes
-            </h2>
-
-            {/* PARAGRAPHS */}
-            <div className="space-y-4 max-w-4xl mx-auto">
-              <p>
-                Improving Documentation for Better Outcomes educational
-                curriculum is designed to help practicing physicians, faculty,
-                learners, and other healthcare professionals strengthen their
-                documentation skills within electronic health records (EHRs). As
-                EHRs have become the central link across every area of clinical
-                practice, accurate and meaningful documentation plays a critical
-                role in improving patient safety, supporting quality measures,
-                enhancing communication, and promoting more cost-effective care.
-                By improving the quality of data entered into the EHR,
-                clinicians also improve the reliability of the data used to
-                guide decisions, measure outcomes, and ultimately deliver better
-                patient care.
-              </p>
-
-              <p>
-                This curriculum offers a continuum of learning modules tailored
-                to all stages of medical education and clinical practice, from
-                undergraduate medical students to residents, fellows, and
-                experienced practicing clinicians. The program is organized into
-                three progressive learning levels:
-              </p>
-            </div>
-
-            {/* LEARNING LEVELS */}
-            <div className="mt-4 max-w-3xl mx-auto">
-              <ul className="list-disc pl-6 space-y-2">
-                <li>
-                  <strong>Fundamental Concepts (UME)</strong> for early learners
-                  developing core EHR skills.
-                </li>
-                <li>
-                  <strong>Intermediate Modules (GME)</strong> for graduate
-                  medical education focused on advanced documentation and
-                  workflow integration.
-                </li>
-                <li>
-                  <strong>Advanced CME Modules (CME)</strong> for practicing
-                  clinicians seeking to optimize efficiency, quality metrics,
-                  transitions of care, and performance measures in areas such as
-                  diabetes, obesity, and social determinants of health.
-                </li>
-              </ul>
-            </div>
-
-            {/* CONTINUED TEXT */}
-            <div className="mt-4 space-y-4 max-w-4xl mx-auto">
-              <p>
-                The complete series is designed to support teachers,
-                instructors, residency leadership, and faculty in implementing
-                these modules at the appropriate learner level. Each module
-                includes detailed objectives, key concepts, and guidance for
-                curricular integration, making it easy to align content with
-                educational goals across UME, GME, and CME settings. For
-                practicing physicians and nurses, many modules also offer
-                continuing education credit opportunities, further supporting
-                lifelong learning and excellence in clinical documentation.
-              </p>
-
-              <p className="font-semibold">
-                Improving EHR Use for Better Outcomes Allows You to:
-              </p>
-            </div>
-
-            {/* FEATURES LIST */}
-            <div className="mt-2 max-w-3xl mx-auto">
-              <ul className="list-disc pl-6 space-y-1">
-                <li>
-                  Explore 18 learning modules designed to improve your knowledge
-                  and application of EHRs.
-                </li>
-                <li>
-                  Filter modules to access services designed to target different
-                  learning levels.
-                </li>
-                <li>
-                  Follow multiple case studies and complete practice exercises.
-                </li>
-                <li>
-                  Access your own personalized dashboard with saved progress.
-                </li>
-                <li>Download certificates for proof of completion.</li>
-                <li>
-                  Obtain CME (available for practicing physicians and nurses).
-                </li>
-              </ul>
-            </div>
-
-            {/* AVAILABLE MODULES */}
-            <div className="mt-10">
-              <h3 className="text-lg font-semibold text-semcmeBlue text-center mb-6">
-                Available Modules
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2 text-sm">
-                <ul className="space-y-1">
-                  <li>
-                    • Introduction to EHR Educational Series - Improving EHR Use
-                    for Better Outcomes
-                  </li>
-                  <li>• Electronic Health Records: An Introduction</li>
-                  <li>• Practicing Fundamental Skills</li>
-                  <li>• The Note: Documentation in an EHR</li>
-                  <li>
-                    • Introduction to Coding and Billing: ICD-10, CPT, E/M Codes
-                  </li>
-                  <li>• Order Entry and Order Sets</li>
-                  <li>• Effective Use of EHRs</li>
-                  <li>• Practice Documentation - Hypertension Case</li>
-                  <li>• High-Yield Notes</li>
-                  <li>• Coding and Billing: Office Workflow</li>
-                </ul>
-
-                <ul className="space-y-1">
-                  <li>• Coding and Billing: CPT Coding</li>
-                  <li>
-                    • Coding and Billing: ICD-10 and How to Build Diagnoses
-                  </li>
-                  <li>• Documentation of Social Determinants of Health</li>
-                  <li>
-                    • Improving Efficiency and Effectiveness in the Use of EHRs
-                  </li>
-                  <li>
-                    • Improving Quality Metrics for Readmission, Transition of
-                    Care and Medication Reconciliation (Emergency Department to
-                    PCP)
-                  </li>
-                  <li>
-                    • Improving Quality Metrics for Readmission, Transition of
-                    Care and Medication Reconciliation (Hospital to PCP)
-                  </li>
-                  <li>
-                    • Documentation of Evidence-Based Management of Obesity and
-                    Performance Measures
-                  </li>
-                  <li>
-                    • Documentation of Evidence-Based Management of Diabetes and
-                    Performance Measures
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* FOOTER TEXT */}
-            <p className="mt-8 text-center text-gray-500 text-xs md:text-sm">
-              The Educator Demo Site provides a sample of the modules for
-              review. For further information, or to request information on
-              subscription to the complete series of modules, please contact
-              jnzyrsh@semcme.org
-            </p>
-          </div>
-        </div>
-
         {/* MODALS */}
-
         {activeModal && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"

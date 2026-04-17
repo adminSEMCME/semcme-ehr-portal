@@ -406,11 +406,8 @@ export default function RegisterClient() {
             Only select <strong>Institution Administrator</strong> if you are an
             administrator at your institution. This role requires{" "}
             <strong>additional approval</strong> and is intended for designated{" "}
-            <strong>institutional representatives</strong>.
-          </p>
-
-          <p className="text-gray-800 text-center text-xs mb-6">
-            The <strong>Institution Administrator</strong> role does{" "}
+            <strong>institutional representatives</strong>. The{" "}
+            <strong>Institution Administrator</strong> role does{" "}
             <strong>NOT</strong> have access to modules. Please select a
             different role to access learning modules.
           </p>

@@ -261,7 +261,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             {guidesOpen && (
               <div className="absolute top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
                 <a
-                  href="/pdfs/user-guide.pdf"
+                  href="/demo"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
