@@ -240,45 +240,55 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             </div>
           </Link>
 
-          {/* Links */}
-          {/* GUIDES DROPDOWN */}
-          <div
-            ref={guidesRef}
-            className="relative flex justify-center lg:justify-end mt-3 lg:mt-0 transition-all duration-200 cursor-pointer p-0.5"
-          >
-            <button
-              onClick={() => setGuidesOpen((prev) => !prev)}
-              className="text-white font-semibold text-md flex items-center gap-1 hover:underline transition-all duration-200"
+          {/* RIGHT SIDE NAV */}
+          <div className="flex items-center gap-6 justify-center lg:justify-end mt-3 lg:mt-0">
+            {/* ABOUT LINK */}
+            <Link
+              href="/about-authors"
+              className="text-white font-semibold text-md hover:underline transition-all"
             >
-              Website Guides
-              <ChevronDown
-                className={`w-4 h-4 transition-transform ${
-                  guidesOpen ? "rotate-180" : ""
-                }`}
-              />
-            </button>
+              About The Authors
+            </Link>
 
-            {guidesOpen && (
-              <div className="absolute top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
-                <a
-                  href="/demo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
-                >
-                  User Guide
-                </a>
+            {/* GUIDES DROPDOWN */}
+            <div
+              ref={guidesRef}
+              className="relative transition-all duration-200 cursor-pointer p-0.5"
+            >
+              <button
+                onClick={() => setGuidesOpen((prev) => !prev)}
+                className="text-white font-semibold text-md flex items-center gap-1 hover:underline transition-all duration-200"
+              >
+                Website Guides
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform ${
+                    guidesOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
 
-                <a
-                  href="/pdfs/instructor-guide.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
-                >
-                  Instructor Guide
-                </a>
-              </div>
-            )}
+              {guidesOpen && (
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
+                  <a
+                    href="/demo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
+                  >
+                    User Guide
+                  </a>
+
+                  <a
+                    href="/pdfs/instructor-guide.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
+                  >
+                    Instructor Guide
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

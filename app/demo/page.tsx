@@ -268,7 +268,7 @@ export default function DemoDashboard() {
                 The Educator Demo Site provides a sample of the modules for
                 review. For further information, or to request information on
                 subscription to the complete series of modules, please contact
-                jnzyrsh@semcme.org
+                njuzych@semcme.org
               </p>
             </div>
           </div>

@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
         {/* Contact Support */}
         <div>
-          <h3 className="text-white font-semibold mb-2">Contact Support</h3>
+          <h3 className="text-white font-semibold">Contact Support</h3>
 
           <p className="mb-1">
             <a
@@ -18,7 +18,6 @@ export default function Footer() {
           </p>
 
           <p className="mb-4">
-            {" "}
             <a
               href="/support/program"
               className="text-blue-500 underline hover:no-underline font-medium"
@@ -34,6 +33,16 @@ export default function Footer() {
               className="text-blue-500 underline hover:no-underline font-medium"
             >
               View Demo
+            </a>
+          </p>
+
+          <h3 className="text-white font-semibold mt-4">About The Authors</h3>
+          <p>
+            <a
+              href="/about-authors"
+              className="text-blue-500 underline hover:no-underline font-medium"
+            >
+              Meet the Team
             </a>
           </p>
         </div>
