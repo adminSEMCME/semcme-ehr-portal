@@ -119,7 +119,7 @@ export default function AboutPage() {
         </div>
 
         {/* INTRO */}
-        <div className="max-w-4xl text-center mb-10 bg-white/90 backdrop-blur rounded-sm p-6 shadow-md mx-4">
+        <div className="max-w-4xl text-center mb-10 bg-white rounded-sm p-6 shadow-md mx-4 transition-all duration-200">
           <p className="text-gray-700 text-sm md:text-base leading-relaxed">
             The "Improving EHR Use for Better Outcomes" curriculum is supported
             by a team of experienced educators, clinicians, and healthcare
@@ -139,7 +139,7 @@ export default function AboutPage() {
           {AUTHORS.map((author, index) => (
             <div
               key={index}
-              className="bg-white/95 backdrop-blur rounded-sm shadow-lg border border-white/40 p-8"
+              className="bg-white rounded-sm shadow-lg border border-gray-200 p-8 transition-all duration-200"
             >
               {/* NAME + TITLE ROW */}
               <div className="mb-2">
