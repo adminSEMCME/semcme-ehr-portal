@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,54 @@ export default function DemoDashboard() {
     "assessment" | "ce" | "certificate" | null
   >(null);
 
+  useEffect(() => {
+    const MAX_VIEWS = 5;
+
+    // 🔹 get or create browser id
+    let browserId = localStorage.getItem("demo_browser_id");
+    if (!browserId) {
+      browserId = crypto.randomUUID();
+      localStorage.setItem("demo_browser_id", browserId);
+    }
+
+    // 🔹 get current count
+    const count = Number(localStorage.getItem("demo_page_views") || "0");
+
+    if (count >= MAX_VIEWS) return;
+
+    // 🔹 send tracking
+    fetch("/api/view-tracker", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_type: "page_view",
+        page: "demo_dashboard",
+        browser_id: browserId,
+      }),
+      keepalive: true,
+    });
+
+    // 🔹 increment count
+    localStorage.setItem("demo_page_views", String(count + 1));
+  }, []);
+
   const handleStart = (module: Module) => {
+    // 🔹 Track module click
+    fetch("/api/view-tracker", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        event_type: "module_click",
+        module_id: module.id,
+        page: "demo_dashboard",
+      }),
+      keepalive: true,
+    });
+
     window.open(module.url, "_blank", "noopener,noreferrer");
 
     setProgress((prev) => ({ ...prev, [module.id]: 100 }));
