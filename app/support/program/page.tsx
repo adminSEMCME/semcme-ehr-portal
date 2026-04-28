@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import AppHeader from "@/components/AppHeader";
 
 export default function ProgramSupportPage() {
   const router = useRouter();
@@ -43,32 +44,8 @@ export default function ProgramSupportPage() {
   }
 
   return (
-    <div className="min-h-screen px-4 pb-20">
-      {/* HEADER */}
-      <div className="w-full flex items-center justify-between py-3">
-        <Link href="/" className="flex items-center">
-          <div className="bg-white rounded-md shadow px-3 py-2">
-            <div className="relative w-[170px] h-[45px]">
-              <Image
-                src="/logos/semcme_logo.jpg"
-                alt="SEMCME Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-          </div>
-        </Link>
-
-        <button
-          onClick={() =>
-            window.history.length > 1 ? router.back() : router.push("/")
-          }
-          className="bg-white rounded-md shadow px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-gray-100 transition"
-        >
-          <ArrowLeft size={18} /> Back
-        </button>
-      </div>
+    <div className="min-h-screen pb-20">
+      <AppHeader action="back" />
 
       {/* FORM CARD */}
       <div className="mt-8 max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg p-8">
@@ -79,8 +56,8 @@ export default function ProgramSupportPage() {
 
         <div className="mb-6 px-4 py-3 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-900 text-center">
           Submitting this form will send your request directly to a SEMCME team
-          member. This will begin email correspondance so we can assist you
-          with your question or issue.
+          member. This will begin email correspondance so we can assist you with
+          your question or issue.
         </div>
 
         {success && (

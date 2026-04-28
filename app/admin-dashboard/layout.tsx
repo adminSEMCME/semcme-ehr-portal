@@ -3,8 +3,7 @@ import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import Link from "next/link";
-import Image from "next/image";
+import AppHeader from "@/components/AppHeader";
 
 export default async function AdminDashboardLayout({
   children,
@@ -25,7 +24,7 @@ export default async function AdminDashboardLayout({
           // ❌ server component cannot modify cookies
         },
       },
-    }
+    },
   );
 
   const { data: userData } = await supabase.auth.getUser();
@@ -37,26 +36,7 @@ export default async function AdminDashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-100 font-sans">
-      <header className="w-full bg-white shadow-sm py-4 px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <div className="relative w-[170px] h-[45px]">
-            <Image
-              src="/logos/semcme_logo.jpg"
-              alt="SEMCME Logo"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </Link>
-
-        <nav className="flex items-center gap-4">
-          <form action="/api/logout" method="post">
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-              Log Out
-            </button>
-          </form>
-        </nav>
-      </header>
+      <AppHeader action="logout" />
 
       <main className="max-w-7xl mx-auto py-10 px-6">{children}</main>
     </div>

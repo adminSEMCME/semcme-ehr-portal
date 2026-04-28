@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import Footer from "@/components/Footer";
-import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import AppHeader from "@/components/AppHeader";
 
 interface Author {
   name: string;
@@ -121,29 +120,7 @@ export default function AboutPage() {
   return (
     <>
       <main className="min-h-screen flex flex-col items-center font-sans">
-        {/* HEADER */}
-        <div className="w-full flex items-center justify-between px-4 py-3">
-          <Link href="/" className="flex items-center">
-            <div className="bg-white rounded-md shadow-sm px-3 py-2">
-              <div className="relative w-[170px] h-[45px]">
-                <img
-                  src="/logos/semcme_logo.jpg"
-                  alt="SEMCME Logo"
-                  className="object-contain rounded-md w-full h-full"
-                />
-              </div>
-            </div>
-          </Link>
-
-          <button
-            onClick={() =>
-              window.history.length > 1 ? router.back() : router.push("/")
-            }
-            className="bg-white rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
-          >
-            <ArrowLeft size={18} /> Back
-          </button>
-        </div>
+        <AppHeader action="back" />
 
         {/* TITLE */}
         <div className="max-w-5xl mx-auto text-center mb-6 mt-6 px-4">

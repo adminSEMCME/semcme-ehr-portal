@@ -8,6 +8,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import AppHeader from "@/components/AppHeader";
 
 const preloadImages = (urls: string[], timeout = 800) => {
   return Promise.all(
@@ -642,32 +643,7 @@ export default function DashboardPage() {
   return (
     <>
       <main className="min-h-screen pb-20 bg-transparent flex flex-col items-center font-sans">
-        {/* HEADER */}
-        <div className="w-full flex items-center justify-between px-4 py-3">
-          <Link href="/" className="flex items-center">
-            <div className="bg-white rounded-md shadow-sm px-3 py-2">
-              <div className="relative w-[170px] h-[45px]">
-                <Image
-                  src="/logos/semcme_logo.jpg"
-                  alt="SEMCME Logo"
-                  fill
-                  className="object-contain rounded-md"
-                  priority
-                />
-              </div>
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-3">
-            {/* LOG OUT */}
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold h-10"
-            >
-              Log Out
-            </button>
-          </div>
-        </div>
+        <AppHeader action="logout" />
 
         {/* PAGE TITLE */}
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mt-6 mb-8 text-center leading-tight px-4">

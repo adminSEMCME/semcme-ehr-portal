@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import SessionWatcher from "@/components/SessionWatcher";
+import AppHeader from "@/components/AppHeader";
 
 export default async function InstitutionAdminLayout({
   children,
@@ -50,25 +51,7 @@ export default async function InstitutionAdminLayout({
       <SessionWatcher timeoutMinutes={30} />
 
       <div className="min-h-screen bg-gray-100 font-sans">
-        {/* ✅ MATCH ADMIN HEADER */}
-        <header className="w-full bg-white shadow-sm py-4 px-6 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
-            <div className="relative w-[170px] h-[45px]">
-              <Image
-                src="/logos/semcme_logo.jpg"
-                alt="SEMCME Logo"
-                fill
-                className="object-contain"
-              />
-            </div>
-          </Link>
-
-          <form action="/api/logout" method="post">
-            <button className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">
-              Log Out
-            </button>
-          </form>
-        </header>
+        <AppHeader action="logout" />
 
         {/* ✅ MATCH ADMIN PAGE SPACING */}
         <main className="max-w-7xl mx-auto py-10 px-6">{children}</main>

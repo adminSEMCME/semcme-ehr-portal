@@ -6,22 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Eye, EyeOff } from "lucide-react";
-
-function BackButton() {
-  const router = useRouter();
-  return (
-    <button
-      onClick={() =>
-        window.history.length > 1 ? router.back() : router.push("/")
-      }
-      className="back-btn"
-      aria-label="Go back"
-      type="button"
-    >
-      ← Back
-    </button>
-  );
-}
+import AppHeader from "@/components/AppHeader";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -99,7 +84,7 @@ export default function ResetPasswordPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
-      <BackButton />
+      <AppHeader action="back" />
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Reset your password

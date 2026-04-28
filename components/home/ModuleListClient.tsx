@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown } from "lucide-react";
 import Footer from "../Footer";
+import AppHeader from "../AppHeader";
 
 type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -223,74 +224,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
   return (
     <>
       <main className="flex flex-col items-center min-h-screen bg-transparent text-gray-800 font-sans relative">
-        {/* HEADER */}
-        <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between px-4 py-3 bg-transparent z-50 relative">
-          {/* Logo */}
-          <Link href="/" className="flex justify-center lg:justify-start">
-            <div className="bg-white rounded-md shadow-sm px-3 py-2">
-              <div className="relative w-[170px] h-[45px]">
-                <Image
-                  src="/logos/semcme_logo.jpg"
-                  alt="SEMCME Logo"
-                  fill
-                  className="object-contain rounded-md"
-                  priority
-                />
-              </div>
-            </div>
-          </Link>
-
-          {/* RIGHT SIDE NAV */}
-          <div className="flex items-center gap-6 justify-center lg:justify-end mt-3 lg:mt-0">
-            {/* ABOUT LINK */}
-            <Link
-              href="/about-authors"
-              className="text-white font-semibold text-md hover:underline transition-all"
-            >
-              About The Authors
-            </Link>
-
-            {/* GUIDES DROPDOWN */}
-            <div
-              ref={guidesRef}
-              className="relative transition-all duration-200 cursor-pointer p-0.5"
-            >
-              <button
-                onClick={() => setGuidesOpen((prev) => !prev)}
-                className="text-white font-semibold text-md flex items-center gap-1 hover:underline transition-all duration-200"
-              >
-                Website Guides
-                <ChevronDown
-                  className={`w-4 h-4 transition-transform ${
-                    guidesOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
-
-              {guidesOpen && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
-                  <a
-                    href="/demo"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
-                  >
-                    User Guide
-                  </a>
-
-                  <a
-                    href="/pdfs/instructor-guide.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-[#02519c] hover:bg-slate-200"
-                  >
-                    Instructor Guide
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <AppHeader variant="home" />
 
         {/* HERO SECTION */}
         <section className="w-full h-[600px] relative overflow-hidden z-0">
@@ -376,7 +310,6 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               className="w-5 h-5 text-semcmeBlue"
               aria-hidden
             >
-              {/* visually centered left arrow */}
               <path
                 d="M14 6l-6 6 6 6"
                 fill="none"

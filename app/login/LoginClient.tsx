@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft } from "lucide-react";
+import AppHeader from "@/components/AppHeader";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -102,31 +103,8 @@ export default function LoginClient() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans px-4 sm:px-6">
-      <div className="w-full flex items-center justify-between py-3 bg-transparent">
-        <Link href="/" className="flex items-center">
-          <div className="bg-white rounded-md shadow-sm px-3 py-2">
-            <div className="relative w-[170px] h-[45px]">
-              <Image
-                src="/logos/semcme_logo.jpg"
-                alt="SEMCME Logo"
-                fill
-                className="object-contain rounded-md"
-                priority
-              />
-            </div>
-          </div>
-        </Link>
-
-        <button
-          onClick={() =>
-            window.history.length > 1 ? router.back() : router.push("/")
-          }
-          className="bg-white rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-100 transition"
-        >
-          <ArrowLeft size={18} /> Back
-        </button>
-      </div>
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
+      <AppHeader action="back" />
 
       <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10 lg:mt-20">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">

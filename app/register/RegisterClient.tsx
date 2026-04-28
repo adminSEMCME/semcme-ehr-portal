@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { ArrowLeft } from "lucide-react";
+import AppHeader from "@/components/AppHeader";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -356,36 +357,8 @@ export default function RegisterClient() {
      UI
      ============================================================ */
   return (
-    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative px-4 sm:px-6">
-      {/* HEADER */}
-      <div className="w-full flex items-center justify-between py-3">
-        <Link href="/" className="flex items-center">
-          <div className="bg-white rounded-md shadow-sm px-3 py-2">
-            <div className="relative w-[170px] h-[45px]">
-              <Image
-                src="/logos/semcme_logo.jpg"
-                alt="SEMCME Logo"
-                fill
-                className="object-contain rounded-md"
-                priority
-              />
-            </div>
-          </div>
-        </Link>
-
-        <button
-          onClick={() =>
-            window.history.length > 1 ? router.back() : router.push("/")
-          }
-          className="
-            bg-white rounded-md shadow-sm 
-            px-4 py-2 flex items-center gap-2 text-semcmeBlue 
-            font-semibold hover:bg-slate-100 transition
-          "
-        >
-          <ArrowLeft size={18} /> Back
-        </button>
-      </div>
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans relative">
+      <AppHeader action="back" />
 
       {/* FORM */}
       <div className="bg-white p-8 md:p-10 rounded-xl shadow-lg w-full max-w-2xl mt-5 mb-20 lg:mt-10 border border-gray-200">

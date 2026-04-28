@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
+import AppHeader from "@/components/AppHeader";
 
 interface Module {
   id: string;
@@ -104,28 +105,7 @@ export default function DemoDashboard() {
   return (
     <>
       <main className="min-h-screen pb-20 flex flex-col items-center font-sans">
-        {/* HEADER */}
-        <div className="w-full flex items-center justify-between px-4 py-3">
-          <Link href="/" className="flex items-center">
-            <div className="bg-white rounded-md shadow-sm px-3 py-2">
-              <div className="relative w-[170px] h-[45px]">
-                <Image
-                  src="/logos/semcme_logo.jpg"
-                  alt="SEMCME Logo"
-                  fill
-                  className="object-contain rounded-md"
-                  priority
-                />
-              </div>
-            </div>
-          </Link>
-
-          <div className="flex gap-3">
-            <Button asChild variant="semcme">
-              <Link href="/register">Register</Link>
-            </Button>
-          </div>
-        </div>
+        <AppHeader action="register" />
 
         {/* TITLE */}
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 text-center leading-tight px-4">
