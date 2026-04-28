@@ -38,7 +38,11 @@ export default function AppHeader({
   return (
     <header className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between px-4 py-3 relative z-50">
       {/* LOGO */}
-      <Link href="/" className="flex justify-center lg:justify-start">
+      <Link
+        href="/"
+        className="flex justify-center lg:justify-start"
+        title="go to homepage"
+      >
         <div className="bg-white rounded-md shadow-sm px-3 py-2 hover:bg-gray-300 transition">
           <div className="relative w-[170px] h-[45px]">
             <Image
@@ -54,11 +58,11 @@ export default function AppHeader({
 
       {/* RIGHT SIDE */}
       <div className="flex items-center gap-6 justify-center lg:justify-end mt-3 lg:mt-0">
-        {/* 🔹 HOME NAV VARIANT */}
         {variant === "home" ? (
           <>
             <Link
               href="/about-authors"
+              title="About The Authors"
               className="text-white font-semibold text-md hover:underline transition"
             >
               About The Authors
@@ -68,6 +72,7 @@ export default function AppHeader({
               <button
                 onClick={() => setGuidesOpen((prev) => !prev)}
                 className="text-white font-semibold text-md flex items-center gap-1 hover:underline"
+                title="view website guides"
               >
                 Website Guides
                 <ChevronDown
@@ -78,9 +83,10 @@ export default function AppHeader({
               </button>
 
               {guidesOpen && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-48 overflow-hidden z-50">
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-34 overflow-hidden z-50">
                   <a
                     href="/demo"
+                    title="User Guide"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
@@ -93,6 +99,7 @@ export default function AppHeader({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
+                    title="Instructor Guide"
                   >
                     Instructor Guide
                   </a>
@@ -109,6 +116,7 @@ export default function AppHeader({
                   window.history.length > 1 ? router.back() : router.push("/")
                 }
                 className="bg-white rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-300 transition"
+                title="Go back to previous page"
               >
                 <ArrowLeft size={18} /> Back
               </button>
@@ -116,7 +124,9 @@ export default function AppHeader({
 
             {action === "register" && (
               <Button asChild variant="semcme">
-                <Link href="/register">Register</Link>
+                <Link href="/register" title="Go to registration page">
+                  Register
+                </Link>
               </Button>
             )}
 
@@ -125,6 +135,7 @@ export default function AppHeader({
                 <button
                   type="submit"
                   className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold h-10"
+                  title="Log out of your account"
                 >
                   Log Out
                 </button>

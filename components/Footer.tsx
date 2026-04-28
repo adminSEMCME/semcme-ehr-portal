@@ -12,6 +12,7 @@ export default function Footer() {
             <a
               href="/support/technical"
               className="text-blue-500 underline hover:no-underline font-medium"
+              title="go to technical support form"
             >
               Technical Support Form
             </a>
@@ -21,6 +22,7 @@ export default function Footer() {
             <a
               href="/support/program"
               className="text-blue-500 underline hover:no-underline font-medium"
+              title="Go to program support form"
             >
               Program Support Form
             </a>
@@ -31,6 +33,7 @@ export default function Footer() {
             <a
               href="/demo"
               className="text-blue-500 underline hover:no-underline font-medium"
+              title="View the simulated demo"
             >
               View Demo
             </a>
@@ -41,6 +44,7 @@ export default function Footer() {
             <a
               href="/about-authors"
               className="text-blue-500 underline hover:no-underline font-medium"
+              title="Learn more about the authors"
             >
               Meet the Team
             </a>

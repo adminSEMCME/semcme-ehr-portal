@@ -380,11 +380,12 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             <div
               ref={groupRef}
               className="relative w-full max-w-md lg:max-w-sm"
+              title="filter modules by target audience"
             >
               <button
                 type="button"
                 onClick={() => setGroupOpen((prev) => !prev)}
-                className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-3 h-11 w-full text-sm text-semcmeBlue"
+                className="flex items-center justify-between gap-2 bg-white rounded-sm shadow-sm px-4 py-3 h-11 w-full text-sm text-semcmeBlue hover:bg-slate-100 transition"
               >
                 <span className="font-medium">
                   Filter Modules: {groupFilter.toUpperCase()}
@@ -393,7 +394,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </button>
 
               {groupOpen && (
-                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg z-50 overflow-hidden">
                   {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
                     <button
                       key={g}
@@ -415,7 +416,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             {/* SEARCH BAR */}
             <div className="w-full max-w-md lg:max-w-sm">
               <div className="relative">
-                <div className="flex items-center gap-2 bg-white rounded-md shadow-sm px-3 py-3 h-11">
+                <div
+                  className="flex items-center gap-2 bg-white rounded-sm shadow-sm px-3 py-3 h-11 hover:bg-slate-100 transition"
+                  title="Search for a specific module"
+                >
                   <Search className="w-4 h-4 text-semcmeBlue" />
                   <input
                     value={searchTerm}
@@ -442,7 +446,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 </div>
 
                 {isOpen && (
-                  <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-lg max-h-64 overflow-auto text-sm z-50">
+                  <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg max-h-64 overflow-auto text-sm z-50">
                     {filtered.length === 0 ? (
                       <div className="px-3 py-2 text-gray-500">
                         No matching modules
@@ -492,7 +496,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                       {mod.description}
                     </p>
 
-                    <Link href={`/login?module=${mod.id}`}>
+                    <Link
+                      href={`/login?module=${mod.id}`}
+                      title="Go to login page"
+                    >
                       <Button
                         variant="outline"
                         className="module-signin-btn ml-5 px-3 py-1 mb-2 text-xs"
