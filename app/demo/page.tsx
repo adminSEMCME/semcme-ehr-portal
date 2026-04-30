@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
+import { motion } from "framer-motion";
 
 interface Module {
   id: string;
@@ -125,7 +126,17 @@ export default function DemoDashboard() {
             {/* TITLE */}
             <div
               onClick={() => setIsExpanded((prev) => !prev)}
-              className="cursor-pointer"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setIsExpanded((prev) => !prev);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              title={isExpanded ? "Collapse user guide" : "Expand user guide"}
+              aria-expanded={isExpanded}
+              className="cursor-pointer rounded-md"
             >
               <h2 className="text-xl md:text-2xl font-bold text-semcmeBlue text-center mb-2">
                 Improving EHR Use for Better Outcomes: User Guide
@@ -137,10 +148,12 @@ export default function DemoDashboard() {
             </div>
 
             {/* COLLAPSIBLE CONTENT */}
-            <div
-              className={`transition-all duration-500 overflow-hidden ${
-                isExpanded ? "max-h-[3000px]" : "max-h-[120px]"
-              }`}
+            <motion.div
+              initial={false}
+              animate={{ height: isExpanded ? "auto" : 120 }}
+              transition={{ duration: 0.32, ease: "easeInOut" }}
+              className="overflow-hidden"
+              style={{ willChange: "height" }}
             >
               {/* PARAGRAPHS */}
               <div className="space-y-4 max-w-5xl mx-auto">
@@ -297,7 +310,7 @@ export default function DemoDashboard() {
                 subscription to the complete series of modules, please contact
                 njuzych@semcme.org
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
 

@@ -134,6 +134,7 @@ export default function LoginClient() {
             <a
               href="/forgot-password"
               className="text-sm text-semcmeBlue hover:underline"
+              title="Reset your password"
             >
               Forgot your password?
             </a>
@@ -154,6 +155,7 @@ export default function LoginClient() {
           <a
             href={`/register${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
+            title="Go to registration page"
           >
             Register here
           </a>

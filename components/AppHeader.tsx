@@ -5,6 +5,10 @@ import Image from "next/image";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import {
+  focusFirstDescendant,
+  handleDropdownKeyDown,
+} from "@/lib/keyboardNavigation";
 import { useState, useRef, useEffect } from "react";
 
 type HeaderVariant = "default" | "home";
@@ -71,9 +75,19 @@ export default function AppHeader({
             <div ref={guidesRef} className="relative cursor-pointer">
               <Button
                 onClick={() => setGuidesOpen((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setGuidesOpen(true);
+                    focusFirstDescendant(
+                      guidesRef.current,
+                      "[data-dropdown-menu]",
+                    );
+                  }
+                }}
                 variant="ghostInverted"
                 title="view website guides"
-                className="font-semibold hover:underline"
+                className="font-semibold text-md hover:underline"
               >
                 Website Guides
                 <ChevronDown
@@ -84,7 +98,13 @@ export default function AppHeader({
               </Button>
 
               {guidesOpen && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-34 overflow-hidden z-50">
+                <div
+                  data-dropdown-menu
+                  className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-34 overflow-hidden z-50"
+                  onKeyDown={(e) =>
+                    handleDropdownKeyDown(e, () => setGuidesOpen(false))
+                  }
+                >
                   <a
                     href="/demo"
                     title="User Guide"

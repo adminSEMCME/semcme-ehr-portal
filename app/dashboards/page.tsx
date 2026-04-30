@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
+import {
+  focusFirstDescendant,
+  handleDropdownKeyDown,
+} from "@/lib/keyboardNavigation";
 
 const preloadImages = (urls: string[], timeout = 800) => {
   return Promise.all(
@@ -272,6 +276,7 @@ export default function DashboardPage() {
 
   const [groupFilter, setGroupFilter] = useState<GroupFilter>("all");
   const [groupOpen, setGroupOpen] = useState(false);
+  const groupDropdownRef = useRef<HTMLDivElement | null>(null);
 
   /* LOAD DATA */
   useEffect(() => {
@@ -654,10 +659,20 @@ export default function DashboardPage() {
 
         {/* GROUP FILTER */}
         <div className="w-full flex justify-center lg:mb-8 mb-4 px-4">
-          <div className="relative w-full max-w-md">
+          <div ref={groupDropdownRef} className="relative w-full max-w-md">
             <Button
               type="button"
               onClick={() => setGroupOpen((prev) => !prev)}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setGroupOpen(true);
+                  focusFirstDescendant(
+                    groupDropdownRef.current,
+                    "[data-dropdown-menu]",
+                  );
+                }
+              }}
               variant="dropdown"
               size="md"
             >
@@ -670,7 +685,13 @@ export default function DashboardPage() {
             </Button>
 
             {groupOpen && (
-              <div className="absolute mt-2 w-full overflow-hidden bg-white border border-slate-200 rounded-md shadow-lg z-50">
+              <div
+                data-dropdown-menu
+                className="absolute mt-2 w-full overflow-hidden bg-white border border-slate-200 rounded-md shadow-lg z-50"
+                onKeyDown={(e) =>
+                  handleDropdownKeyDown(e, () => setGroupOpen(false))
+                }
+              >
                 {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
                   <Button
                     key={g}
@@ -847,20 +868,21 @@ export default function DashboardPage() {
                                 Generate Certificate
                               </Button>
                             ) : (
-                              <a
-                                href={cert.cert_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full"
+                              <Button
+                                asChild
+                                variant="success"
+                                size="card"
+                                className="w-full px-3 text-sm font-semibold"
                               >
-                                <Button
-                                  variant="success"
-                                  size="card"
-                                  className="w-full px-3 text-sm font-semibold"
+                                <a
+                                  href={cert.cert_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={`Download certificate for ${module.title}`}
                                 >
                                   Download Certificate
-                                </Button>
-                              </a>
+                                </a>
+                              </Button>
                             )}
 
                             {/* RIGHT BUTTON — ALWAYS CE */}
@@ -908,20 +930,21 @@ export default function DashboardPage() {
                             )}
 
                             {cert && (
-                              <a
-                                href={cert.cert_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-full"
+                              <Button
+                                asChild
+                                variant="success"
+                                size="card"
+                                className="w-full font-semibold"
                               >
-                                <Button
-                                  variant="success"
-                                  size="card"
-                                  className="w-full font-semibold"
+                                <a
+                                  href={cert.cert_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title={`Download certificate for ${module.title}`}
                                 >
                                   Download Certificate
-                                </Button>
-                              </a>
+                                </a>
+                              </Button>
                             )}
                           </>
                         )}
@@ -1118,6 +1141,7 @@ export default function DashboardPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
+                    title="Open CME Tracker in a new tab"
                   >
                     https://cmetracker.net/MCLAREN
                   </a>

@@ -7,6 +7,10 @@ import PostAssessmentsTab from "./PostAssessmentsTab";
 import AnnouncementsTab from "./AnnouncementsTab";
 import UserManagementTab from "./UserManagementTab";
 import { Button } from "@/components/ui/button";
+import {
+  focusFirstDescendant,
+  handleDropdownKeyDown,
+} from "@/lib/keyboardNavigation";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -751,6 +755,17 @@ export default function AdminDashboardPage() {
                           selectedUserId === u.user_id ? null : u.user_id,
                         )
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedUserId(
+                            selectedUserId === u.user_id ? null : u.user_id,
+                          );
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      title={`View details for ${u.name}`}
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{u.name}</td>
@@ -820,6 +835,16 @@ export default function AdminDashboardPage() {
               <Button
                 type="button"
                 onClick={() => setIsModuleDropdownOpen((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setIsModuleDropdownOpen(true);
+                    focusFirstDescendant(
+                      moduleDropdownRef.current,
+                      "[data-dropdown-menu]",
+                    );
+                  }
+                }}
                 variant="dropdown"
                 size="md"
                 className="border border-gray-300 text-left"
@@ -830,7 +855,15 @@ export default function AdminDashboardPage() {
               </Button>
 
               {isModuleDropdownOpen && (
-                <div className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2">
+                <div
+                  data-dropdown-menu
+                  className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2"
+                  onKeyDown={(e) =>
+                    handleDropdownKeyDown(e, () =>
+                      setIsModuleDropdownOpen(false),
+                    )
+                  }
+                >
                   {modules.map((m) => (
                     <label
                       key={m.module_id}
@@ -885,6 +918,19 @@ export default function AdminDashboardPage() {
                           selectedModuleId === m.module_id ? null : m.module_id,
                         )
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedModuleId(
+                            selectedModuleId === m.module_id
+                              ? null
+                              : m.module_id,
+                          );
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      title={`View details for ${m.title}`}
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{m.title}</td>
@@ -947,6 +993,19 @@ export default function AdminDashboardPage() {
                             : inst.institution,
                         )
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedInstitution(
+                            selectedInstitution === inst.institution
+                              ? null
+                              : inst.institution,
+                          );
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      title={`View details for ${inst.institution}`}
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{inst.institution}</td>

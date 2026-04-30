@@ -672,6 +672,7 @@ export default function RegisterClient() {
           <a
             href={`/login${moduleId ? `?module=${moduleId}` : ""}`}
             className="text-semcmeBlue font-semibold hover:underline"
+            title="Go to sign in page"
           >
             Sign in
           </a>

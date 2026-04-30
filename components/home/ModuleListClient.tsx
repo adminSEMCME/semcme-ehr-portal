@@ -9,6 +9,10 @@ import { motion } from "framer-motion";
 import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../Footer";
 import AppHeader from "../AppHeader";
+import {
+  focusFirstDescendant,
+  handleDropdownKeyDown,
+} from "@/lib/keyboardNavigation";
 
 type GroupFilter = "all" | "ume" | "gme" | "cme";
 
@@ -235,8 +239,10 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 src={img}
                 alt="Hero background"
                 fill
-                priority
-                className={`absolute inset-0 object-cover object-center transition-opacity duration-2000 ease-in-out ${
+                priority={i === 0}
+                sizes="100vw"
+                quality={82}
+                className={`absolute inset-0 object-cover object-center transform-gpu transition-opacity duration-1000 ease-in-out will-change-opacity ${
                   i === index ? "opacity-100" : "opacity-0"
                 } scale-110`}
               />
@@ -268,24 +274,26 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </p>
 
               <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center w-full">
-                <Link href="/login">
-                  <Button
-                    variant="inverted"
-                    size="xl"
-                    className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
-                  >
+                <Button
+                  asChild
+                  variant="inverted"
+                  size="xl"
+                  className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
+                >
+                  <Link href="/login" title="Go to sign in page">
                     Sign In
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
 
-                <Link href="/register">
-                  <Button
-                    size="xl"
-                    className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
-                  >
+                <Button
+                  asChild
+                  size="xl"
+                  className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
+                >
+                  <Link href="/register" title="Go to registration page">
                     Register
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
 
               <p className="mt-8 text-sm font-semibold text-white drop-shadow-md max-w-md mx-auto">
@@ -371,6 +379,16 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               <Button
                 type="button"
                 onClick={() => setGroupOpen((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setGroupOpen(true);
+                    focusFirstDescendant(
+                      groupRef.current,
+                      "[data-dropdown-menu]",
+                    );
+                  }
+                }}
                 variant="dropdown"
                 size="md"
                 className="h-11 rounded-sm"
@@ -382,7 +400,13 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               </Button>
 
               {groupOpen && (
-                <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg z-50 overflow-hidden">
+                <div
+                  data-dropdown-menu
+                  className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg z-50 overflow-hidden"
+                  onKeyDown={(e) =>
+                    handleDropdownKeyDown(e, () => setGroupOpen(false))
+                  }
+                >
                   {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
                     <Button
                       key={g}
@@ -417,6 +441,19 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                       setIsOpen(true);
                     }}
                     onFocus={() => setIsOpen(true)}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        setIsOpen(true);
+                        focusFirstDescendant(
+                          e.currentTarget.closest(".relative"),
+                          "[data-dropdown-menu]",
+                        );
+                      }
+                      if (e.key === "Escape") {
+                        setIsOpen(false);
+                      }
+                    }}
                     onBlur={() => setTimeout(() => setIsOpen(false), 150)}
                     placeholder="Search modules..."
                     className="flex-1 bg-transparent text-sm text-semcmeBlue placeholder:text-semcmeBlue"
@@ -424,6 +461,16 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                   <Button
                     type="button"
                     onClick={() => setIsOpen((prev) => !prev)}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        setIsOpen(true);
+                        focusFirstDescendant(
+                          e.currentTarget.closest(".relative"),
+                          "[data-dropdown-menu]",
+                        );
+                      }
+                    }}
                     variant="ghost"
                     size="icon-sm"
                     className="size-7"
@@ -438,7 +485,13 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 </div>
 
                 {isOpen && (
-                  <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg max-h-64 overflow-auto text-sm z-50">
+                  <div
+                    data-dropdown-menu
+                    className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg max-h-64 overflow-auto text-sm z-50"
+                    onKeyDown={(e) =>
+                      handleDropdownKeyDown(e, () => setIsOpen(false))
+                    }
+                  >
                     {filtered.length === 0 ? (
                       <div className="px-3 py-2 text-gray-500">
                         No matching modules

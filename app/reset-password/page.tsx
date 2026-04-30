@@ -97,6 +97,7 @@ export default function ResetPasswordPage() {
             <a
               href="/forgot-password"
               className="text-semcmeBlue font-semibold hover:underline"
+              title="Request a new password reset link"
             >
               request a new password reset
             </a>

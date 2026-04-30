@@ -4,6 +4,10 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
+import {
+  focusFirstDescendant,
+  handleDropdownKeyDown,
+} from "@/lib/keyboardNavigation";
 
 type Tab = "users" | "modules";
 
@@ -409,6 +413,16 @@ export default function InstitutionAdminPage() {
             <Button
               type="button"
               onClick={() => setIsModuleDropdownOpen((prev) => !prev)}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setIsModuleDropdownOpen(true);
+                  focusFirstDescendant(
+                    moduleDropdownRef.current,
+                    "[data-dropdown-menu]",
+                  );
+                }
+              }}
               variant="dropdown"
               size="md"
               className="border border-gray-300 text-left"
@@ -419,7 +433,15 @@ export default function InstitutionAdminPage() {
             </Button>
 
             {isModuleDropdownOpen && (
-              <div className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2">
+              <div
+                data-dropdown-menu
+                className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2"
+                onKeyDown={(e) =>
+                  handleDropdownKeyDown(e, () =>
+                    setIsModuleDropdownOpen(false),
+                  )
+                }
+              >
                 {/* ===== GROUP OPTIONS ===== */}
                 <div className="pb-2 border-b space-y-1">
                   {Object.entries(MODULE_GROUPS).map(([group, ids]) => {
@@ -543,6 +565,17 @@ export default function InstitutionAdminPage() {
                           selectedUserId === u.user_id ? null : u.user_id,
                         )
                       }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedUserId(
+                            selectedUserId === u.user_id ? null : u.user_id,
+                          );
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      title={`View details for ${u.name}`}
                     >
                       <td className="p-3">{u.name}</td>
                       <td>{u.email}</td>
@@ -588,6 +621,17 @@ export default function InstitutionAdminPage() {
                         selectedModuleId === m.id ? null : m.id,
                       )
                     }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedModuleId(
+                          selectedModuleId === m.id ? null : m.id,
+                        );
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    title={`View details for ${m.title}`}
                   >
                     <td className="p-3">{m.title}</td>
                     <td className="p-3">{m.skill_level || "—"}</td>
@@ -616,6 +660,7 @@ export default function InstitutionAdminPage() {
         <a
           href="/support/program"
           className="text-semcmeBlue hover:underline font-medium"
+          title="Go to program support form"
         >
           Program Support
         </a>{" "}
@@ -623,6 +668,7 @@ export default function InstitutionAdminPage() {
         <a
           href="/support/technical"
           className="text-semcmeBlue hover:underline font-medium"
+          title="Go to technical support form"
         >
           Technical Support
         </a>

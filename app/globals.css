@@ -135,7 +135,7 @@
    ============================================================ */
 @layer base {
   * {
-    font-family: "Lato", sans-serif !important;
+    font-family: "Lato", sans-serif;
     outline: none;
   }
 
@@ -157,10 +157,6 @@
   input::placeholder,
   textarea::placeholder {
     color: #4b5563;
-  }
-
-  .search-bar input::placeholder {
-    color: #02519c !important;
   }
 
   button,
@@ -190,60 +186,37 @@
     border-radius: 20px;
   }
 
-  .admin-dashboard-search {
-    border: 2px solid #02519c !important;
-  }
-
   select option {
-    white-space: normal !important;
-    word-wrap: break-word !important;
+    white-space: normal;
+    word-wrap: break-word;
   }
 }
 
-/* ============================================================
-   SEARCH BAR FIX — REMOVE BLUE OUTLINE + INTERNAL BORDER
-   ============================================================ */
-.search-bar input {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  outline: none !important;
+a:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
 }
 
-.search-bar input:focus {
-  border: none !important;
-  background: transparent !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* REMOVE BLACK BORDER AROUND LOGO + SEARCH CONTAINER */
-.search-bar,
-.search-bar *,
-.logo-container,
-.logo-container * {
-  outline: none !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-}
-
-a:focus,
-a:focus-visible,
+a:hover,
 a:active,
-a:visited,
-a:hover {
-  outline: none !important;
-  box-shadow: none !important;
-  -webkit-tap-highlight-color: transparent !important;
-  -webkit-focus-ring-color: transparent !important;
+a:visited {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-focus-ring-color: transparent;
 }
 
-.logo-container,
-.logo-container * {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-  -webkit-focus-ring-color: transparent !important;
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+label:focus-within {
+  outline: 2px solid #ffffff !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    0 0 0 3px #013e7a,
+    0 0 8px 3px rgba(1, 62, 122, 0.24) !important;
 }
 
 /* Hide scrollbar */

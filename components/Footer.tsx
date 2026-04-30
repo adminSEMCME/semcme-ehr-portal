@@ -1,5 +1,3 @@
-import { Link } from "lucide-react";
-
 export default function Footer() {
   return (
     <footer className="mt-16 border-t bg-slate-900 text-white">
@@ -77,6 +75,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
+              title="Visit the SEMCME website"
             >
               semcme.org
             </a>{" "}

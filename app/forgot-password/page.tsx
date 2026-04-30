@@ -83,6 +83,7 @@ export default function ForgotPasswordPage() {
             <a
               href="/login"
               className="text-semcmeBlue font-semibold hover:underline"
+              title="Go to sign in page"
             >
               Sign in
             </a>

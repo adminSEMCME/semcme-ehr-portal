@@ -104,12 +104,15 @@ export default function TechnicalSupportPage() {
             </label>
 
             <div className="flex items-center gap-3 mt-2">
-              <label className="cursor-pointer bg-[#02519c] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-900 transition">
+              <label
+                className="cursor-pointer bg-[#02519c] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-900 transition focus-within:outline-3 focus-within:outline-offset-3 focus-within:outline-white focus-within:ring-2 focus-within:ring-semcmeBlue"
+                title="Upload files for your support request"
+              >
                 Upload Files
                 <input
                   type="file"
                   multiple
-                  className="hidden"
+                  className="sr-only"
                   onChange={(e) => {
                     if (!e.target.files) return;
                     setFiles((prev) => [
