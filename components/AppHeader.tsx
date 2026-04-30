@@ -69,10 +69,11 @@ export default function AppHeader({
             </Link>
 
             <div ref={guidesRef} className="relative cursor-pointer">
-              <button
+              <Button
                 onClick={() => setGuidesOpen((prev) => !prev)}
-                className="text-white font-semibold text-md flex items-center gap-1 hover:underline"
+                variant="ghostInverted"
                 title="view website guides"
+                className="font-semibold hover:underline"
               >
                 Website Guides
                 <ChevronDown
@@ -80,14 +81,14 @@ export default function AppHeader({
                     guidesOpen ? "rotate-180" : ""
                   }`}
                 />
-              </button>
+              </Button>
 
               {guidesOpen && (
                 <div className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-34 overflow-hidden z-50">
                   <a
                     href="/demo"
                     title="User Guide"
-                    target="_blank"
+                    target="_self"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
                   >
@@ -96,7 +97,7 @@ export default function AppHeader({
 
                   <a
                     href="/pdfs/instructor-guide.pdf"
-                    target="_blank"
+                    target="_self"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
                     title="Instructor Guide"
@@ -111,34 +112,56 @@ export default function AppHeader({
           <>
             {/* 🔹 STANDARD ACTIONS */}
             {action === "back" && (
-              <button
+              <Button
                 onClick={() =>
                   window.history.length > 1 ? router.back() : router.push("/")
                 }
-                className="bg-white rounded-md shadow-sm px-4 py-2 flex items-center gap-2 text-semcmeBlue font-semibold hover:bg-slate-300 transition"
+                variant="subtle"
+                size="md"
                 title="Go back to previous page"
+                className="font-semibold"
               >
                 <ArrowLeft size={18} /> Back
-              </button>
+              </Button>
             )}
 
             {action === "register" && (
-              <Button asChild variant="semcme">
-                <Link href="/register" title="Go to registration page">
-                  Register
-                </Link>
-              </Button>
+              <div className="flex items-center gap-4">
+                <Button
+                  asChild
+                  variant="subtle"
+                  size="md"
+                  className="font-semibold"
+                >
+                  <Link href="/register" title="Go to registration page">
+                    Register
+                  </Link>
+                </Button>
+                <Button
+                  onClick={() =>
+                    window.history.length > 1 ? router.back() : router.push("/")
+                  }
+                  variant="subtle"
+                  size="md"
+                  title="Go back to previous page"
+                  className="font-semibold"
+                >
+                  <ArrowLeft size={18} /> Back
+                </Button>
+              </div>
             )}
 
             {action === "logout" && (
               <form action="/api/logout" method="post">
-                <button
+                <Button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded-md shadow hover:bg-red-700 transition font-semibold h-10"
+                  className="font-semibold shadow"
                   title="Log out of your account"
+                  variant="destructive"
+                  size="md"
                 >
                   Log Out
-                </button>
+                </Button>
               </form>
             )}
           </>

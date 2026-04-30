@@ -3,6 +3,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const toastVariants = cva(
   // Full-screen semi-transparent overlay with centered content
@@ -35,12 +36,13 @@ export function Toast({
           <p className="mt-2 text-gray-700 leading-relaxed">{description}</p>
         )}
 
-        <button
+        <Button
           onClick={onClose}
-          className="mt-6 rounded-lg bg-semcmeBlue px-5 py-2.5 text-white font-medium hover:bg-[#034f8c] transition"
+          size="md"
+          className="mt-6 rounded-lg font-medium hover:bg-[#034f8c]"
         >
           OK
-        </button>
+        </Button>
       </div>
     </div>
   );

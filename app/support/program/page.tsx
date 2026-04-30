@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 export default function ProgramSupportPage() {
-  const router = useRouter();
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -128,13 +123,14 @@ export default function ProgramSupportPage() {
               </label>
 
               {files.length > 0 && (
-                <button
+                <Button
                   type="button"
                   onClick={() => setFiles([])}
-                  className="text-sm text-red-600 hover:underline"
+                  variant="link"
+                  className="h-auto p-0 text-sm text-red-600"
                 >
                   Clear
-                </button>
+                </Button>
               )}
             </div>
 
@@ -146,15 +142,16 @@ export default function ProgramSupportPage() {
                     className="flex justify-between items-center bg-gray-50 border rounded-md px-3 py-2 text-sm"
                   >
                     <span className="truncate">{file.name}</span>
-                    <button
+                    <Button
                       type="button"
                       onClick={() =>
                         setFiles((prev) => prev.filter((_, idx) => idx !== i))
                       }
-                      className="text-red-500 text-xs"
+                      variant="link"
+                      className="h-auto p-0 text-xs text-red-600"
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
@@ -162,13 +159,14 @@ export default function ProgramSupportPage() {
           </div>
 
           {/* BUTTON */}
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#02519c] text-white py-3 rounded-lg font-semibold shadow hover:bg-blue-900 transition"
+            size="xl"
+            className="w-full font-semibold shadow"
           >
             {loading ? "Sending..." : "Send Program Support Request"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

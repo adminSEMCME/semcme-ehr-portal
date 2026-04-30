@@ -3,6 +3,7 @@
 
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { Button } from "@/components/ui/button";
 
 type Tab = "users" | "modules";
 
@@ -380,17 +381,15 @@ export default function InstitutionAdminPage() {
       {/* TABS */}
       <div className="flex gap-2 justify-center">
         {["users", "modules"].map((t) => (
-          <button
+          <Button
             key={t}
             onClick={() => setTab(t as Tab)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border ${
-              tab === t
-                ? "bg-semcmeBlue text-white border-semcmeBlue"
-                : "bg-white text-semcmeBlue border-semcmeBlue/40"
-            }`}
+            variant={tab === t ? "default" : "outline"}
+            size="sm"
+            className="rounded-full font-semibold"
           >
             {t[0].toUpperCase() + t.slice(1)}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -407,15 +406,17 @@ export default function InstitutionAdminPage() {
 
         {tab === "modules" && (
           <div ref={moduleDropdownRef} className="relative flex-1">
-            <button
+            <Button
               type="button"
               onClick={() => setIsModuleDropdownOpen((prev) => !prev)}
-              className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-left"
+              variant="dropdown"
+              size="md"
+              className="border border-gray-300 text-left"
             >
               {filterSelectedModules.length === 0
                 ? "Select Modules"
                 : `${filterSelectedModules.length} Module(s) Selected`}
-            </button>
+            </Button>
 
             {isModuleDropdownOpen && (
               <div className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2">
@@ -498,7 +499,7 @@ export default function InstitutionAdminPage() {
           </div>
         )}
 
-        <button
+        <Button
           onClick={() => {
             if (tab === "users") {
               exportUsers();
@@ -506,10 +507,10 @@ export default function InstitutionAdminPage() {
               exportModules();
             }
           }}
-          className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+          size="md"
         >
           Export CSV
-        </button>
+        </Button>
       </section>
 
       <p className="text-center text-sm text-gray-500 mb-1">

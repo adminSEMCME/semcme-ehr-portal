@@ -174,7 +174,8 @@ export default function PostAssessmentClient() {
         <Button
           onClick={handleSubmit}
           disabled={submitting}
-          className="w-full py-3 text-lg font-semibold bg-semcmeBlue hover:bg-blue-800"
+          size="lg"
+          className="w-full font-semibold"
         >
           {submitting ? "Submitting..." : "Submit Assessment"}
         </Button>

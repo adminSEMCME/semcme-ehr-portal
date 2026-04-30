@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
 
@@ -654,43 +655,35 @@ export default function DashboardPage() {
         {/* GROUP FILTER */}
         <div className="w-full flex justify-center lg:mb-8 mb-4 px-4">
           <div className="relative w-full max-w-md">
-            <button
+            <Button
               type="button"
               onClick={() => setGroupOpen((prev) => !prev)}
-              className="flex items-center justify-between gap-2 bg-white rounded-md shadow-sm px-4 py-2 text-sm text-semcmeBlue w-full h-10"
+              variant="dropdown"
+              size="md"
             >
               <span>Filter Modules: {groupFilter.toUpperCase()}</span>
-              <svg
+              <ChevronDown
                 className={`w-4 h-4 transition-transform ${
                   groupOpen ? "rotate-180" : ""
                 }`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+              />
+            </Button>
 
             {groupOpen && (
-              <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-md shadow-lg z-50">
+              <div className="absolute mt-2 w-full overflow-hidden bg-white border border-slate-200 rounded-md shadow-lg z-50">
                 {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
-                  <button
+                  <Button
                     key={g}
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
                       setGroupFilter(g);
                       setGroupOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-slate-100 rounded-md text-semcmeBlue"
+                    variant="ghost"
+                    className="h-auto w-full justify-start rounded-none px-4 py-2"
                   >
                     {g.toUpperCase()}
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -812,7 +805,8 @@ export default function DashboardPage() {
                   <div className="mt-auto flex flex-col gap-3">
                     <Button
                       onClick={() => handleStart(module)}
-                      className="module-start-btn w-full px-6 py-3 rounded-md font-semibold text-base"
+                      size="card"
+                      className="w-full font-semibold"
                     >
                       {status === "not_started"
                         ? "Start Module"
@@ -835,7 +829,9 @@ export default function DashboardPage() {
                                     `/post-assessment?module_id=${module.id}`,
                                   )
                                 }
-                                className="px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                                variant="assessment"
+                                size="card"
+                                className="w-full px-3 text-sm font-semibold"
                               >
                                 Post Assessment
                               </Button>
@@ -844,7 +840,9 @@ export default function DashboardPage() {
                                 onClick={() =>
                                   handleGenerateCertificate(module.id)
                                 }
-                                className="px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
+                                variant="warning"
+                                size="card"
+                                className="w-full px-3 text-sm font-semibold"
                               >
                                 Generate Certificate
                               </Button>
@@ -855,7 +853,11 @@ export default function DashboardPage() {
                                 rel="noopener noreferrer"
                                 className="w-full"
                               >
-                                <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                                <Button
+                                  variant="success"
+                                  size="card"
+                                  className="w-full px-3 text-sm font-semibold"
+                                >
                                   Download Certificate
                                 </Button>
                               </a>
@@ -867,7 +869,9 @@ export default function DashboardPage() {
                                 setActiveCEModule(module);
                                 setShowCEModal(true);
                               }}
-                              className="px-6 py-3 rounded-md font-semibold text-base bg-purple-600 text-white hover:bg-purple-700"
+                              variant="accent"
+                              size="card"
+                              className="w-full px-3 text-sm font-semibold"
                             >
                               Collect CE Credits
                             </Button>
@@ -882,7 +886,9 @@ export default function DashboardPage() {
                                     `/post-assessment?module_id=${module.id}`,
                                   )
                                 }
-                                className="w-full px-6 py-3 rounded-md font-semibold text-base bg-blue-600 text-white hover:bg-blue-700"
+                                variant="assessment"
+                                size="card"
+                                className="w-full font-semibold"
                               >
                                 Post Assessment
                               </Button>
@@ -893,7 +899,9 @@ export default function DashboardPage() {
                                 onClick={() =>
                                   handleGenerateCertificate(module.id)
                                 }
-                                className="w-full px-6 py-3 rounded-md font-semibold text-base bg-yellow-600 text-white hover:bg-yellow-700"
+                                variant="warning"
+                                size="card"
+                                className="w-full font-semibold"
                               >
                                 Generate Certificate
                               </Button>
@@ -906,7 +914,11 @@ export default function DashboardPage() {
                                 rel="noopener noreferrer"
                                 className="w-full"
                               >
-                                <Button className="w-full px-6 py-3 rounded-md font-semibold text-base bg-green-600 text-white hover:bg-green-700">
+                                <Button
+                                  variant="success"
+                                  size="card"
+                                  className="w-full font-semibold"
+                                >
                                   Download Certificate
                                 </Button>
                               </a>
@@ -961,7 +973,6 @@ export default function DashboardPage() {
 
                     setShowCEInfoModal(false);
                   }}
-                  className="bg-semcmeBlue text-white hover:bg-blue-800"
                 >
                   Got It
                 </Button>
@@ -985,12 +996,13 @@ export default function DashboardPage() {
                 and it will not appear again for this module.
               </p>
 
-              <button
+              <Button
                 onClick={() => setShowPDF(true)}
-                className="inline-block mb-4 text-blue-600 underline font-medium"
+                variant="link"
+                className="mb-4 h-auto p-0 text-blue-600 font-medium"
               >
                 {activeAccredModule.title} Accreditation Statement (PDF)
-              </button>
+              </Button>
 
               <div className="flex items-center gap-2 mb-4">
                 <input
@@ -1017,7 +1029,6 @@ export default function DashboardPage() {
 
                 <Button
                   onClick={handleConfirmAccreditation}
-                  className="bg-semcmeBlue text-white hover:bg-blue-800"
                 >
                   Continue to Module
                 </Button>
@@ -1033,12 +1044,13 @@ export default function DashboardPage() {
                   Accreditation Statement
                 </h3>
 
-                <button
+                <Button
                   onClick={() => setShowPDF(false)}
+                  variant="ghost"
                   className="text-gray-500 hover:text-black"
                 >
                   Close
-                </button>
+                </Button>
               </div>
 
               <iframe
@@ -1078,7 +1090,6 @@ export default function DashboardPage() {
 
                     setShowAnnouncement(false);
                   }}
-                  className="bg-semcmeBlue text-white hover:bg-blue-800"
                 >
                   Got It
                 </Button>
@@ -1150,7 +1161,7 @@ export default function DashboardPage() {
                     setShowCEModal(false);
                     setActiveCEModule(null);
                   }}
-                  className="bg-purple-600 text-white hover:bg-purple-700"
+                  variant="accent"
                 >
                   Go to CME Tracker
                 </Button>

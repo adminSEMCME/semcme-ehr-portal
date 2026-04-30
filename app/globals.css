@@ -168,17 +168,7 @@
   a,
   input[type="submit"],
   input[type="button"] {
-    cursor: pointer !important;
-  }
-
-  .back-btn {
-    @apply inline-flex items-center gap-2 px-5 py-2 rounded-md font-medium border bg-white shadow-sm;
-    color: #02519c !important;
-    border-color: #02519c !important;
-    position: absolute !important;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 50;
+    cursor: pointer;
   }
 }
 
@@ -187,80 +177,17 @@
    ============================================================ */
 @layer utilities {
   .bg-semcmeBlue {
-    background-color: #02519c !important;
+    background-color: #02519c;
   }
 
   .text-semcmeBlue {
-    color: #02519c !important;
-  }
-
-  .signin-submit-btn,
-  .choose-cme-btn,
-  .register-submit-btn,
-  .module-start-btn {
-    background-color: #02519c !important;
-    color: #fff !important;
-    border: 2px solid #02519c !important;
-  }
-
-  .signin-submit-btn:hover,
-  .choose-cme-btn:hover,
-  .register-submit-btn:hover,
-  .module-start-btn:hover {
-    background-color: #fff !important;
-    color: #02519c !important;
-    transform: scale(1.02);
-  }
-
-  .choose-noncme-btn {
-    background-color: #fff !important;
-    color: #02519c !important;
-    border: 2px solid #d3e3f5 !important;
-  }
-
-  .choose-noncme-btn:hover {
-    background-color: #e9f3ff !important;
-    border-color: #b7d4f8 !important;
+    color: #02519c;
   }
 
   .glow-highlight {
     box-shadow: 0 0 25px 10px rgba(255, 255, 255, 0.9);
     transform: scale(1.02);
     border-radius: 20px;
-  }
-
-  .landing-signin-btn {
-    background-color: #fff !important;
-    color: #02519c !important;
-  }
-
-  .landing-signin-btn:hover {
-    background-color: #e9f3ff !important;
-    border-color: #013e7a !important;
-    transform: scale(1.04);
-  }
-
-  .landing-register-btn {
-    background-color: #02519c !important;
-    color: #ffffff !important;
-  }
-
-  .landing-register-btn:hover {
-    background-color: #ffffff !important;
-    color: #02519c !important;
-    transform: scale(1.04);
-  }
-
-  .module-signin-btn {
-    background-color: #fff !important;
-    color: #02519c !important;
-    border: 1.5px solid #02519c !important;
-    border-radius: 8px;
-  }
-
-  .module-signin-btn:hover {
-    background-color: #e9f3ff !important;
-    transform: scale(1.04);
   }
 
   .admin-dashboard-search {

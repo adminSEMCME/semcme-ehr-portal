@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function PostAssessmentsTab({
   assessments,
@@ -225,12 +226,12 @@ export default function PostAssessmentsTab({
           ))}
         </select>
 
-        <button
+        <Button
           onClick={exportAllResponsesCSV}
-          className="px-4 py-2 bg-semcmeBlue text-white rounded-md text-sm font-semibold hover:bg-blue-800"
+          className="font-semibold"
         >
           Export All Responses
-        </button>
+        </Button>
       </div>
 
       {moduleEntries
@@ -342,12 +343,12 @@ export default function PostAssessmentsTab({
                   Raw Submissions
                 </h3>
 
-                <button
+                <Button
                   onClick={() => exportCSV(moduleId, data.submissions)}
-                  className="px-4 py-2 bg-semcmeBlue text-white rounded-md text-sm font-semibold hover:bg-blue-800"
+                  className="font-semibold"
                 >
                   Export CSV
-                </button>
+                </Button>
               </div>
 
               <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">

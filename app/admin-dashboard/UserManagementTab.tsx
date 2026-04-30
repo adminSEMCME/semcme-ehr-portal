@@ -116,12 +116,15 @@ export default function UserManagementTab() {
 
                 {/* DELETE BUTTON */}
                 <td className="text-center">
-                  <button
+                  <Button
                     onClick={() => setSelectedUser(user)}
-                    className="text-red-600 hover:text-red-800 font-bold text-lg"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="text-red-600 hover:text-red-800"
+                    aria-label={`Delete ${user.email}`}
                   >
                     ✕
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -167,7 +170,7 @@ export default function UserManagementTab() {
 
               <Button
                 onClick={handleDelete}
-                className="bg-red-600 text-white hover:bg-red-700"
+                variant="destructive"
                 disabled={loading}
               >
                 {loading ? "Deleting..." : "Delete"}

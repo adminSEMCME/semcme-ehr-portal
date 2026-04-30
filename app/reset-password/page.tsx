@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Eye, EyeOff } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -120,14 +121,16 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="border p-3 rounded-lg w-full pr-10"
               />
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-semcmeBlue"
+                variant="ghost"
+                size="icon-sm"
+                className="absolute inset-y-1 right-2 text-gray-500 hover:text-semcmeBlue"
                 aria-label={showNew ? "Hide password" : "Show password"}
               >
                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+              </Button>
             </div>
 
             {/* === Confirm Password === */}
@@ -140,25 +143,28 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirm(e.target.value)}
                 className="border p-3 rounded-lg w-full pr-10"
               />
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-semcmeBlue"
+                variant="ghost"
+                size="icon-sm"
+                className="absolute inset-y-1 right-2 text-gray-500 hover:text-semcmeBlue"
                 aria-label={showConfirm ? "Hide password" : "Show password"}
               >
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+              </Button>
             </div>
 
             {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
 
-            <button
+            <Button
               type="submit"
               disabled={setting}
-              className="signin-submit-btn w-full py-3 rounded-md font-semibold transition"
+              size="xl"
+              className="w-full font-semibold"
             >
               {setting ? "Updating..." : "Update Password"}
-            </button>
+            </Button>
           </form>
         )}
       </div>

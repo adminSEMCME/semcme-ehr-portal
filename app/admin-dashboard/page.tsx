@@ -6,6 +6,7 @@ import React from "react";
 import PostAssessmentsTab from "./PostAssessmentsTab";
 import AnnouncementsTab from "./AnnouncementsTab";
 import UserManagementTab from "./UserManagementTab";
+import { Button } from "@/components/ui/button";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -636,21 +637,19 @@ export default function AdminDashboardPage() {
           "announcements",
           "userManagement",
         ].map((t) => (
-          <button
+          <Button
             key={t}
             onClick={() => setTab(t as any)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold border ${
-              tab === t
-                ? "bg-semcmeBlue text-white border-semcmeBlue"
-                : "bg-white text-semcmeBlue border-semcmeBlue/40"
-            }`}
+            variant={tab === t ? "default" : "outline"}
+            size="sm"
+            className="rounded-full font-semibold"
           >
             {t === "adminApprovals"
               ? "Admin Approvals"
               : t === "userManagement"
                 ? "User Management"
                 : t[0].toUpperCase() + t.slice(1)}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -718,12 +717,12 @@ export default function AdminDashboardPage() {
 
           {/* EXPORT BUTTON */}
           <div className="flex justify-end mb-2 pr-1">
-            <button
+            <Button
               onClick={exportUsers}
-              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+              size="md"
             >
               Export Users CSV
-            </button>
+            </Button>
           </div>
 
           <p className="text-center text-sm text-gray-500 mb-1">
@@ -818,15 +817,17 @@ export default function AdminDashboardPage() {
             </select>
 
             <div ref={moduleDropdownRef} className="relative flex-1">
-              <button
+              <Button
                 type="button"
                 onClick={() => setIsModuleDropdownOpen((prev) => !prev)}
-                className="w-full px-3 py-2 rounded-md border border-gray-300 bg-white text-left"
+                variant="dropdown"
+                size="md"
+                className="border border-gray-300 text-left"
               >
                 {filterSelectedModules.length === 0
                   ? "Select Modules"
                   : `${filterSelectedModules.length} Module(s) Selected`}
-              </button>
+              </Button>
 
               {isModuleDropdownOpen && (
                 <div className="absolute z-30 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto p-3 space-y-2">
@@ -855,12 +856,12 @@ export default function AdminDashboardPage() {
           </section>
 
           <div className="flex justify-end mb-2">
-            <button
+            <Button
               onClick={exportModules}
-              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+              size="md"
             >
               Export Modules CSV
-            </button>
+            </Button>
           </div>
 
           <section className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
@@ -916,12 +917,12 @@ export default function AdminDashboardPage() {
       {tab === "institutions" && (
         <>
           <div className="flex justify-end mb-2">
-            <button
+            <Button
               onClick={exportInstitutions}
-              className="px-4 py-2 bg-semcmeBlue text-white rounded-md hover:bg-semcmeBlue/90"
+              size="md"
             >
               Export Institutions CSV
-            </button>
+            </Button>
           </div>
 
           <section className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
@@ -1386,19 +1387,19 @@ function AdminSection({
 
               {status === "pending" && (
                 <div className="flex gap-3 pt-3">
-                  <button
+                  <Button
                     onClick={() => approve?.(a.id)}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                    variant="success"
                   >
                     Approve
-                  </button>
+                  </Button>
 
-                  <button
+                  <Button
                     onClick={() => deny?.(a.id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    variant="destructive"
                   >
                     Deny
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>

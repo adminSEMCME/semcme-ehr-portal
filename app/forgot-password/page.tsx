@@ -3,15 +3,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import { ArrowLeft } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
@@ -70,13 +66,14 @@ export default function ForgotPasswordPage() {
 
             {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
 
-            <button
+            <Button
               type="submit"
               disabled={submitting}
-              className="signin-submit-btn w-full py-3 rounded-md font-semibold transition"
+              size="xl"
+              className="w-full font-semibold"
             >
               {submitting ? "Sending..." : "Send Reset Link"}
-            </button>
+            </Button>
           </form>
         )}
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function AnnouncementsTab() {
   const [title, setTitle] = useState("");
@@ -240,13 +241,13 @@ export default function AnnouncementsTab() {
         )}
 
         {/* BUTTON */}
-        <button
+        <Button
           onClick={handleSend}
           disabled={loading}
-          className="w-full bg-semcmeBlue text-white py-2 rounded-md hover:bg-blue-800 transition"
+          className="w-full"
         >
           {loading ? "Sending..." : "Send Announcement"}
-        </button>
+        </Button>
       </div>
 
       {/* ================= ANNOUNCEMENTS LIST ================= */}
@@ -295,12 +296,13 @@ export default function AnnouncementsTab() {
                     </p>
                   </div>
 
-                  <button
+                  <Button
                     onClick={() => handleDelete(a.id)}
-                    className="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    variant="destructive"
+                    size="sm"
                   >
                     Remove
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}

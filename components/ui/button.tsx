@@ -9,25 +9,41 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        semcme: "bg-white text-[#02519c] hover:bg-[#02519c] hover:text-white",
-        destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        default: "bg-semcmeBlue text-white hover:bg-[#013e7a]",
+        inverted: "bg-white text-semcmeBlue hover:bg-slate-100",
+        subtle:
+          "bg-slate-200 text-semcmeBlue shadow-sm hover:bg-white hover:scale-[1.02]",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border border-[#02519c] bg-transparent text-semcmeBlue shadow-xs hover:border-[#02519c] hover:bg-[#02519c] hover:text-white hover:shadow-xs dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+          "bg-transparent text-semcmeBlue hover:bg-slate-100 hover:text-semcmeBlue",
+        ghostInverted:
+          "bg-transparent text-white hover:bg-white/10 hover:text-white",
         link: "text-primary underline-offset-4 hover:underline",
+        destructive: "bg-red-600 text-white hover:bg-red-800",
+        success: "bg-green-600 text-white hover:bg-green-700",
+        warning: "bg-yellow-600 text-white hover:bg-yellow-700",
+        accent: "bg-purple-600 text-white hover:bg-purple-700",
+        assessment: "bg-blue-600 text-white hover:bg-blue-700",
+        dropdown:
+          "w-full justify-between bg-white text-semcmeBlue shadow-sm hover:bg-slate-100",
+        unstyled: "",
       },
       size: {
+        xs: "h-7 rounded-md gap-1 px-2 text-xs has-[>svg]:px-1.5",
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
+        md: "h-10 px-5 py-2.5 has-[>svg]:px-4",
+        lg: "h-11 px-6 py-3 text-base has-[>svg]:px-4",
+        xl: "h-13 px-8 py-3 text-lg has-[>svg]:px-4",
+        card: "h-9 px-6 py-3 text-base has-[>svg]:px-4",
         icon: "size-9",
+        "icon-xs": "size-7",
         "icon-sm": "size-8",
         "icon-lg": "size-10",
+        "icon-xl": "size-12",
       },
     },
     defaultVariants: {

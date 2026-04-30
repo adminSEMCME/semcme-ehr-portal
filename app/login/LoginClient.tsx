@@ -3,11 +3,9 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import { ArrowLeft } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -141,13 +139,14 @@ export default function LoginClient() {
             </a>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="signin-submit-btn w-full py-3 rounded-md font-semibold transition"
+            size="xl"
+            className="w-full font-semibold"
           >
             {loading ? "Signing in..." : "Sign In"}
-          </button>
+          </Button>
         </form>
 
         <p className="text-gray-600 mt-6 text-sm text-center">

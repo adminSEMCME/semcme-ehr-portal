@@ -3,11 +3,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
-import { ArrowLeft } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
+import { Button } from "@/components/ui/button";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -659,21 +657,14 @@ export default function RegisterClient() {
           )}
 
           {/* SUBMIT BUTTON */}
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="
-              w-full py-3 mt-4 rounded-lg font-semibold
-              bg-[#02519c] text-white
-              border border-transparent
-              shadow-md hover:shadow-lg
-              hover:bg-gray-100 hover:text-[#02519c]
-              active:scale-[0.98]
-              transition-all duration-200
-            "
+            size="xl"
+            className="w-full mt-4 font-semibold shadow-md hover:shadow-lg active:scale-[0.98]"
           >
             {loading ? "Registering..." : "Register"}
-          </button>
+          </Button>
         </form>
 
         <p className="text-gray-600 mt-8 text-sm text-center">

@@ -379,6 +379,8 @@ export default function DemoDashboard() {
                     <Button
                       onClick={() => handleStart(module)}
                       className="w-full"
+                      variant="default"
+                      title="view module"
                     >
                       {isComplete ? "Review Module" : "Start Module"}
                     </Button>
@@ -387,21 +389,27 @@ export default function DemoDashboard() {
                       <>
                         <Button
                           onClick={() => setActiveModal("assessment")}
-                          className="bg-blue-600 text-white"
+                          variant="assessment"
+                          className="w-full"
+                          title="view post assessment information"
                         >
                           Post Assessment
                         </Button>
 
                         <Button
                           onClick={() => setActiveModal("ce")}
-                          className="bg-purple-600 text-white"
+                          variant="accent"
+                          className="w-full"
+                          title="view continuing education credit information"
                         >
                           Collect CE Credits
                         </Button>
 
                         <Button
                           onClick={() => setActiveModal("certificate")}
-                          className="bg-green-600 text-white"
+                          variant="success"
+                          className="w-full"
+                          title="view certificate information"
                         >
                           Download Certificate
                         </Button>
@@ -425,12 +433,15 @@ export default function DemoDashboard() {
               onClick={(e) => e.stopPropagation()} // 👈 prevents closing when clicking inside
             >
               {/* CLOSE BUTTON (X) */}
-              <button
+              <Button
                 onClick={() => setActiveModal(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black text-lg font-bold"
+                variant="ghost"
+                size="icon-sm"
+                className="absolute top-3 right-3 text-gray-500 hover:text-black"
+                title="exit"
               >
                 ✕
-              </button>
+              </Button>
 
               {/* TITLE */}
               <h2 className="text-xl font-semibold mb-4 text-semcmeBlue">
@@ -455,7 +466,7 @@ export default function DemoDashboard() {
               <div className="flex justify-end">
                 <Button
                   onClick={() => setActiveModal(null)}
-                  className="bg-semcmeBlue text-white hover:bg-blue-800"
+                  title="close"
                 >
                   Got It
                 </Button>

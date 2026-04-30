@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Search, ChevronDown } from "lucide-react";
+import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../Footer";
 import AppHeader from "../AppHeader";
 
@@ -269,15 +269,22 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
               <div className="mt-4 flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center items-center w-full">
                 <Link href="/login">
-                  <button className="landing-signin-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+                  <Button
+                    variant="inverted"
+                    size="xl"
+                    className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
+                  >
                     Sign In
-                  </button>
+                  </Button>
                 </Link>
 
                 <Link href="/register">
-                  <button className="landing-register-btn min-w-[180px] px-8 py-3 rounded-md text-lg font-semibold shadow-md hover:scale-105 hover:shadow-lg transition-all duration-300">
+                  <Button
+                    size="xl"
+                    className="min-w-[180px] font-semibold shadow-md hover:scale-[1.02]"
+                  >
                     Register
-                  </button>
+                  </Button>
                 </Link>
               </div>
 
@@ -290,71 +297,50 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             </div>
           </div>
 
-          <button
+          <Button
             onClick={prevSlide}
+            variant="inverted"
+            size="icon-lg"
+            aria-label="Previous slide"
             className="
             hidden sm:flex
             absolute 
             left-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white
             z-20 
             h-12 w-12
-            rounded-full
-            items-center justify-center
+            rounded-full 
             shadow-lg
-            transition
           "
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="w-5 h-5 text-semcmeBlue"
-              aria-hidden
-            >
-              <path
-                d="M14 6l-6 6 6 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                transform="translate(-0.75, 0)"
-              />
-            </svg>
-          </button>
+            <ChevronLeft className="text-semcmeBlue" />
+          </Button>
 
-          <button
+          <Button
             onClick={nextSlide}
+            variant="inverted"
+            size="icon-lg"
+            aria-label="Next slide"
             className="
             hidden sm:flex
             absolute 
             right-8 top-1/2 -translate-y-1/2
-            bg-white/90 hover:bg-white
             z-20 
             h-12 w-12
             rounded-full
-            items-center justify-center
             shadow-lg
-            transition
           "
           >
-            <svg viewBox="0 0 24 24" className="w-5 h-5 text-semcmeBlue">
-              <path
-                d="M10 6l6 6-6 6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.75"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                transform="translate(0.4, 0)"
-              />
-            </svg>
-          </button>
+            <ChevronRight className="text-semcmeBlue" />
+          </Button>
 
           <div className="absolute bottom-1 sm:bottom-4 w-full flex justify-center gap-2 z-20">
             {images.map((_, i) => (
-              <button
+              <Button
                 key={i}
                 onClick={() => setIndex(i)}
+                variant="unstyled"
+                size="icon-xs"
+                aria-label={`Go to slide ${i + 1}`}
                 className={`h-2 w-2 rounded-full transition-all ${
                   i === index ? "bg-white scale-110" : "bg-white/50"
                 }`}
@@ -382,21 +368,23 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               className="relative w-full max-w-md lg:max-w-sm"
               title="filter modules by target audience"
             >
-              <button
+              <Button
                 type="button"
                 onClick={() => setGroupOpen((prev) => !prev)}
-                className="flex items-center justify-between gap-2 bg-white rounded-sm shadow-sm px-4 py-3 h-11 w-full text-sm text-semcmeBlue hover:bg-slate-100 transition"
+                variant="dropdown"
+                size="md"
+                className="h-11 rounded-sm"
               >
                 <span className="font-medium">
                   Filter Modules: {groupFilter.toUpperCase()}
                 </span>
                 <ChevronDown className="w-4 h-4" />
-              </button>
+              </Button>
 
               {groupOpen && (
                 <div className="absolute mt-2 w-full bg-white border border-slate-200 rounded-sm shadow-lg z-50 overflow-hidden">
                   {(["all", "ume", "gme", "cme"] as GroupFilter[]).map((g) => (
-                    <button
+                    <Button
                       key={g}
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => {
@@ -404,10 +392,11 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                         setGroupOpen(false);
                         setSearchTerm("");
                       }}
-                      className="block w-full text-left px-4 py-3 text-sm text-semcmeBlue hover:bg-slate-100"
+                      variant="ghost"
+                      className="h-auto w-full justify-start rounded-none px-4 py-3"
                     >
                       {g.toUpperCase()}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -432,17 +421,20 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                     placeholder="Search modules..."
                     className="flex-1 bg-transparent text-sm text-semcmeBlue placeholder:text-semcmeBlue"
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setIsOpen((prev) => !prev)}
-                    className="p-1 rounded-md hover:bg-slate-100"
+                    variant="ghost"
+                    size="icon-sm"
+                    className="size-7"
+                    aria-label="Toggle module search results"
                   >
                     <ChevronDown
                       className={`w-4 h-4 text-semcmeBlue transition-transform ${
                         isOpen ? "rotate-180" : ""
                       }`}
                     />
-                  </button>
+                  </Button>
                 </div>
 
                 {isOpen && (
@@ -453,14 +445,15 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                       </div>
                     ) : (
                       filtered.map((m) => (
-                        <button
+                        <Button
                           key={m.id}
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => handleSelect(m.id, m.title)}
-                          className="w-full text-left px-3 py-2 hover:bg-slate-100 text-semcmeBlue"
+                          variant="ghost"
+                          className="h-auto w-full justify-start whitespace-normal rounded-none px-3 py-2 text-left"
                         >
                           {m.title}
-                        </button>
+                        </Button>
                       ))
                     )}
                   </div>
@@ -496,17 +489,19 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                       {mod.description}
                     </p>
 
-                    <Link
-                      href={`/login?module=${mod.id}`}
-                      title="Go to login page"
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="ml-5 mb-2 self-start text-xs"
                     >
-                      <Button
-                        variant="outline"
-                        className="module-signin-btn ml-5 px-3 py-1 mb-2 text-xs"
+                      <Link
+                        href={`/login?module=${mod.id}`}
+                        title="Go to login page"
                       >
                         View Module
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </motion.div>
                 );
               })}
