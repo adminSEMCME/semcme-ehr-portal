@@ -21,6 +21,7 @@ const ALLOWED_INSTITUTIONS = [
   "McLaren Health Care",
   "Michigan State University CHM",
   "Oakland University William Beaumont SOM",
+  "Southeast Michigan Center for Medical Education",
   "Trinity Health Ann Arbor",
   "Trinity Health Livonia",
   "Trinity Health Oakland",
@@ -338,8 +339,6 @@ export default function RegisterClient() {
     border border-gray-300 
     bg-gray-50 
     focus:bg-white 
-    focus:border-2 
-    focus:border-semcmeBlue 
     focus:outline-none 
     focus:ring-0
     transition-all duration-200

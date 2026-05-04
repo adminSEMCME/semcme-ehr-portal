@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
-import { motion } from "framer-motion";
 
 interface Module {
   id: string;
@@ -121,8 +120,8 @@ export default function DemoDashboard() {
         </div>
 
         {/* DEMO DESCRIPTION SECTION */}
-        <div className="max-w-6xl mx-auto mb-10">
-          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg pt-6 md:pt-8 text-gray-700 text-sm md:text-base leading-relaxed">
+        <div className="w-full max-w-7xl mx-auto mb-10 px-4">
+          <div className="bg-white/95 rounded-2xl shadow-lg pt-6 md:pt-8 text-gray-700 text-sm md:text-base leading-relaxed">
             {/* TITLE */}
             <div
               onClick={() => setIsExpanded((prev) => !prev)}
@@ -148,38 +147,42 @@ export default function DemoDashboard() {
             </div>
 
             {/* COLLAPSIBLE CONTENT */}
-            <motion.div
-              initial={false}
-              animate={{ height: isExpanded ? "auto" : 120 }}
-              transition={{ duration: 0.32, ease: "easeInOut" }}
-              className="overflow-hidden"
-              style={{ willChange: "height" }}
+            <div
+              className={`relative ${
+                isExpanded ? "overflow-visible" : "max-h-[120px] overflow-hidden"
+              }`}
             >
-              {/* PARAGRAPHS */}
-              <div className="space-y-4 max-w-5xl mx-auto">
-                <p>
-                  Improving Documentation for Better Outcomes educational
-                  curriculum is designed to help practicing physicians, faculty,
-                  learners, and other healthcare professionals strengthen their
-                  documentation skills within electronic health records (EHRs).
-                  As EHRs have become the central link across every area of
-                  clinical practice, accurate and meaningful documentation plays
-                  a critical role in improving patient safety, supporting
-                  quality measures, enhancing communication, and promoting more
-                  cost-effective care. By improving the quality of data entered
-                  into the EHR, clinicians also improve the reliability of the
-                  data used to guide decisions, measure outcomes, and ultimately
-                  deliver better patient care.
-                </p>
+              <div
+                className={`transition-opacity duration-200 ${
+                  isExpanded ? "opacity-100" : "opacity-95"
+                }`}
+              >
+                {/* PARAGRAPHS */}
+                <div className="space-y-4 max-w-5xl mx-auto">
+                  <p>
+                    Improving Documentation for Better Outcomes educational
+                    curriculum is designed to help practicing physicians,
+                    faculty, learners, and other healthcare professionals
+                    strengthen their documentation skills within electronic
+                    health records (EHRs). As EHRs have become the central link
+                    across every area of clinical practice, accurate and
+                    meaningful documentation plays a critical role in improving
+                    patient safety, supporting quality measures, enhancing
+                    communication, and promoting more cost-effective care. By
+                    improving the quality of data entered into the EHR,
+                    clinicians also improve the reliability of the data used to
+                    guide decisions, measure outcomes, and ultimately deliver
+                    better patient care.
+                  </p>
 
-                <p>
-                  This curriculum offers a continuum of learning modules
-                  tailored to all stages of medical education and clinical
-                  practice, from undergraduate medical students to residents,
-                  fellows, and experienced practicing clinicians. The program is
-                  organized into three progressive learning levels:
-                </p>
-              </div>
+                  <p>
+                    This curriculum offers a continuum of learning modules
+                    tailored to all stages of medical education and clinical
+                    practice, from undergraduate medical students to residents,
+                    fellows, and experienced practicing clinicians. The program
+                    is organized into three progressive learning levels:
+                  </p>
+                </div>
 
               {/* LEARNING LEVELS */}
               <div className="mt-4 max-w-4xl mx-auto">
@@ -247,7 +250,7 @@ export default function DemoDashboard() {
               </div>
 
               {/* AVAILABLE MODULES */}
-              <div className="mt-6 px-10">
+              <div className="mt-4 max-w-5xl mx-auto">
                 <h3 className="text-lg font-semibold text-semcmeBlue text-center mb-4">
                   Available Modules
                 </h3>
@@ -304,13 +307,17 @@ export default function DemoDashboard() {
               </div>
 
               {/* FOOTER TEXT */}
-              <p className="mt-4 p-8 text-center text-gray-700 text-xs md:text-sm">
+              <p className="mt-4 max-w-5xl mx-auto pb-8 text-center text-gray-700 text-xs md:text-sm">
                 The Educator Demo Site provides a sample of the modules for
                 review. For further information, or to request information on
                 subscription to the complete series of modules, please contact
                 njuzych@semcme.org
               </p>
-            </motion.div>
+              </div>
+              {!isExpanded && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-white/0 to-white/95" />
+              )}
+            </div>
           </div>
         </div>
 

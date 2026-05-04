@@ -2223,7 +2223,7 @@
       &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
         &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g. labs, imaging.&amp;#xA;"&gt;
+      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g., labs, imaging.&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;
@@ -2279,7 +2279,7 @@
       &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
         &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g. tele visit, phone, face to face).&amp;#xA;"&gt;
+      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g., tele visit, phone, face to face).&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;
@@ -2970,7 +2970,7 @@
       &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
         &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g. labs, imaging.&amp;#xA;"&gt;
+      &lt;Span Text="Fight the “note bloat” – You only need to document a pertinent R.O.S. and physical exam. Avoid bringing unnecessary data into your notes - e.g., labs, imaging.&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;
@@ -3026,7 +3026,7 @@
       &lt;Style FlowDirection="LeftToRight" LeadingMargin="0" TrailingMargin="0" FirstLineMargin="0" Justification="Left" LineSpacingRule="Single" LineSpacing="20" SpacingBefore="0" SpacingAfter="0"&gt;
         &lt;ListStyle ListType="None" ListTypeFormat="Parentheses" Color="#000000" BulletFont="Arial" /&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g. tele visit, phone, face to face).&amp;#xA;"&gt;
+      &lt;Span Text="Do not get in complicated messages with patients on the portal.  For complex conversations, request they book a virtual or in-person appointment.  Use staff to help you identify complicated portal questions – asking them to book an appointment if needed. This might be something like new back pain or something you’ve not seen them for previously. Some clinicians are starting to adopt a practice of charging for online interactions whether on the portal or a virtual appointment. Asynchronous interactions can be billed, but they are likely not as efficient, safe, or effective as virtual synchronous visits regardless of the format (e.g., tele visit, phone, face to face).&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;

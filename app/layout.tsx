@@ -3,6 +3,7 @@ import "./globals.css";
 import "@fontsource/lato/400.css";
 import "@fontsource/lato/700.css";
 import { GlobalToast } from "@/components/GlobalToast";
+import { KeyboardFocusMode } from "@/components/KeyboardFocusMode";
 
 export const metadata: Metadata = {
   title: "SEMCME EHR Learning Portal",
@@ -18,6 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased text-gray-900 min-h-screen overflow-x-hidden">
+        <KeyboardFocusMode />
+
         {/* === Main Content === */}
         <main className="relative z-10 w-full max-w-none">{children}</main>
 

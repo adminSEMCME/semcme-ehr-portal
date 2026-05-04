@@ -2183,7 +2183,7 @@
           &lt;BulletPicture Size="0x0" /&gt;
         &lt;/ListStyle&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Complete complex orders requiring changes in doses or frequency over time (e.g. taper)&amp;#xA;"&gt;
+      &lt;Span Text="Complete complex orders requiring changes in doses or frequency over time (e.g., taper)&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;
@@ -2193,7 +2193,7 @@
           &lt;BulletPicture Size="0x0" /&gt;
         &lt;/ListStyle&gt;
       &lt;/Style&gt;
-      &lt;Span Text="Undertake a reasoned approach to placing orders (e.g. wait for contingent results before ordering more tests)&amp;#xA;"&gt;
+      &lt;Span Text="Undertake a reasoned approach to placing orders (e.g., wait for contingent results before ordering more tests)&amp;#xA;"&gt;
         &lt;Style FontSize="11" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;

@@ -1022,9 +1022,11 @@ export default function DashboardPage() {
               <Button
                 onClick={() => setShowPDF(true)}
                 variant="link"
-                className="mb-4 h-auto p-0 text-blue-600 font-medium"
+                className="mb-4 flex h-auto w-full max-w-full items-start justify-start whitespace-normal p-0 text-left font-medium leading-snug text-blue-600"
               >
-                {activeAccredModule.title} Accreditation Statement (PDF)
+                <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+                  {activeAccredModule.title} Accreditation Statement (PDF)
+                </span>
               </Button>
 
               <div className="flex items-center gap-2 mb-4">

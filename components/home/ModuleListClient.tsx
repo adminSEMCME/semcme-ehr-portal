@@ -3,7 +3,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
@@ -30,6 +29,9 @@ const HERO_IMAGES = [
   "/images/hero6.jpg",
   "/images/hero7.jpg",
 ];
+
+const HERO_FADE_DURATION = 1000;
+const HERO_SLIDE_DELAY = 5000;
 
 const sortModulesForGroup = (
   modules: any[],
@@ -132,37 +134,48 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
 
   const images = HERO_IMAGES;
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
+  const [fadePreviousOut, setFadePreviousOut] = useState(false);
 
-  const FADE_DURATION = 2500; // must match CSS transition
-  const SLIDE_DELAY = 5000; // how long image stays visible after fade
+  const goToSlide = useCallback((nextIndex: number) => {
+    if (nextIndex === index) return;
+
+    setPreviousIndex(index);
+    setIndex(nextIndex);
+    setFadePreviousOut(false);
+
+    requestAnimationFrame(() => {
+      setFadePreviousOut(true);
+    });
+
+    window.setTimeout(() => {
+      setPreviousIndex(null);
+      setFadePreviousOut(false);
+    }, HERO_FADE_DURATION);
+  }, [index]);
 
   const nextSlide = () => {
-    setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    goToSlide((index + 1) % HERO_IMAGES.length);
   };
 
   const prevSlide = () => {
-    setIndex((prev) => (prev === 0 ? HERO_IMAGES.length - 1 : prev - 1));
+    goToSlide(index === 0 ? HERO_IMAGES.length - 1 : index - 1);
   };
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
-
-    const runCarousel = () => {
-      timeout = setTimeout(() => {
-        setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-        runCarousel();
-      }, SLIDE_DELAY + FADE_DURATION);
-    };
-
-    // shorter first delay so the first slide doesn't linger
-    timeout = setTimeout(() => {
-      setIndex((prev) => (prev + 1) % HERO_IMAGES.length);
-      runCarousel();
-    }, SLIDE_DELAY);
-
-    return () => clearTimeout(timeout);
+    HERO_IMAGES.slice(1).forEach((src) => {
+      const img = new window.Image();
+      img.src = src;
+    });
   }, []);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      goToSlide((index + 1) % HERO_IMAGES.length);
+    }, HERO_SLIDE_DELAY + (previousIndex === null ? 0 : HERO_FADE_DURATION));
+
+    return () => window.clearTimeout(timeout);
+  }, [index, previousIndex, goToSlide]);
 
   // CLOSE FILTER DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
@@ -233,20 +246,18 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
         {/* HERO SECTION */}
         <section className="w-full h-[600px] relative overflow-hidden z-0">
           <div className="absolute inset-0">
-            {images.map((img, i) => (
-              <Image
-                key={i}
-                src={img}
-                alt="Hero background"
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                quality={82}
-                className={`absolute inset-0 object-cover object-center transform-gpu transition-opacity duration-1000 ease-in-out will-change-opacity ${
-                  i === index ? "opacity-100" : "opacity-0"
-                } scale-110`}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${images[index]})` }}
+            />
+            {previousIndex !== null && (
+              <div
+                className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-out ${
+                  fadePreviousOut ? "opacity-0" : "opacity-100"
+                }`}
+                style={{ backgroundImage: `url(${images[previousIndex]})` }}
               />
-            ))}
+            )}
           </div>
 
           <div className="absolute inset-0 bg-black/25 z-0" />
@@ -259,15 +270,14 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
               shadow-xl
               text-center
               p-10
-              bg-slate-400/90
-              backdrop-blur-sm
+              bg-slate-500/90
             "
             >
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-5 sm:mb-6 text-white drop-shadow-lg leading-tight">
                 Improving EHR Use For Better Outcomes
               </h1>
 
-              <p className="mb-8 text-md text-white drop-shadow-lg leading-relaxed">
+              <p className="mb-8 text-md font-semibold text-white drop-shadow-lg leading-relaxed">
                 Explore modules designed to improve your knowledge
                 <br />
                 and application of Electronic Health Records.
@@ -296,7 +306,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 </Button>
               </div>
 
-              <p className="mt-8 text-sm font-semibold text-white drop-shadow-md max-w-md mx-auto">
+              <p className="mt-8 text-sm font-bold text-white drop-shadow-lg max-w-md mx-auto">
                 You only need to register once. After registering, please use
                 the Sign In button above to access all modules, or use the View
                 Module buttons below to sign in and be directed to a specific
@@ -345,7 +355,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
             {images.map((_, i) => (
               <Button
                 key={i}
-                onClick={() => setIndex(i)}
+                onClick={() => goToSlide(i)}
                 variant="unstyled"
                 size="icon-xs"
                 aria-label={`Go to slide ${i + 1}`}

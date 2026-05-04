@@ -62,9 +62,13 @@ export default function Footer() {
         {/* Help */}
         <div>
           <h3 className="text-white font-semibold mb-3">Help</h3>
+          <p className="mb-3">
+            If you experience issues with modules, completion or certificates,
+            please fill out the technical support form.
+          </p>
           <p>
-            If you experience issues with module completion or certificates,
-            please contact technical support.
+            If you need help with program issues or have questions, please fill
+            out the program support form.
           </p>
 
           <h3 className="text-white font-semibold mb-3 mt-3">Learn More</h3>
