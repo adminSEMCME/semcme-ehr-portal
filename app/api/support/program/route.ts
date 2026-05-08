@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const data = await resend.emails.send({
-      from: "Program Support <support@mail.semcme.org>",
+      from: "Program Support Request <support@mail.semcme.org>",
       to: ["VHaque@semcme.org"],
       cc: ["NJuzych@semcme.org"],
       subject: `Program Support Request from ${name}`,

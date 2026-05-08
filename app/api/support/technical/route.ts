@@ -13,8 +13,8 @@ export async function POST(req: Request) {
     }
 
     const data = await resend.emails.send({
-      from: "Technical Support <tech@mail.semcme.org>",
-      to: ["shanectr@umich.edu"],
+      from: "Technical Support Request <tech@mail.semcme.org>",
+      to: ["sross@semcme.org"],
       subject: `Tech Support Request from ${name}`,
       replyTo: email,
 
