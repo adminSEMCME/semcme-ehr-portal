@@ -6,6 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function LoginClient() {
   const router = useRouter();
@@ -14,9 +22,63 @@ export default function LoginClient() {
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const emailExists = async (email: string) => {
+    const response = await fetch("/api/auth/check-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const result = await response.json();
+    return Boolean(result.exists);
+  };
+
+  const getLoginErrorMessage = async (error: any) => {
+    const errorMessage = error?.message?.toLowerCase() || "";
+
+    if (
+      errorMessage.includes("not confirmed") ||
+      errorMessage.includes("email not verified") ||
+      errorMessage.includes("verify your email")
+    ) {
+      return "Your email is not verified. Please check your inbox.";
+    }
+
+    if (
+      errorMessage.includes("rate limit") ||
+      errorMessage.includes("too many")
+    ) {
+      return "Too many sign-in attempts. Please wait a few minutes and try again.";
+    }
+
+    if (
+      errorMessage.includes("user not found") ||
+      errorMessage.includes("no user") ||
+      errorMessage.includes("invalid login credentials")
+    ) {
+      const exists = await emailExists(form.email);
+
+      if (exists === true) {
+        return "The password you entered is incorrect.";
+      }
+
+      if (exists === false) {
+        return "This email is not associated with an account.";
+      }
+    }
+
+    return "Incorrect email or password.";
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -30,7 +92,9 @@ export default function LoginClient() {
       });
 
       if (error || !data?.user) {
-        alert("Incorrect email or password.");
+        const message = await getLoginErrorMessage(error);
+        setDialogMessage(message);
+        setDialogOpen(true);
         setLoading(false);
         return;
       }
@@ -51,7 +115,10 @@ export default function LoginClient() {
         .single();
 
       if (profileError || !profile) {
-        alert("Unable to load user profile.");
+        setDialogMessage(
+          "Unable to load your account profile. Please try again.",
+        );
+        setDialogOpen(true);
         await supabase.auth.signOut();
         setLoading(false);
         return;
@@ -62,9 +129,10 @@ export default function LoginClient() {
         profile.role === "Institution Administrator" &&
         !profile.is_approved
       ) {
-        alert(
+        setDialogMessage(
           "Your Institution Administrator account is pending approval. You will receive access once approved.",
         );
+        setDialogOpen(true);
         await supabase.auth.signOut();
         setLoading(false);
         return;
@@ -94,7 +162,9 @@ export default function LoginClient() {
         );
       }
     } catch (err) {
-      alert("Unexpected login error.");
+      console.error("Login error:", err);
+      setDialogMessage("Unexpected login error. Please try again.");
+      setDialogOpen(true);
     } finally {
       setLoading(false);
     }
@@ -108,6 +178,20 @@ export default function LoginClient() {
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Sign In
         </h1>
+
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent showCloseButton={false}>
+            <DialogHeader>
+              <DialogTitle>Sign in error</DialogTitle>
+              <DialogDescription>{dialogMessage}</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button type="button" onClick={() => setDialogOpen(false)}>
+                OK
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input

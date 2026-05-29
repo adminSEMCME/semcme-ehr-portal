@@ -6,6 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ALLOWED_INSTITUTIONS = [
   "CMU Med Ed Partners",
@@ -162,6 +170,12 @@ export default function RegisterClient() {
   const [institutions, setInstitutions] = useState<
     { id: string; name: string }[]
   >([]);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState<{
+    text: string;
+    type: "error" | "success";
+  } | null>(null);
 
   const [customInstitution, setCustomInstitution] = useState("");
 
@@ -202,31 +216,71 @@ export default function RegisterClient() {
       });
 
       setForm(updated);
+      setFieldErrors({});
       return;
     }
 
     setForm({ ...form, [name]: value });
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
   };
+
+  const handleCustomInstitutionChange = (value: string) => {
+    setCustomInstitution(value);
+    setFieldErrors((prev) => {
+      if (!prev.customInstitution) return prev;
+      const next = { ...prev };
+      delete next.customInstitution;
+      return next;
+    });
+  };
+
+  const renderFieldError = (field: string) =>
+    fieldErrors[field] ? (
+      <p className="mt-2 text-sm text-red-700">{fieldErrors[field]}</p>
+    ) : null;
 
   /* ============================================================
      VALIDATION BEFORE SUBMIT
      ============================================================ */
   const validateRequiredFields = () => {
-    if (!form.firstName.trim() || !form.lastName.trim()) {
-      alert("First and last name are required.");
-      return false;
+    const errors: Record<string, string> = {};
+
+    if (!form.role) {
+      errors.role = "Please select your group.";
+    }
+
+    if (!form.firstName.trim()) {
+      errors.firstName = "First name is required.";
+    }
+
+    if (!form.lastName.trim()) {
+      errors.lastName = "Last name is required.";
+    }
+
+    if (form.institution === "other" && !customInstitution.trim()) {
+      errors.customInstitution = "Please enter your institution.";
     }
 
     const required = roleFieldMap[form.role] || [];
 
     for (const field of required) {
-      // ✅ Resident medicalId is optional
       if (field === "medicalId" && form.role === "Resident") continue;
 
-      if (!form[field] || form[field].trim() === "") {
-        alert("Please fill in all required fields.");
-        return false;
+      const value = form[field];
+      if (!value || value.trim() === "") {
+        errors[field] = "This field is required.";
       }
+    }
+
+    setFieldErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      return false;
     }
 
     return true;
@@ -238,92 +292,73 @@ export default function RegisterClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setModalMessage(null);
+
     if (!validateRequiredFields()) return;
 
+    setFieldErrors({});
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const payload = {
         email: form.email,
         password: form.password,
-        options: {
-          emailRedirectTo: `https://ehr.portal.semcme.org/login${
-            moduleId ? `?module=${moduleId}` : ""
-          }`,
-        },
-      });
+        first_name: formatName(form.firstName),
+        last_name: formatName(form.lastName),
+        role: form.role,
+        degree: form.degree || null,
+        department: form.department || null,
+        title: form.title || null,
+        profession: form.profession || null,
+        medical_id: form.medicalId || null,
+        pgy_level: form.pgyLevel || null,
+        medical_school_year: form.medicalSchoolYear || null,
+        oversee_role:
+          form.role === "Institution Administrator"
+            ? form.overseeRole || null
+            : null,
+        institution_id: form.institution !== "other" ? form.institution : null,
+        custom_institution:
+          form.institution === "other" ? customInstitution.trim() : null,
+        moduleId,
+      };
 
-      if (error || !data?.user) {
-        alert("Registration failed: " + error?.message);
-        return;
-      }
-
-      // 🔹 Determine institution_id
-      let institutionId = form.institution;
-
-      if (form.institution === "other") {
-        if (!customInstitution.trim()) {
-          alert("Please enter your institution.");
-          setLoading(false);
-          return;
-        }
-
-        // Insert new institution into table
-        const { data: newInst, error: instError } = await supabase
-          .from("institutions")
-          .insert([{ name: customInstitution.trim() }])
-          .select()
-          .single();
-
-        if (instError || !newInst) {
-          alert("Failed to create new institution.");
-          setLoading(false);
-          return;
-        }
-
-        institutionId = newInst.id;
-      }
-
-      // 🔐 Create profile via server route
-      const profileRes = await fetch("/api/register/profile", {
+      const response = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: data.user.id,
-          external_id: data.user.id,
-          role: form.role,
-          email: form.email,
-          first_name: formatName(form.firstName),
-          last_name: formatName(form.lastName),
-          degree: form.degree || null,
-          institution_id: institutionId || null,
-          oversee_role:
-            form.role === "Institution Administrator"
-              ? form.overseeRole || null
-              : null,
-          department: form.department || null,
-          title: form.title || null,
-          profession: form.profession || null,
-          medical_id: form.medicalId || null,
-          pgy_level: form.pgyLevel || null,
-          medical_school_year: form.medicalSchoolYear || null,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      if (!profileRes.ok) {
-        const err = await profileRes.json().catch(() => ({}));
-        alert(
-          "Registration failed while creating profile." +
-            (err?.error ? ` ${err.error}` : ""),
-        );
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message =
+          result.error ||
+          (response.status === 400
+            ? "Missing required fields."
+            : response.status === 409
+              ? "Email already registered."
+              : response.status === 500
+                ? "Server error, please try again."
+                : "Registration failed.");
+
+        setModalMessage({ text: message, type: "error" });
+        setDialogOpen(true);
         return;
       }
 
-      alert("Registration successful! Please verify your email.");
-      setTimeout(
-        () => router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`),
-        2000,
-      );
+      setModalMessage({
+        text: "Registration successful! Please verify your email.",
+        type: "success",
+      });
+      setDialogOpen(true);
+    } catch (error) {
+      console.error("Registration network error:", error);
+      setModalMessage({
+        text: "Network error. Please try again.",
+        type: "error",
+      });
+      setDialogOpen(true);
     } finally {
       setLoading(false);
     }
@@ -362,6 +397,43 @@ export default function RegisterClient() {
         <h1 className="text-2xl sm:text-3xl font-bold text-semcmeBlue mb-3 text-center">
           EHR Account Registration
         </h1>
+
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={(open) => {
+            if (!open && modalMessage?.type === "success") {
+              router.push(`/login${moduleId ? `?module=${moduleId}` : ""}`);
+            }
+            setDialogOpen(open);
+          }}
+        >
+          <DialogContent showCloseButton={false}>
+            <DialogHeader>
+              <DialogTitle>
+                {modalMessage?.type === "success"
+                  ? "Registration complete"
+                  : "Registration error"}
+              </DialogTitle>
+              <DialogDescription>{modalMessage?.text}</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                type="button"
+                onClick={() => {
+                  setDialogOpen(false);
+                  if (modalMessage?.type === "success") {
+                    router.push(
+                      `/login${moduleId ? `?module=${moduleId}` : ""}`,
+                    );
+                  }
+                }}
+              >
+                OK
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <div>
           <p className="text-gray-800 text-center text-xs mb-6">
             Please note that selecting{" "}
@@ -383,18 +455,21 @@ export default function RegisterClient() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5 text-gray-800">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="space-y-5 text-gray-800"
+        >
           {/* ROLE */}
           <div>
             <label className={labelRequired}>
               Select Your Group <span className={requiredStar}>*</span>
             </label>
             <select
-              required
               name="role"
               value={form.role}
               onChange={handleChange}
-              className={inputClass}
+              className={`${inputClass} ${fieldErrors.role ? "border-red-500" : ""}`}
             >
               <option value="">Select your group</option>
               <option value="Medical Student">Medical Student</option>
@@ -408,6 +483,7 @@ export default function RegisterClient() {
               </option>
               <option value="Other">Other (Please specify)</option>
             </select>
+            {renderFieldError("role")}
           </div>
 
           {/* RENDER FIELDS */}
@@ -419,6 +495,7 @@ export default function RegisterClient() {
               value={form.profession}
               onChange={handleChange}
               inputClass={inputClass}
+              error={fieldErrors.profession}
             />
           )}
 
@@ -431,6 +508,7 @@ export default function RegisterClient() {
               value={form.email}
               onChange={handleChange}
               inputClass={inputClass}
+              error={fieldErrors.email}
             />
           )}
 
@@ -443,6 +521,7 @@ export default function RegisterClient() {
               value={form.password}
               onChange={handleChange}
               inputClass={inputClass}
+              error={fieldErrors.password}
             />
           )}
 
@@ -457,6 +536,7 @@ export default function RegisterClient() {
                   value={form.firstName}
                   onChange={handleChange}
                   inputClass={inputClass}
+                  error={fieldErrors.firstName}
                 />
               )}
               {showField("lastName") && (
@@ -467,6 +547,7 @@ export default function RegisterClient() {
                   value={form.lastName}
                   onChange={handleChange}
                   inputClass={inputClass}
+                  error={fieldErrors.lastName}
                 />
               )}
             </div>
@@ -485,6 +566,7 @@ export default function RegisterClient() {
                     value={form.degree}
                     onChange={handleChange}
                     inputClass={inputClass}
+                    error={fieldErrors.degree}
                   />
                   <FieldInput
                     label="Title"
@@ -493,6 +575,7 @@ export default function RegisterClient() {
                     value={form.title}
                     onChange={handleChange}
                     inputClass={inputClass}
+                    error={fieldErrors.title}
                   />
                 </div>
               ) : (
@@ -506,6 +589,7 @@ export default function RegisterClient() {
                       value={form.degree}
                       onChange={handleChange}
                       inputClass={inputClass}
+                      error={fieldErrors.degree}
                     />
                   )}
                   {showField("title") && (
@@ -516,6 +600,7 @@ export default function RegisterClient() {
                       value={form.title}
                       onChange={handleChange}
                       inputClass={inputClass}
+                      error={fieldErrors.title}
                     />
                   )}
                 </>
@@ -531,6 +616,7 @@ export default function RegisterClient() {
               value={form.medicalId}
               onChange={handleChange}
               inputClass={inputClass}
+              error={fieldErrors.medicalId}
             />
           )}
 
@@ -546,11 +632,10 @@ export default function RegisterClient() {
                   </label>
 
                   <select
-                    required
                     name="institution"
                     value={form.institution}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={`${inputClass} ${fieldErrors.institution ? "border-red-500" : ""}`}
                   >
                     <option value="">Select your institution</option>
 
@@ -562,16 +647,21 @@ export default function RegisterClient() {
 
                     <option value="other">Other</option>
                   </select>
+                  {renderFieldError("institution")}
 
                   {form.institution === "other" && (
-                    <input
-                      type="text"
-                      placeholder="Enter your institution"
-                      value={customInstitution}
-                      onChange={(e) => setCustomInstitution(e.target.value)}
-                      className={`${inputClass} mt-3`}
-                      required
-                    />
+                    <div className="mt-3">
+                      <input
+                        type="text"
+                        placeholder="Enter your institution"
+                        value={customInstitution}
+                        onChange={(e) =>
+                          handleCustomInstitutionChange(e.target.value)
+                        }
+                        className={`${inputClass} ${fieldErrors.customInstitution ? "border-red-500" : ""}`}
+                      />
+                      {renderFieldError("customInstitution")}
+                    </div>
                   )}
                 </div>
               )}
@@ -584,11 +674,10 @@ export default function RegisterClient() {
                   </label>
 
                   <select
-                    required
                     name="overseeRole"
                     value={form.overseeRole}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={`${inputClass} ${fieldErrors.overseeRole ? "border-red-500" : ""}`}
                   >
                     <option value="">Select role</option>
                     <option value="Medical Student">Medical Student</option>
@@ -599,6 +688,7 @@ export default function RegisterClient() {
                     <option value="Nursing">Nursing</option>
                     <option value="Other">Other</option>
                   </select>
+                  {renderFieldError("overseeRole")}
                 </div>
               )}
 
@@ -614,6 +704,7 @@ export default function RegisterClient() {
                   value={form.department}
                   onChange={handleChange}
                   inputClass={inputClass}
+                  error={fieldErrors.department}
                 />
               )}
             </div>
@@ -627,6 +718,7 @@ export default function RegisterClient() {
               value={form.pgyLevel}
               onChange={handleChange}
               inputClass={inputClass}
+              error={fieldErrors.pgyLevel}
             />
           )}
 
@@ -636,11 +728,10 @@ export default function RegisterClient() {
                 Medical School Year <span className={requiredStar}>*</span>
               </label>
               <select
-                required
                 name="medicalSchoolYear"
                 value={form.medicalSchoolYear}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${fieldErrors.medicalSchoolYear ? "border-red-500" : ""}`}
               >
                 <option value="">Select year</option>
                 <option value="M1">M1</option>
@@ -652,6 +743,7 @@ export default function RegisterClient() {
                 <option value="M7">M7</option>
                 <option value="M8">M8</option>
               </select>
+              {renderFieldError("medicalSchoolYear")}
             </div>
           )}
 
@@ -692,6 +784,7 @@ function FieldInput({
   type = "text",
   onChange,
   inputClass,
+  error,
 }: any) {
   return (
     <div>
@@ -704,8 +797,9 @@ function FieldInput({
         value={value}
         type={type}
         onChange={onChange}
-        className={inputClass}
+        className={`${inputClass} ${error ? "border-red-500 focus:border-red-500" : ""}`}
       />
+      {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
     </div>
   );
 }
