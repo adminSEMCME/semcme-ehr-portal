@@ -1,9 +1,8 @@
 //app/login/LoginClient.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,12 +22,31 @@ export default function LoginClient() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("Sign in error");
   const [dialogMessage, setDialogMessage] = useState("");
 
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const emailExists = async (email: string) => {
+  useEffect(() => {
+    const success = searchParams.get("success");
+    const error = searchParams.get("error");
+
+    if (success) {
+      setDialogTitle("Account confirmed");
+      setDialogMessage(success);
+      setDialogOpen(true);
+      return;
+    }
+
+    if (error) {
+      setDialogTitle("Sign in error");
+      setDialogMessage(error);
+      setDialogOpen(true);
+    }
+  }, [searchParams]);
+
+  const getEmailStatus = async (email: string) => {
     const response = await fetch("/api/auth/check-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -40,7 +58,13 @@ export default function LoginClient() {
     }
 
     const result = await response.json();
-    return Boolean(result.exists);
+    return {
+      exists: Boolean(result.exists),
+      emailConfirmed:
+        typeof result.emailConfirmed === "boolean"
+          ? result.emailConfirmed
+          : null,
+    };
   };
 
   const getLoginErrorMessage = async (error: any) => {
@@ -66,13 +90,17 @@ export default function LoginClient() {
       errorMessage.includes("no user") ||
       errorMessage.includes("invalid login credentials")
     ) {
-      const exists = await emailExists(form.email);
+      const status = await getEmailStatus(form.email);
 
-      if (exists === true) {
+      if (status?.emailConfirmed === false) {
+        return "Your email is not verified. Please check your inbox for the verification link.";
+      }
+
+      if (status?.exists === true) {
         return "The password you entered is incorrect.";
       }
 
-      if (exists === false) {
+      if (status?.exists === false) {
         return "This email is not associated with an account.";
       }
     }
@@ -85,84 +113,49 @@ export default function LoginClient() {
     setLoading(true);
 
     try {
-      // 1️⃣ Attempt login
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: form.email,
-        password: form.password,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          moduleId,
+        }),
       });
 
-      if (error || !data?.user) {
-        const message = await getLoginErrorMessage(error);
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const message =
+          response.status === 401
+            ? await getLoginErrorMessage({
+                message: result.authMessage || result.error,
+              })
+            : result.error || "Unexpected login error. Please try again.";
+
         setDialogMessage(message);
+        setDialogTitle("Sign in error");
         setDialogOpen(true);
         setLoading(false);
         return;
       }
 
-      // 2️⃣ WEBSITE ADMIN (metadata-based) FIRST
-      const metadataRole = data.user.user_metadata?.role;
-
-      if (metadataRole === "admin") {
-        router.push("/admin-dashboard");
-        return;
-      }
-
-      // 3️⃣ Fetch profile ONCE
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("role, is_approved")
-        .eq("id", data.user.id)
-        .single();
-
-      if (profileError || !profile) {
-        setDialogMessage(
-          "Unable to load your account profile. Please try again.",
-        );
-        setDialogOpen(true);
-        await supabase.auth.signOut();
-        setLoading(false);
-        return;
-      }
-
-      // 4️⃣ Block unapproved Institution Admin
-      if (
-        profile.role === "Institution Administrator" &&
-        !profile.is_approved
-      ) {
-        setDialogMessage(
-          "Your Institution Administrator account is pending approval. You will receive access once approved.",
-        );
-        setDialogOpen(true);
-        await supabase.auth.signOut();
-        setLoading(false);
-        return;
-      }
-
-      // 5️⃣ Start session tracking
       await fetch("/api/sessions/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user_id: data.user.id,
-          page_path: moduleId
-            ? `/dashboards?module=${moduleId}`
-            : "/dashboards",
+          user_id: result.user_id,
+          page_path: result.redirectTo || "/dashboards",
           screen_width: window.screen.width,
           screen_height: window.screen.height,
           referrer: document.referrer || null,
         }),
       });
 
-      // 6️⃣ Redirect based on profile role
-      if (profile.role === "Institution Administrator") {
-        router.push("/institution-admin");
-      } else {
-        router.push(
-          moduleId ? `/dashboards?module=${moduleId}` : "/dashboards",
-        );
-      }
+      router.push(result.redirectTo || "/dashboards");
     } catch (err) {
       console.error("Login error:", err);
+      setDialogTitle("Sign in error");
       setDialogMessage("Unexpected login error. Please try again.");
       setDialogOpen(true);
     } finally {
@@ -182,7 +175,7 @@ export default function LoginClient() {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent showCloseButton={false}>
             <DialogHeader>
-              <DialogTitle>Sign in error</DialogTitle>
+              <DialogTitle>{dialogTitle}</DialogTitle>
               <DialogDescription>{dialogMessage}</DialogDescription>
             </DialogHeader>
             <DialogFooter>

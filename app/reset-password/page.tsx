@@ -65,16 +65,21 @@ export default function ResetPasswordPage() {
 
     setSetting(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword,
+      const response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: newPassword }),
       });
 
-      if (error) {
-        setErrorMsg(error.message);
-      } else {
-        setDone(true);
-        setTimeout(() => router.push("/login"), 2000);
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setErrorMsg(result.error || "Could not update your password.");
+        return;
       }
+
+      setDone(true);
+      setTimeout(() => router.push("/login"), 2000);
     } catch (err: any) {
       console.error(err);
       setErrorMsg("Could not update your password. Please try again.");

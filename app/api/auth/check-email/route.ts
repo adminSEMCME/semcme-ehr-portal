@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const authUserExists = async (
+const getAuthUserStatus = async (
   admin: SupabaseClient<any, any, any>,
   email: string,
 ) => {
@@ -21,14 +21,19 @@ const authUserExists = async (
       throw error;
     }
 
-    if (
-      data.users.some((user) => user.email?.toLowerCase() === email)
-    ) {
-      return true;
+    const user = data.users.find(
+      (user) => user.email?.toLowerCase() === email,
+    );
+
+    if (user) {
+      return {
+        exists: true,
+        emailConfirmed: Boolean(user.email_confirmed_at),
+      };
     }
 
     if (data.users.length < perPage) {
-      return false;
+      return { exists: false, emailConfirmed: null };
     }
 
     page += 1;
@@ -56,6 +61,12 @@ export async function POST(req: Request) {
     }
 
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const authStatus = await getAuthUserStatus(admin, normalizedEmail);
+
+    if (authStatus.exists) {
+      return NextResponse.json(authStatus);
+    }
+
     const { data: profileData, error: profileError } = await admin
       .from("profiles")
       .select("id")
@@ -71,12 +82,10 @@ export async function POST(req: Request) {
     }
 
     if (profileData?.length) {
-      return NextResponse.json({ exists: true });
+      return NextResponse.json({ exists: true, emailConfirmed: null });
     }
 
-    const existsInAuth = await authUserExists(admin, normalizedEmail);
-
-    return NextResponse.json({ exists: existsInAuth });
+    return NextResponse.json(authStatus);
   } catch (err) {
     console.error("Email lookup route error:", err);
     return NextResponse.json(
