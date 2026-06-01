@@ -89,9 +89,9 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-transparent font-sans">
+    <main className="min-h-screen flex flex-col items-center bg-transparent font-sans">
       <AppHeader action="back" />
-      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md">
+      <div className="bg-white p-8 md:p-10 rounded-2xl shadow-md w-full max-w-md mt-10 lg:mt-20">
         <h1 className="text-3xl font-bold text-semcmeBlue mb-6 text-center">
           Reset your password
         </h1>
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
                 onClick={() => setShowNew(!showNew)}
                 variant="ghost"
                 size="icon-sm"
-                className="absolute inset-y-1 right-2 text-gray-500 hover:text-semcmeBlue"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-semcmeBlue"
                 aria-label={showNew ? "Hide password" : "Show password"}
               >
                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -154,7 +154,7 @@ export default function ResetPasswordPage() {
                 onClick={() => setShowConfirm(!showConfirm)}
                 variant="ghost"
                 size="icon-sm"
-                className="absolute inset-y-1 right-2 text-gray-500 hover:text-semcmeBlue"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-semcmeBlue"
                 aria-label={showConfirm ? "Hide password" : "Show password"}
               >
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
