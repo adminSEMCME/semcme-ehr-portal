@@ -18,6 +18,13 @@ function getSafeRedirectUrl(request: NextRequest, type: string) {
       const nextUrl = new URL(requestedNext, url.origin);
 
       if (nextUrl.origin === url.origin) {
+        if (type === "signup") {
+          nextUrl.searchParams.set(
+            "success",
+            "Email confirmed. Please sign in.",
+          );
+        }
+
         return nextUrl;
       }
     } catch {
@@ -29,7 +36,10 @@ function getSafeRedirectUrl(request: NextRequest, type: string) {
     return new URL("/reset-password", url.origin);
   }
 
-  return new URL("/login", url.origin);
+  return new URL(
+    "/login?success=Email%20confirmed.%20Please%20sign%20in.",
+    url.origin,
+  );
 }
 
 function isSingleUseTokenError(
@@ -94,13 +104,18 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     if (type === "signup" && isSingleUseTokenError(error)) {
-      // Used/expired signup links still land quietly on login.
+      // Used/expired signup links still reassure users before sign in.
       console.info("Supabase signup confirmation link was already handled:", {
         code: error.code,
         status: error.status,
       });
 
-      return NextResponse.redirect(new URL("/login", url.origin));
+      return NextResponse.redirect(
+        new URL(
+          "/login?success=Email%20confirmed.%20Please%20sign%20in.",
+          url.origin,
+        ),
+      );
     }
 
     console.error("Supabase confirmation error:", error);

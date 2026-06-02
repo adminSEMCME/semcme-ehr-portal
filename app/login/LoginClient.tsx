@@ -28,9 +28,17 @@ export default function LoginClient() {
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Show route-level login errors when another page sends one here.
+  // Show route-level confirmation or login messages.
   useEffect(() => {
+    const success = searchParams.get("success");
     const error = searchParams.get("error");
+
+    if (success) {
+      setDialogTitle("Email confirmation");
+      setDialogMessage(success);
+      setDialogOpen(true);
+      return;
+    }
 
     if (error) {
       setDialogTitle("Sign in error");
