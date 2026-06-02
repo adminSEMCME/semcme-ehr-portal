@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
+import { Eye, EyeOff } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +45,7 @@ type FormData = {
   profession: string;
   email: string;
   password: string;
+  confirmPassword: string;
   firstName: string;
   lastName: string;
   degree: string;
@@ -153,6 +155,7 @@ export default function RegisterClient() {
     profession: "",
     email: "",
     password: "",
+    confirmPassword: "",
     firstName: "",
     lastName: "",
     degree: "",
@@ -171,6 +174,8 @@ export default function RegisterClient() {
     { id: string; name: string }[]
   >([]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState<{
     text: string;
@@ -274,6 +279,14 @@ export default function RegisterClient() {
       const value = form[field];
       if (!value || value.trim() === "") {
         errors[field] = "This field is required.";
+      }
+    }
+
+    if (showField("password")) {
+      if (!form.confirmPassword.trim()) {
+        errors.confirmPassword = "Please retype your password.";
+      } else if (form.password !== form.confirmPassword) {
+        errors.confirmPassword = "Passwords do not match.";
       }
     }
 
@@ -513,16 +526,62 @@ export default function RegisterClient() {
           )}
 
           {showField("password") && (
-            <FieldInput
-              label="Password"
-              required
-              name="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              inputClass={inputClass}
-              error={fieldErrors.password}
-            />
+            <div className="grid md:grid-cols-2 gap-4">
+              <FieldInput
+                label="Password"
+                required
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={handleChange}
+                inputClass={inputClass}
+                error={fieldErrors.password}
+                trailingButton={
+                  <Button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    variant="ghost"
+                    size="icon-sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-semcmeBlue"
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </Button>
+                }
+              />
+              <FieldInput
+                label="Retype Password"
+                required
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={form.confirmPassword}
+                onChange={handleChange}
+                inputClass={inputClass}
+                error={fieldErrors.confirmPassword}
+                trailingButton={
+                  <Button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    variant="ghost"
+                    size="icon-sm"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-semcmeBlue"
+                    aria-label={
+                      showConfirmPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={18} />
+                    ) : (
+                      <Eye size={18} />
+                    )}
+                  </Button>
+                }
+              />
+            </div>
           )}
 
           {/* NAME FIELDS */}
@@ -785,20 +844,24 @@ function FieldInput({
   onChange,
   inputClass,
   error,
+  trailingButton,
 }: any) {
   return (
     <div>
       <label className="block text-sm font-semibold text-gray-700 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
-      <input
-        required={required}
-        name={name}
-        value={value}
-        type={type}
-        onChange={onChange}
-        className={`${inputClass} ${error ? "border-red-500 focus:border-red-500" : ""}`}
-      />
+      <div className={trailingButton ? "relative" : undefined}>
+        <input
+          required={required}
+          name={name}
+          value={value}
+          type={type}
+          onChange={onChange}
+          className={`${inputClass} ${trailingButton ? "pr-10" : ""} ${error ? "border-red-500 focus:border-red-500" : ""}`}
+        />
+        {trailingButton}
+      </div>
       {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
     </div>
   );

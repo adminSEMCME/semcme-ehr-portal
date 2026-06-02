@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ export default function LoginClient() {
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("Sign in error");
   const [dialogMessage, setDialogMessage] = useState("");
@@ -201,15 +203,27 @@ export default function LoginClient() {
             className="border border-gray-300 p-3 rounded-lg w-full"
           />
 
-          <input
-            required
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 rounded-lg w-full"
-          />
+          <div className="relative">
+            <input
+              required
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              className="border border-gray-300 p-3 rounded-lg w-full pr-10"
+            />
+            <Button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              variant="ghost"
+              size="icon-sm"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-semcmeBlue"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </Button>
+          </div>
 
           <div className="text-center -mt-2">
             <a
