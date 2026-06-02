@@ -4,15 +4,10 @@ import { NextResponse, type NextRequest } from "next/server";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-const allowedTypes = new Set([
-  "signup",
-  "recovery",
-  "invite",
-  "magiclink",
-  "email",
-  "email_change",
-]);
+// Only handle the email flows this app uses.
+const allowedTypes = new Set(["signup", "recovery"]);
 
+// Keep redirects on this site and choose the right landing page.
 function getSafeRedirectUrl(request: NextRequest, type: string) {
   const url = new URL(request.url);
   const requestedNext =
@@ -34,7 +29,29 @@ function getSafeRedirectUrl(request: NextRequest, type: string) {
     return new URL("/reset-password", url.origin);
   }
 
-  return new URL("/login?success=Email%20confirmed", url.origin);
+  return new URL("/login", url.origin);
+}
+
+function isSingleUseTokenError(
+  error: { code?: string; message?: string } | null,
+) {
+  const code = error?.code?.toLowerCase() || "";
+  const message = error?.message?.toLowerCase() || "";
+
+  return (
+    code === "otp_expired" ||
+    code === "otp_invalid" ||
+    message.includes("invalid") ||
+    message.includes("expired") ||
+    message.includes("already")
+  );
+}
+
+// Let email scanners preview the link without consuming the real token.
+export async function HEAD(request: NextRequest) {
+  const url = new URL(request.url);
+
+  return NextResponse.redirect(new URL("/login", url.origin));
 }
 
 export async function GET(request: NextRequest) {
@@ -50,11 +67,10 @@ export async function GET(request: NextRequest) {
   }
 
   if (!tokenHash || !type || !allowedTypes.has(type)) {
-    return NextResponse.redirect(
-      new URL("/login?error=Invalid%20confirmation%20link", url.origin),
-    );
+    return NextResponse.redirect(new URL("/login", url.origin));
   }
 
+  // Verify Supabase's one-time email confirmation/reset token.
   const cookiesToSet: {
     name: string;
     value: string;
@@ -77,7 +93,18 @@ export async function GET(request: NextRequest) {
   });
 
   if (error) {
+    if (type === "signup" && isSingleUseTokenError(error)) {
+      // Used/expired signup links still land quietly on login.
+      console.info("Supabase signup confirmation link was already handled:", {
+        code: error.code,
+        status: error.status,
+      });
+
+      return NextResponse.redirect(new URL("/login", url.origin));
+    }
+
     console.error("Supabase confirmation error:", error);
+
     return NextResponse.redirect(
       new URL("/login?error=Confirmation%20failed", url.origin),
     );

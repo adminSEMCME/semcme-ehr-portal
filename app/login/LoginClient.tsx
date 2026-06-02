@@ -28,16 +28,9 @@ export default function LoginClient() {
   const handleChange = (e: any) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Show route-level login errors when another page sends one here.
   useEffect(() => {
-    const success = searchParams.get("success");
     const error = searchParams.get("error");
-
-    if (success) {
-      setDialogTitle("Account confirmed");
-      setDialogMessage(success);
-      setDialogOpen(true);
-      return;
-    }
 
     if (error) {
       setDialogTitle("Sign in error");
@@ -46,6 +39,7 @@ export default function LoginClient() {
     }
   }, [searchParams]);
 
+  // Looks up account status so login errors can be specific.
   const getEmailStatus = async (email: string) => {
     const response = await fetch("/api/auth/check-email", {
       method: "POST",
@@ -67,6 +61,7 @@ export default function LoginClient() {
     };
   };
 
+  // Converts Supabase auth failures into user-facing messages.
   const getLoginErrorMessage = async (error: any) => {
     const errorMessage = error?.message?.toLowerCase() || "";
 
@@ -108,6 +103,7 @@ export default function LoginClient() {
     return "Incorrect email or password.";
   };
 
+  // Attempts sign in, starts tracking, then sends the user to the right portal.
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
@@ -127,7 +123,7 @@ export default function LoginClient() {
 
       if (!response.ok) {
         const message =
-          response.status === 401
+          result.authMessage
             ? await getLoginErrorMessage({
                 message: result.authMessage || result.error,
               })

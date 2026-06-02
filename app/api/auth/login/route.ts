@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+// Attach Supabase auth cookies to the JSON response.
 function jsonWithCookies(
   body: Record<string, unknown>,
   status: number,
@@ -22,6 +23,7 @@ function jsonWithCookies(
   return response;
 }
 
+// Signs users in with email/password and returns their portal destination.
 export async function POST(request: NextRequest) {
   const cookiesToSet: {
     name: string;
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
       password,
     });
 
+    // Pass Supabase's auth message through so the client can show a useful error.
     if (error || !data?.user) {
       return jsonWithCookies(
         {
@@ -88,6 +91,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Portal access depends on profile role and approval status.
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role, is_approved")

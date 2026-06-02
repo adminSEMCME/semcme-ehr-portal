@@ -5,6 +5,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
+// Creates a Supabase Auth user and stores the app profile fields.
 export async function POST(req: Request) {
   try {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -52,6 +53,7 @@ export async function POST(req: Request) {
     const authClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Use an existing institution or create the custom one entered.
     let resolvedInstitutionId = institution_id;
 
     if (!resolvedInstitutionId) {
@@ -78,6 +80,7 @@ export async function POST(req: Request) {
       options: {},
     };
 
+    // Preserve the requested module through email confirmation when present.
     if (moduleId) {
       signUpOptions.options.emailRedirectTo = `https://ehr.portal.semcme.org/login?module=${moduleId}`;
     }
@@ -113,6 +116,7 @@ export async function POST(req: Request) {
     }
 
     const isInstitutionAdmin = role === "Institution Administrator";
+    // Store portal-specific profile details after Auth creates the user.
     const { error: profileError } = await admin.from("profiles").insert({
       id: user_id,
       external_id: user_id,
