@@ -47,7 +47,13 @@ const preloadImages = (urls: string[], timeout = 800) => {
   );
 };
 
-const CE_EXCLUDED_MODULE_IDS = ["CME1", "CME2", "intro", "mock-ehr"];
+const CE_EXCLUDED_MODULE_IDS = [
+  "CME1",
+  "CME2",
+  "intro",
+  "mock-ehr",
+  "ume-assmt-v1",
+];
 
 interface Module {
   id: string;
