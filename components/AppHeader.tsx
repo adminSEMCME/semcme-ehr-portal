@@ -116,7 +116,7 @@ export default function AppHeader({
                   </a>
 
                   <a
-                    href="/pdfs/instructor-guide.pdf"
+                    href="/instructor-guide"
                     target="_self"
                     rel="noopener noreferrer"
                     className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
