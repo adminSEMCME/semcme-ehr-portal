@@ -67,7 +67,7 @@ export default function WebsiteGuideContent({
           <div
             className={`transition-opacity duration-200 ${
               isOpen ? "opacity-100" : "opacity-95"
-            }`}
+            } ${showFooterText ? "" : "pb-8"}`}
           >
             {/* PARAGRAPHS */}
             <div className="space-y-4 max-w-5xl mx-auto">
