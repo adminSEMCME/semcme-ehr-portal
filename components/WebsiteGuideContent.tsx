@@ -5,11 +5,13 @@ import { useState } from "react";
 interface WebsiteGuideContentProps {
   defaultExpanded?: boolean;
   collapsible?: boolean;
+  showFooterText?: boolean;
 }
 
 export default function WebsiteGuideContent({
   defaultExpanded = false,
   collapsible = true,
+  showFooterText = true,
 }: WebsiteGuideContentProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const isOpen = collapsible ? isExpanded : true;
@@ -212,13 +214,14 @@ export default function WebsiteGuideContent({
               </div>
             </div>
 
-            {/* FOOTER TEXT */}
-            <p className="mt-4 max-w-5xl mx-auto pb-8 text-center text-gray-700 text-xs md:text-sm">
-              The Educator Demo Site provides a sample of the modules for
-              review. For further information, or to request information on
-              subscription to the complete series of modules, please contact
-              njuzych@semcme.org
-            </p>
+            {showFooterText && (
+              <p className="mt-4 max-w-5xl mx-auto pb-8 text-center text-gray-700 text-xs md:text-sm">
+                The Educator Demo Site provides a sample of the modules for
+                review. For further information, or to request information on
+                subscription to the complete series of modules, please contact
+                njuzych@semcme.org
+              </p>
+            )}
           </div>
           {!isOpen && (
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-b from-white/0 to-white/95" />
