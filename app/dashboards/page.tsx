@@ -807,10 +807,7 @@ export default function DashboardPage() {
 
         {/* GROUP FILTER */}
         <div className="w-full flex justify-center mb-4 px-4">
-          <div
-            ref={groupDropdownRef}
-            className="relative w-full max-w-[26rem]"
-          >
+          <div ref={groupDropdownRef} className="relative w-full max-w-104">
             <Button
               type="button"
               onClick={() => setGroupOpen((prev) => !prev)}
@@ -1253,7 +1250,7 @@ export default function DashboardPage() {
                 variant="link"
                 className="mb-4 flex h-auto w-full max-w-full items-start justify-start whitespace-normal p-0 text-left font-medium leading-snug text-blue-600"
               >
-                <span className="min-w-0 break-words [overflow-wrap:anywhere]">
+                <span className="min-w-0 wrap-break-word">
                   {activeAccredModule.title} Accreditation Statement (PDF)
                 </span>
               </Button>
@@ -1281,9 +1278,7 @@ export default function DashboardPage() {
                   Cancel
                 </Button>
 
-                <Button
-                  onClick={handleConfirmAccreditation}
-                >
+                <Button onClick={handleConfirmAccreditation}>
                   Continue to Module
                 </Button>
               </div>
