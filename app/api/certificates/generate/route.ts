@@ -28,7 +28,7 @@ function getBaseUrlFromRequest(req: Request) {
 function wrapText(text: string, maxWidth: number, font: any, fontSize: number) {
   const cleanedText = text.replace(/\n/g, " ");
   const words = cleanedText.split(" ");
-  
+
   const lines: string[] = [];
   let currentLine = "";
 
@@ -47,6 +47,36 @@ function wrapText(text: string, maxWidth: number, font: any, fontSize: number) {
   if (currentLine) lines.push(currentLine);
   return lines;
 }
+
+type LearningPathKey = "ume" | "gme" | "cme";
+
+const LEARNING_PATHS: Record<
+  LearningPathKey,
+  { title: string; levels: string[] }
+> = {
+  ume: {
+    title: "UME Learning Path",
+    levels: ["novice", "all"],
+  },
+  gme: {
+    title: "GME Learning Path",
+    levels: ["intermediate", "all"],
+  },
+  cme: {
+    title: "CME Learning Path",
+    levels: ["advanced", "all"],
+  },
+};
+
+const getSkillLevels = (skillLevel?: string | null): string[] => {
+  if (!skillLevel) return [];
+  return skillLevel.split(",").map((level) => level.trim().toLowerCase());
+};
+
+const getPathKeyFromModuleId = (moduleId: string): LearningPathKey | null => {
+  const match = moduleId.match(/^path-(ume|gme|cme)$/);
+  return match ? (match[1] as LearningPathKey) : null;
+};
 
 async function fetchPngBytes(url: string): Promise<Uint8Array | null> {
   try {
@@ -100,16 +130,25 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    // check for existing certificate
-    const { data: existingCert } = await admin
-      .from("certificates")
-      .select("id")
-      .eq("user_id", user_id)
-      .eq("module_id", module_id)
-      .maybeSingle();
+    const pathKey = getPathKeyFromModuleId(module_id);
 
-    if (existingCert) {
-      return NextResponse.json({ success: true, alreadyExists: true });
+    if (!pathKey) {
+      // check for existing certificate
+      const { data: existingCert } = await admin
+        .from("certificates")
+        .select("id, cert_url, issued_at")
+        .eq("user_id", user_id)
+        .eq("module_id", module_id)
+        .maybeSingle();
+
+      if (existingCert?.cert_url) {
+        return NextResponse.json({
+          success: true,
+          alreadyExists: true,
+          cert_url: existingCert.cert_url,
+          issued_at: existingCert.issued_at,
+        });
+      }
     }
 
     const issuedAt = new Date().toISOString();
@@ -124,14 +163,100 @@ export async function POST(request: Request) {
     /* -------------------------------
        Fetch Data
     -------------------------------- */
-    const { data: moduleDetails } = await admin
-      .from("modules")
-      .select("title, objective_description")
-      .eq("id", module_id)
-      .single();
+    let moduleTitle = "Module";
+    let objectiveText = "";
+    let completedModuleTitles: string[] = [];
 
-    const moduleTitle = moduleDetails?.title ?? "Module";
-    const objectiveText = moduleDetails?.objective_description ?? "";
+    if (pathKey) {
+      const pathConfig = LEARNING_PATHS[pathKey];
+
+      const { data: allModules } = await admin
+        .from("modules")
+        .select("id, title, skill_level, order_index")
+        .order("order_index", { ascending: true });
+
+      const pathModules =
+        allModules?.filter((module) => {
+          const levels = getSkillLevels(module.skill_level);
+          return pathConfig.levels.some((level) => levels.includes(level));
+        }) ?? [];
+
+      if (pathModules.length === 0) {
+        return NextResponse.json(
+          { error: "No modules found for this learning path" },
+          { status: 404 },
+        );
+      }
+
+      const { data: progressRows } = await admin
+        .from("module_progress")
+        .select("module_id, status")
+        .eq("user_id", user_id)
+        .in(
+          "module_id",
+          pathModules.map((module) => module.id),
+        );
+
+      const completedIds = new Set(
+        progressRows
+          ?.filter((row) => row.status === "completed")
+          .map((row) => row.module_id) ?? [],
+      );
+
+      const isComplete = pathModules.every((module) =>
+        completedIds.has(module.id),
+      );
+
+      if (!isComplete) {
+        return NextResponse.json(
+          { error: "Learning path is not complete" },
+          { status: 403 },
+        );
+      }
+
+      moduleTitle = pathConfig.title;
+      completedModuleTitles = pathModules.map((module) => module.title);
+    } else {
+      const { data: progressRow } = await admin
+        .from("module_progress")
+        .select("status")
+        .eq("user_id", user_id)
+        .eq("module_id", module_id)
+        .maybeSingle();
+
+      if (progressRow?.status !== "completed") {
+        return NextResponse.json(
+          { error: "Module is not complete" },
+          { status: 403 },
+        );
+      }
+
+      const { data: assessmentRow } = await admin
+        .from("post_assessments")
+        .select("module_id")
+        .eq("user_id", user_id)
+        .eq("module_id", module_id)
+        .maybeSingle();
+
+      if (!assessmentRow) {
+        return NextResponse.json(
+          {
+            error:
+              "Post assessment is required before generating a certificate",
+          },
+          { status: 403 },
+        );
+      }
+
+      const { data: moduleDetails } = await admin
+        .from("modules")
+        .select("title, objective_description")
+        .eq("id", module_id)
+        .single();
+
+      moduleTitle = moduleDetails?.title ?? "Module";
+      objectiveText = moduleDetails?.objective_description ?? "";
+    }
 
     const { data: profile } = await admin
       .from("profiles")
@@ -276,7 +401,8 @@ export async function POST(request: Request) {
       navy,
     );
 
-    let startY = initiativeY - 20;
+    let startY =
+      completedModuleTitles.length > 0 ? initiativeY - 28 : initiativeY - 20;
 
     const wrappedTitle = wrapText(moduleTitle, width - 260, timesBold, 18);
 
@@ -285,7 +411,76 @@ export async function POST(request: Request) {
       startY -= 18;
     });
 
-    if (objectiveText) {
+    if (completedModuleTitles.length > 0) {
+      startY -= 10;
+
+      center("Completed Learning Path Modules:", startY, 14, times, navy);
+      startY -= 20;
+
+      const columnGap = 28;
+      const listWidth = width - 170;
+      const columnWidth = (listWidth - columnGap) / 2;
+      const leftColumnX = (width - listWidth) / 2;
+      const rightColumnX = leftColumnX + columnWidth + columnGap;
+      const bulletSize = 10.5;
+      const bulletFont = times;
+      const bulletDash = "- ";
+      const dashWidth = bulletFont.widthOfTextAtSize(bulletDash, bulletSize);
+      const itemGap = 5;
+      const lineHeight = 13;
+      const splitIndex = Math.ceil(completedModuleTitles.length / 2);
+      const columns = [
+        {
+          titles: completedModuleTitles.slice(0, splitIndex),
+          x: leftColumnX,
+          align: "right",
+        },
+        {
+          titles: completedModuleTitles.slice(splitIndex),
+          x: rightColumnX,
+          align: "left",
+        },
+      ];
+
+      columns.forEach((column) => {
+        let columnY = startY;
+
+        column.titles.forEach((title: string) => {
+          const wrappedLines = wrapText(
+            title,
+            columnWidth - dashWidth,
+            bulletFont,
+            bulletSize,
+          );
+
+          wrappedLines.forEach((line: string, index: number) => {
+            const textToDraw = index === 0 ? bulletDash + line : line;
+            const lineWidth = bulletFont.widthOfTextAtSize(
+              textToDraw,
+              bulletSize,
+            );
+            const xPosition =
+              column.align === "right"
+                ? column.x + columnWidth - lineWidth
+                : index === 0
+                  ? column.x
+                  : column.x + dashWidth;
+
+            page.drawText(textToDraw, {
+              x: xPosition,
+              y: columnY,
+              size: bulletSize,
+              font: bulletFont,
+              color: navy,
+            });
+
+            columnY -= lineHeight;
+          });
+
+          columnY -= itemGap;
+        });
+      });
+    } else if (objectiveText) {
       startY -= 17;
 
       // Learning Objectives title
@@ -390,18 +585,38 @@ export async function POST(request: Request) {
 
     const pdfBytes = await pdfDoc.save();
 
-    const filePath = `${user_id}/${module_id}-${certNumber}.pdf`;
+    const filePath = pathKey
+      ? `${user_id}/learning-paths/${pathKey}-certificate.pdf`
+      : `${user_id}/${module_id}-${certNumber}.pdf`;
 
-    await admin.storage.from("certificates").upload(filePath, pdfBytes, {
-      contentType: "application/pdf",
-      upsert: true,
-    });
+    const { error: uploadError } = await admin.storage
+      .from("certificates")
+      .upload(filePath, pdfBytes, {
+        contentType: "application/pdf",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Certificate upload failed:", uploadError);
+      return NextResponse.json(
+        { error: "Failed to upload certificate" },
+        { status: 500 },
+      );
+    }
 
     const { data: urlData } = admin.storage
       .from("certificates")
       .getPublicUrl(filePath);
 
-    await admin.from("certificates").upsert({
+    if (pathKey) {
+      return NextResponse.json({
+        success: true,
+        cert_url: `${urlData.publicUrl}?v=${encodeURIComponent(issuedAt)}`,
+        issued_at: issuedAt,
+      });
+    }
+
+    const { error: upsertError } = await admin.from("certificates").upsert({
       user_id,
       module_id,
       issued_at: issuedAt,
@@ -410,7 +625,19 @@ export async function POST(request: Request) {
       verified: true,
     });
 
-    return NextResponse.json({ success: true });
+    if (upsertError) {
+      console.error("Certificate record failed:", upsertError);
+      return NextResponse.json(
+        { error: "Failed to save certificate record" },
+        { status: 500 },
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      cert_url: urlData.publicUrl,
+      issued_at: issuedAt,
+    });
   } catch (err) {
     console.error("Certificate generation failed:", err);
     return NextResponse.json(

@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { Award, ChevronDown, Download } from "lucide-react";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
 import {
@@ -62,6 +62,8 @@ interface Module {
   objective_description?: string;
   url: string;
   ce_activity_code?: string;
+  order_index?: number;
+  skill_level?: string;
 }
 
 interface ModuleProgress {
@@ -79,6 +81,43 @@ interface Certificate {
 const getSkillLevels = (skillLevel?: string): string[] => {
   if (!skillLevel) return [];
   return skillLevel.split(",").map((s) => s.trim().toLowerCase());
+};
+
+type LearningPathKey = "ume" | "gme" | "cme";
+
+const LEARNING_PATHS: {
+  key: LearningPathKey;
+  title: string;
+  shortTitle: string;
+  levels: string[];
+}[] = [
+  {
+    key: "ume",
+    title: "UME Path",
+    shortTitle: "UME",
+    levels: ["novice", "all"],
+  },
+  {
+    key: "gme",
+    title: "GME Path",
+    shortTitle: "GME",
+    levels: ["intermediate", "all"],
+  },
+  {
+    key: "cme",
+    title: "CME Path",
+    shortTitle: "CME",
+    levels: ["advanced", "all"],
+  },
+];
+
+const getPathCertificateId = (path: LearningPathKey) => `path-${path}`;
+
+const moduleBelongsToPath = (module: Module, path: LearningPathKey) => {
+  const levels = getSkillLevels(module.skill_level);
+  const pathConfig = LEARNING_PATHS.find((item) => item.key === path);
+  if (!pathConfig) return false;
+  return pathConfig.levels.some((level) => levels.includes(level));
 };
 
 const sortModulesForGroup = (
@@ -597,6 +636,48 @@ export default function DashboardPage() {
     setDontShowAgain(false);
   };
 
+  const getCertificateDownloadName = (moduleId: string) => {
+    const path = LEARNING_PATHS.find(
+      (item) => getPathCertificateId(item.key) === moduleId,
+    );
+    const label = path
+      ? `${path.shortTitle} Learning Path Certificate`
+      : `${modules.find((module) => module.id === moduleId)?.title ?? "Module"} Certificate`;
+
+    return `${label
+      .replace(/[^a-z0-9]+/gi, "-")
+      .replace(/^-+|-+$/g, "")
+      .toLowerCase()}.pdf`;
+  };
+
+  const downloadCertificate = async (url: string, fileName: string) => {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("Certificate download failed");
+
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  };
+
   const handleGenerateCertificate = async (moduleId: string) => {
     try {
       const res = await fetch("/api/certificates/generate", {
@@ -607,24 +688,85 @@ export default function DashboardPage() {
         body: JSON.stringify({ module_id: moduleId }),
       });
 
-      if (!res.ok) throw new Error("Failed to generate certificate");
+      const result = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        throw new Error(result?.error || "Failed to generate certificate");
+      }
 
       // 🔄 Refresh dashboard data
       const { data: sessionData } = await supabase.auth.getSession();
       const user = sessionData?.session?.user;
       if (!user) return;
 
+      if (result?.cert_url) {
+        setCertificates((current) => {
+          const nextCert = {
+            module_id: moduleId,
+            cert_url: result.cert_url,
+            issued_at: result.issued_at || new Date().toISOString(),
+          };
+          const existing = current.filter((c) => c.module_id !== moduleId);
+          return [...existing, nextCert];
+        });
+      }
+
       const { data: certData } = await supabase
         .from("certificates")
         .select("module_id, cert_url, issued_at")
         .eq("user_id", user.id);
 
-      setCertificates(certData || []);
+      if (result?.cert_url) {
+        const nextCert = {
+          module_id: moduleId,
+          cert_url: result.cert_url,
+          issued_at: result.issued_at || new Date().toISOString(),
+        };
+        const refreshed = (certData || []).filter(
+          (c) => c.module_id !== moduleId,
+        );
+        setCertificates([...refreshed, nextCert]);
+      } else {
+        setCertificates(certData || []);
+      }
+
+      if (result?.cert_url) {
+        await downloadCertificate(
+          result.cert_url,
+          getCertificateDownloadName(moduleId),
+        );
+      }
     } catch (err) {
       console.error(err);
-      alert("Error generating certificate");
+      alert(
+        err instanceof Error ? err.message : "Error generating certificate",
+      );
     }
   };
+
+  const pathProgress = LEARNING_PATHS.map((path) => {
+    const pathModules = modules.filter((module) =>
+      moduleBelongsToPath(module, path.key),
+    );
+    const completedCount = pathModules.filter(
+      (module) => getStatus(module.id) === "completed",
+    ).length;
+    const totalCount = pathModules.length;
+    const percent =
+      totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+    const certId = getPathCertificateId(path.key);
+    const cert = getCertificate(certId);
+
+    return {
+      ...path,
+      completedCount,
+      totalCount,
+      percent,
+      isComplete: totalCount > 0 && completedCount === totalCount,
+      certId,
+      cert,
+    };
+  });
 
   /* LOGOUT */
   const handleLogout = async () => {
@@ -664,8 +806,11 @@ export default function DashboardPage() {
         </h1>
 
         {/* GROUP FILTER */}
-        <div className="w-full flex justify-center lg:mb-8 mb-4 px-4">
-          <div ref={groupDropdownRef} className="relative w-full max-w-md">
+        <div className="w-full flex justify-center mb-4 px-4">
+          <div
+            ref={groupDropdownRef}
+            className="relative w-full max-w-[26rem]"
+          >
             <Button
               type="button"
               onClick={() => setGroupOpen((prev) => !prev)}
@@ -716,6 +861,84 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
+
+        {/* LEARNING PATH PROGRESS */}
+        <section className="w-full max-w-7xl px-4 mb-8">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            {pathProgress.map((path) => (
+              <div
+                key={path.key}
+                className="rounded-md border border-white/60 bg-slate-100/95 shadow-sm"
+              >
+                <div className="flex h-full flex-col gap-3 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h2 className="text-base font-bold text-semcmeBlue">
+                        {path.title}
+                      </h2>
+                      <p className="mt-0.5 text-xs font-medium text-slate-600">
+                        {path.completedCount} of {path.totalCount} modules
+                        complete
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 text-lg font-bold leading-none text-semcmeBlue">
+                      {path.percent}%
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="h-2 overflow-hidden rounded-full bg-slate-300/80">
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ease-out ${
+                          path.isComplete ? "bg-green-500" : "bg-semcmeBlue"
+                        }`}
+                        style={{ width: `${path.percent}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-auto">
+                    {path.isComplete ? (
+                      path.cert?.cert_url ? (
+                        <Button
+                          asChild
+                          variant="default"
+                          size="card"
+                          className="h-8 w-full px-3 text-xs font-semibold"
+                        >
+                          <a
+                            href={path.cert.cert_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={`Download ${path.shortTitle} path certificate`}
+                          >
+                            <Download className="size-4" />
+                            Download Certificate
+                          </a>
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleGenerateCertificate(path.certId)}
+                          variant="default"
+                          size="card"
+                          className="h-8 w-full px-3 text-xs font-semibold"
+                        >
+                          <Award className="size-4" />
+                          Generate Certificate
+                        </Button>
+                      )
+                    ) : (
+                      <div className="rounded-md border border-blue-200 bg-blue-100/70 px-3 py-1.5 text-center text-xs font-semibold text-semcmeBlue/70">
+                        Certificate unlocks at 100%
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* GRID OF MODULE CARDS */}
         <div
