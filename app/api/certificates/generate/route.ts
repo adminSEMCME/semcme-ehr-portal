@@ -154,18 +154,13 @@ export async function POST(request: Request) {
     const issuedAt = new Date().toISOString();
     const certNumber = `CERT-${uuidv4().split("-")[0].toUpperCase()}`;
 
-    const completedDate = new Date(issuedAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-
     /* -------------------------------
        Fetch Data
     -------------------------------- */
     let moduleTitle = "Module";
     let objectiveText = "";
     let completedModuleTitles: string[] = [];
+    let completionDateIso = issuedAt;
 
     if (pathKey) {
       const pathConfig = LEARNING_PATHS[pathKey];
@@ -190,7 +185,7 @@ export async function POST(request: Request) {
 
       const { data: progressRows } = await admin
         .from("module_progress")
-        .select("module_id, status")
+        .select("module_id, status, date_completed")
         .eq("user_id", user_id)
         .in(
           "module_id",
@@ -216,10 +211,20 @@ export async function POST(request: Request) {
 
       moduleTitle = pathConfig.title;
       completedModuleTitles = pathModules.map((module) => module.title);
+
+      const completionDates =
+        progressRows
+          ?.filter((row) => row.status === "completed" && row.date_completed)
+          .map((row) => new Date(row.date_completed).getTime())
+          .filter((time) => !Number.isNaN(time)) ?? [];
+
+      if (completionDates.length > 0) {
+        completionDateIso = new Date(Math.max(...completionDates)).toISOString();
+      }
     } else {
       const { data: progressRow } = await admin
         .from("module_progress")
-        .select("status")
+        .select("status, date_completed")
         .eq("user_id", user_id)
         .eq("module_id", module_id)
         .maybeSingle();
@@ -229,6 +234,10 @@ export async function POST(request: Request) {
           { error: "Module is not complete" },
           { status: 403 },
         );
+      }
+
+      if (progressRow?.date_completed) {
+        completionDateIso = progressRow.date_completed;
       }
 
       const { data: assessmentRow } = await admin
@@ -268,6 +277,15 @@ export async function POST(request: Request) {
       profile?.first_name || profile?.last_name
         ? `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim()
         : "Participant";
+
+    const completedDate = new Date(completionDateIso).toLocaleDateString(
+      "en-US",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      },
+    );
 
     /* -------------------------------
        Create PDF
