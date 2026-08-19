@@ -51,7 +51,6 @@ type FormData = {
   degree: string;
   institution: string;
   department: string;
-  overseeRole: string;
   title: string;
   medicalId: string;
   pgyLevel: string;
@@ -132,7 +131,6 @@ export default function RegisterClient() {
       "lastName",
       "title",
       "institution",
-      "overseeRole",
     ],
 
     Other: [
@@ -161,7 +159,6 @@ export default function RegisterClient() {
     degree: "",
     institution: "",
     department: "",
-    overseeRole: "",
     title: "",
     medicalId: "",
     pgyLevel: "",
@@ -326,10 +323,6 @@ export default function RegisterClient() {
         medical_id: form.medicalId || null,
         pgy_level: form.pgyLevel || null,
         medical_school_year: form.medicalSchoolYear || null,
-        oversee_role:
-          form.role === "Institution Administrator"
-            ? form.overseeRole || null
-            : null,
         institution_id: form.institution !== "other" ? form.institution : null,
         custom_institution:
           form.institution === "other" ? customInstitution.trim() : null,
@@ -679,9 +672,7 @@ export default function RegisterClient() {
             />
           )}
 
-          {(showField("institution") ||
-            showField("department") ||
-            showField("overseeRole")) && (
+          {(showField("institution") || showField("department")) && (
             <div className="grid md:grid-cols-2 gap-4">
               {/* INSTITUTION */}
               {showField("institution") && (
@@ -722,32 +713,6 @@ export default function RegisterClient() {
                       {renderFieldError("customInstitution")}
                     </div>
                   )}
-                </div>
-              )}
-
-              {/* 🔥 NEW: OVERSEE ROLE */}
-              {showField("overseeRole") && (
-                <div>
-                  <label className={labelRequired}>
-                    Role to Oversee <span className={requiredStar}>*</span>
-                  </label>
-
-                  <select
-                    name="overseeRole"
-                    value={form.overseeRole}
-                    onChange={handleChange}
-                    className={`${inputClass} ${fieldErrors.overseeRole ? "border-red-500" : ""}`}
-                  >
-                    <option value="">Select role</option>
-                    <option value="Medical Student">Medical Student</option>
-                    <option value="Resident">Resident / Fellow</option>
-                    <option value="Practicing Physician/Faculty">
-                      Practicing Physician / Faculty
-                    </option>
-                    <option value="Nursing">Nursing</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  {renderFieldError("overseeRole")}
                 </div>
               )}
 
@@ -797,10 +762,7 @@ export default function RegisterClient() {
                 <option value="M2">M2</option>
                 <option value="M3">M3</option>
                 <option value="M4">M4</option>
-                <option value="M5">M5</option>
-                <option value="M6">M6</option>
-                <option value="M7">M7</option>
-                <option value="M8">M8</option>
+                <option value="M5+">M5+</option>
               </select>
               {renderFieldError("medicalSchoolYear")}
             </div>

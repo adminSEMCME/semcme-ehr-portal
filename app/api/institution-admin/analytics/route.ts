@@ -41,7 +41,7 @@ export async function GET() {
     .select(
       `
         role,
-        oversee_role,
+        institution_id,
         institutions ( name )
       `,
     )
@@ -54,12 +54,19 @@ export async function GET() {
 
   const institutionName = (profile.institutions as any)?.name;
 
+  if (!profile.institution_id || !institutionName) {
+    return NextResponse.json(
+      { error: "Institution administrator has no assigned institution" },
+      { status: 400 },
+    );
+  }
+
   /* =========================
      REPLACEMENT FOR VIEW
   ========================= */
-  const { data: profiles, error: joinErr } = await serviceSupabase.from(
-    "profiles",
-  ).select(`
+  const { data: profiles, error: joinErr } = await serviceSupabase
+    .from("profiles")
+    .select(`
       id,
       first_name,
       last_name,
@@ -81,7 +88,8 @@ export async function GET() {
           skill_level
         )
       )
-    `);
+    `)
+    .eq("institution_id", profile.institution_id);
 
   if (joinErr) {
     console.error(joinErr);
@@ -91,14 +99,18 @@ export async function GET() {
   /* =========================
      CERTIFICATES (SEPARATE)
   ========================= */
-  const { data: certificates } = await serviceSupabase
-    .from("certificates")
-    .select("user_id, module_id, cert_url, issued_at");
+  const institutionUserIds = profiles?.map((profile) => profile.id) ?? [];
+  const { data: certificates } = institutionUserIds.length
+    ? await serviceSupabase
+        .from("certificates")
+        .select("user_id, module_id, cert_url, issued_at")
+        .in("user_id", institutionUserIds)
+    : { data: [] };
 
   /* =========================
      BUILD DATA (same shape as before)
   ========================= */
-  let userModules =
+  const userModules =
     profiles?.flatMap((user: any) => {
       const base = {
         user_id: user.id,
@@ -150,14 +162,6 @@ export async function GET() {
         };
       });
     }) ?? [];
-
-  /* =========================
-     🔥 CRITICAL: IA FILTER (SERVER SIDE)
-  ========================= */
-  userModules = userModules.filter(
-    (row: any) =>
-      row.institution === institutionName && row.role === profile.oversee_role,
-  );
 
   // MODULES (unchanged)
   const { data: modules } = await serviceSupabase

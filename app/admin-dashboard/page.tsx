@@ -1426,9 +1426,6 @@ function AdminSection({
                     <strong>Institution:</strong> {a.institution_name}
                   </p>
 
-                  <p className="text-sm">
-                    <strong>Role Overseen:</strong> {a.oversee_role}
-                  </p>
                 </div>
 
                 <div

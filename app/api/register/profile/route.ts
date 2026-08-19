@@ -20,7 +20,6 @@ export async function POST(req: Request) {
       medical_id,
       pgy_level,
       medical_school_year,
-      oversee_role,
     } = body;
 
     if (!user_id || !first_name || !last_name) {
@@ -52,7 +51,7 @@ export async function POST(req: Request) {
       medical_id,
       pgy_level,
       medical_school_year,
-      oversee_role,
+      oversee_role: null,
       is_approved: isInstitutionAdmin ? false : true,
     });
 

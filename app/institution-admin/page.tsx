@@ -15,7 +15,6 @@ export default function InstitutionAdminPage() {
   const [tab, setTab] = useState<Tab>("users");
 
   const [institution, setInstitution] = useState<string | null>(null);
-  const [overseeRole, setOverseeRole] = useState<string | null>(null);
 
   const [analytics, setAnalytics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -46,7 +45,7 @@ export default function InstitutionAdminPage() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("oversee_role, institution_id")
+        .select("institution_id")
         .eq("id", user.id)
         .single();
 
@@ -63,7 +62,6 @@ export default function InstitutionAdminPage() {
       }
 
       setInstitution(institutionName);
-      setOverseeRole(profile?.oversee_role ?? null);
     }
 
     loadProfile();
@@ -338,7 +336,7 @@ export default function InstitutionAdminPage() {
 
   return (
     <div className="space-y-8">
-      {(loading || !analytics || !institution || !overseeRole) && (
+      {(loading || !analytics || !institution) && (
         <div className="text-center py-10 text-gray-600">Loading...</div>
       )}
       {/* TITLE */}
@@ -354,14 +352,14 @@ export default function InstitutionAdminPage() {
 
         <p>
           This dashboard allows you to monitor user progress within your
-          institution for your assigned role.
+          institution.
         </p>
 
         <div className="space-y-2">
           <p>
-            <strong>Users Tab:</strong> View all users in your institution and
-            role. Click a user row to expand their full module history,
-            including completed, in-progress, and not started modules.
+            <strong>Users Tab:</strong> View all users in your institution.
+            Click a user row to expand their full module history, including
+            completed, in-progress, and not started modules.
           </p>
 
           <p>
@@ -378,8 +376,7 @@ export default function InstitutionAdminPage() {
       </div>
 
       <p className="text-center text-sm text-gray-600">
-        <strong>Your Institution:</strong> {institution} |{" "}
-        <strong>Role Overseen:</strong> {overseeRole}
+        <strong>Your Institution:</strong> {institution}
       </p>
 
       {/* TABS */}
