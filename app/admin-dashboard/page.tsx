@@ -109,6 +109,11 @@ type AnalyticsResponse = {
   userModules: UserModuleRow[];
   modules: ModuleMeta[];
   postAssessments: PostAssessment[];
+  institutions: Array<{
+    id: string;
+    name: string;
+    created_at: string | null;
+  }>;
 };
 
 type UserSummary = {
@@ -139,6 +144,7 @@ type ModuleSummary = {
 
 type InstitutionSummary = {
   institution: string;
+  createdAt: string | null;
   userCount: number;
   totalCompletions: number;
   totalCertificates: number;
@@ -194,6 +200,7 @@ export default function AdminDashboardPage() {
             userModules: [],
             modules: [],
             postAssessments: [],
+            institutions: [],
           });
           return;
         }
@@ -204,6 +211,7 @@ export default function AdminDashboardPage() {
           userModules: [],
           modules: [],
           postAssessments: [],
+          institutions: [],
         });
       } finally {
         setLoading(false);
@@ -248,6 +256,18 @@ export default function AdminDashboardPage() {
     const usersMap = new Map<string, UserSummary>();
     const moduleMap = new Map<string, ModuleSummary>();
     const institutionMap = new Map<string, InstitutionSummary>();
+
+    // Start from the institution catalog so zero-user institutions are shown.
+    for (const institution of analytics?.institutions ?? []) {
+      institutionMap.set(institution.name, {
+        institution: institution.name,
+        createdAt: institution.created_at,
+        userCount: 0,
+        totalCompletions: 0,
+        totalCertificates: 0,
+        perModule: {},
+      });
+    }
 
     // Initialize modules
     for (const mod of allModules) {
@@ -334,6 +354,7 @@ export default function AdminDashboardPage() {
       if (!institutionMap.has(inst)) {
         institutionMap.set(inst, {
           institution: inst,
+          createdAt: null,
           userCount: 0,
           totalCompletions: 0,
           totalCertificates: 0,
@@ -599,6 +620,7 @@ export default function AdminDashboardPage() {
 
       return {
         institution_name: inst.institution,
+        created_at: inst.createdAt,
         total_users: inst.userCount,
         total_modules_completed: inst.totalCompletions,
         total_certificates_issued: inst.totalCertificates,
@@ -976,6 +998,7 @@ export default function AdminDashboardPage() {
               <thead className="bg-semcmeBlue text-white">
                 <tr>
                   <th className="p-3 text-left">Institution</th>
+                  <th className="p-3 text-left">Created</th>
                   <th className="p-3 text-left">Users</th>
                   <th className="p-3 text-left">Total Completions</th>
                   <th className="p-3 text-left">Total Certificates Issued</th>
@@ -1009,6 +1032,11 @@ export default function AdminDashboardPage() {
                       className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
                     >
                       <td className="p-3">{inst.institution}</td>
+                      <td className="p-3">
+                        {inst.createdAt
+                          ? new Date(inst.createdAt).toLocaleString()
+                          : "-"}
+                      </td>
                       <td className="p-3">{inst.userCount}</td>
                       <td className="p-3">{inst.totalCompletions}</td>
                       <td className="p-3">{inst.totalCertificates}</td>
@@ -1016,7 +1044,7 @@ export default function AdminDashboardPage() {
 
                     {selectedInstitution === inst.institution && (
                       <tr className="bg-gray-50 border-b border-gray-200">
-                        <td colSpan={4} className="p-4">
+                        <td colSpan={5} className="p-4">
                           <InstitutionDetailPanel
                             institution={inst}
                             allModules={allModules}

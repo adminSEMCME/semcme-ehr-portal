@@ -151,10 +151,22 @@ export async function GET(request: Request) {
     console.error("modules error:", modulesErr);
   }
 
+  // Load the table itself so institutions with no profiles remain visible to
+  // administrators instead of disappearing from the analytics-derived list.
+  const { data: institutions, error: institutionsErr } = await serviceSupabase
+    .from("institutions")
+    .select("id, name, created_at")
+    .order("name", { ascending: true });
+
+  if (institutionsErr) {
+    console.error("institutions error:", institutionsErr);
+  }
+
   // RETURN RESULT
   return NextResponse.json({
     userModules: userModules ?? [],
     modules: modules ?? [],
     postAssessments: postAssessments ?? [],
+    institutions: institutions ?? [],
   });
 }

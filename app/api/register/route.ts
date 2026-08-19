@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import {
   hasAtLeastTwoWords,
   normalizeInstitutionName,
@@ -11,6 +11,27 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Creates a Supabase Auth user and stores the app profile fields.
 export async function POST(req: Request) {
+  let admin: SupabaseClient | null = null;
+  let createdInstitutionId: string | null = null;
+  let createdAuthUserId: string | null = null;
+
+  const cleanUpPartialRegistration = async () => {
+    if (!admin) return;
+
+    if (createdAuthUserId) {
+      const { error } = await admin.auth.admin.deleteUser(createdAuthUserId);
+      if (error) console.error("Failed to clean up Auth user:", error);
+    }
+
+    if (createdInstitutionId) {
+      const { error } = await admin
+        .from("institutions")
+        .delete()
+        .eq("id", createdInstitutionId);
+      if (error) console.error("Failed to clean up institution:", error);
+    }
+  };
+
   try {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
       console.error("SUPABASE environment variables are not configured.");
@@ -70,10 +91,33 @@ export async function POST(req: Request) {
     }
 
     const authClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // Use an existing institution or create the custom one entered.
     let resolvedInstitutionId = institution_id;
+
+    if (!resolvedInstitutionId) {
+      // Reuse a matching custom institution, including one left behind by an
+      // older interrupted registration, rather than creating a duplicate.
+      const { data: existingInstitution, error: lookupError } = await admin
+        .from("institutions")
+        .select("id")
+        .eq("name", normalizedCustomInstitution)
+        .limit(1)
+        .maybeSingle();
+
+      if (lookupError) {
+        console.error("Failed to look up custom institution:", lookupError);
+        return NextResponse.json(
+          { error: "Unable to save institution." },
+          { status: 500 },
+        );
+      }
+
+      if (existingInstitution) {
+        resolvedInstitutionId = existingInstitution.id;
+      }
+    }
 
     if (!resolvedInstitutionId) {
       const { data: newInstitution, error: institutionError } = await admin
@@ -91,6 +135,7 @@ export async function POST(req: Request) {
       }
 
       resolvedInstitutionId = newInstitution.id;
+      createdInstitutionId = newInstitution.id;
     }
 
     const signUpOptions: any = {
@@ -109,6 +154,7 @@ export async function POST(req: Request) {
 
     if (authError) {
       console.error("Supabase createUser error:", authError);
+      await cleanUpPartialRegistration();
 
       const status =
         authError.status === 400 ? 400 : authError.status === 409 ? 409 : 500;
@@ -128,11 +174,25 @@ export async function POST(req: Request) {
 
     if (!user_id) {
       console.error("Supabase returned no user ID during registration.");
+      await cleanUpPartialRegistration();
       return NextResponse.json(
         { error: "Registration failed." },
         { status: 500 },
       );
     }
+
+    // With email enumeration protection enabled, Supabase can return an
+    // existing user with no identities instead of an explicit duplicate-email
+    // error. Do not write a profile for—or later delete—that existing user.
+    if ((authData.user?.identities?.length ?? 0) === 0) {
+      await cleanUpPartialRegistration();
+      return NextResponse.json(
+        { error: "Email already registered." },
+        { status: 409 },
+      );
+    }
+
+    createdAuthUserId = user_id;
 
     const isInstitutionAdmin = role === "Institution Administrator";
     // Store portal-specific profile details after Auth creates the user.
@@ -156,6 +216,7 @@ export async function POST(req: Request) {
 
     if (profileError) {
       console.error("Profile insertion failed:", profileError);
+      await cleanUpPartialRegistration();
       return NextResponse.json(
         { error: "Unable to save profile." },
         { status: 500 },
@@ -165,6 +226,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, user_id });
   } catch (err: any) {
     console.error("Registration route error:", err);
+    await cleanUpPartialRegistration();
     return NextResponse.json(
       { error: "An unexpected error occurred during registration." },
       { status: 500 },
