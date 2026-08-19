@@ -131,7 +131,6 @@ export async function POST(req: Request) {
       medical_id: medical_id || null,
       pgy_level: pgy_level || null,
       medical_school_year: medical_school_year || null,
-      oversee_role: null,
       is_approved: isInstitutionAdmin ? false : true,
     });
 
