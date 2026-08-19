@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import {
+  hasAtLeastTwoWords,
+  normalizeInstitutionName,
+} from "@/lib/institutionName";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -42,11 +46,27 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!institution_id && !custom_institution?.trim()) {
-      return NextResponse.json(
-        { error: "Institution selection or custom institution is required." },
-        { status: 400 },
-      );
+    const normalizedCustomInstitution = normalizeInstitutionName(
+      typeof custom_institution === "string" ? custom_institution : "",
+    );
+
+    if (!institution_id) {
+      if (!normalizedCustomInstitution) {
+        return NextResponse.json(
+          { error: "Institution selection or custom institution is required." },
+          { status: 400 },
+        );
+      }
+
+      if (!hasAtLeastTwoWords(normalizedCustomInstitution)) {
+        return NextResponse.json(
+          {
+            error:
+              "Please enter the full institution name using at least two words.",
+          },
+          { status: 400 },
+        );
+      }
     }
 
     const authClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -58,7 +78,7 @@ export async function POST(req: Request) {
     if (!resolvedInstitutionId) {
       const { data: newInstitution, error: institutionError } = await admin
         .from("institutions")
-        .insert([{ name: custom_institution.trim() }])
+        .insert([{ name: normalizedCustomInstitution }])
         .select()
         .single();
 

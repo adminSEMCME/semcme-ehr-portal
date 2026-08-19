@@ -8,6 +8,10 @@ import { Eye, EyeOff } from "lucide-react";
 import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import {
+  hasAtLeastTwoWords,
+  normalizeInstitutionName,
+} from "@/lib/institutionName";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -241,6 +245,10 @@ export default function RegisterClient() {
     });
   };
 
+  const normalizeCustomInstitution = () => {
+    setCustomInstitution(normalizeInstitutionName(customInstitution));
+  };
+
   const renderFieldError = (field: string) =>
     fieldErrors[field] ? (
       <p className="mt-2 text-sm text-red-700">{fieldErrors[field]}</p>
@@ -264,8 +272,13 @@ export default function RegisterClient() {
       errors.lastName = "Last name is required.";
     }
 
-    if (form.institution === "other" && !customInstitution.trim()) {
-      errors.customInstitution = "Please enter your institution.";
+    if (form.institution === "other") {
+      if (!customInstitution.trim()) {
+        errors.customInstitution = "Please enter your institution.";
+      } else if (!hasAtLeastTwoWords(customInstitution)) {
+        errors.customInstitution =
+          "Please enter the full institution name using at least two words.";
+      }
     }
 
     const required = roleFieldMap[form.role] || [];
@@ -325,7 +338,9 @@ export default function RegisterClient() {
         medical_school_year: form.medicalSchoolYear || null,
         institution_id: form.institution !== "other" ? form.institution : null,
         custom_institution:
-          form.institution === "other" ? customInstitution.trim() : null,
+          form.institution === "other"
+            ? normalizeInstitutionName(customInstitution)
+            : null,
         moduleId,
       };
 
@@ -703,11 +718,12 @@ export default function RegisterClient() {
                     <div className="mt-3">
                       <input
                         type="text"
-                        placeholder="Enter your institution"
+                        placeholder="Enter full institution name (2+ words)"
                         value={customInstitution}
                         onChange={(e) =>
                           handleCustomInstitutionChange(e.target.value)
                         }
+                        onBlur={normalizeCustomInstitution}
                         className={`${inputClass} ${fieldErrors.customInstitution ? "border-red-500" : ""}`}
                       />
                       {renderFieldError("customInstitution")}
