@@ -51,8 +51,6 @@ const CE_EXCLUDED_MODULE_IDS = [
   "CME1",
   "CME2",
   "intro",
-  "mock-ehr",
-  "ume-assmt-v1",
 ];
 
 interface Module {
