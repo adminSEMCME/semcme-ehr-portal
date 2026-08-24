@@ -18,8 +18,7 @@ import {
 
 type Tab = "users" | "modules";
 type SortDirection = "asc" | "desc";
-type UserSortKey = "name" | "role" | "completedCount";
-type ModuleSortKey = "title" | "completed";
+type UserSortKey = "name" | "email";
 
 export default function InstitutionAdminPage() {
   const [tab, setTab] = useState<Tab>("users");
@@ -38,10 +37,6 @@ export default function InstitutionAdminPage() {
     key: UserSortKey;
     direction: SortDirection;
   }>({ key: "name", direction: "asc" });
-  const [moduleSort, setModuleSort] = useState<{
-    key: ModuleSortKey;
-    direction: SortDirection;
-  }>({ key: "title", direction: "asc" });
 
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
@@ -163,14 +158,11 @@ export default function InstitutionAdminPage() {
 
   const sortedUsers = useMemo(() => {
     return [...filteredUsers].sort((a: any, b: any) => {
-      const comparison =
-        userSort.key === "completedCount"
-          ? a.completedCount - b.completedCount
-          : String(a[userSort.key] ?? "").localeCompare(
-              String(b[userSort.key] ?? ""),
-              undefined,
-              { sensitivity: "base" },
-            );
+      const comparison = String(a[userSort.key] ?? "").localeCompare(
+        String(b[userSort.key] ?? ""),
+        undefined,
+        { sensitivity: "base" },
+      );
 
       return userSort.direction === "asc" ? comparison : -comparison;
     });
@@ -204,34 +196,6 @@ export default function InstitutionAdminPage() {
     return base;
   }, [analytics, userModuleRows, filterSelectedModules]);
 
-  const sortedModules = useMemo(() => {
-    return [...modules].sort((a: any, b: any) => {
-      const comparison =
-        moduleSort.key === "completed"
-          ? a.completed - b.completed
-          : String(a.title ?? "").localeCompare(String(b.title ?? ""), undefined, {
-              sensitivity: "base",
-            });
-
-      return moduleSort.direction === "asc" ? comparison : -comparison;
-    });
-  }, [modules, moduleSort]);
-
-  const summaryMetrics = useMemo(
-    () => ({
-      totalUsers: users.length,
-      completedModules: users.reduce(
-        (total: number, user: any) => total + user.completedCount,
-        0,
-      ),
-      modulesInProgress: users.reduce(
-        (total: number, user: any) => total + user.inProgressCount,
-        0,
-      ),
-    }),
-    [users],
-  );
-
   const toggleUserSort = (key: UserSortKey) => {
     setUserSort((current) => ({
       key,
@@ -240,23 +204,7 @@ export default function InstitutionAdminPage() {
           ? current.direction === "asc"
             ? "desc"
             : "asc"
-          : key === "completedCount"
-            ? "desc"
-            : "asc",
-    }));
-  };
-
-  const toggleModuleSort = (key: ModuleSortKey) => {
-    setModuleSort((current) => ({
-      key,
-      direction:
-        current.key === key
-          ? current.direction === "asc"
-            ? "desc"
-            : "asc"
-          : key === "completed"
-            ? "desc"
-            : "asc",
+          : "asc",
     }));
   };
 
@@ -434,24 +382,6 @@ export default function InstitutionAdminPage() {
         Institution Administrator Dashboard
       </h1>
 
-      {/* SUMMARY CARDS */}
-      <section
-        className="grid grid-cols-1 gap-4 sm:grid-cols-3"
-        aria-label="Institution progress summary"
-      >
-        <SummaryCard label="Total Users" value={summaryMetrics.totalUsers} />
-        <SummaryCard
-          label="Completed Modules"
-          value={summaryMetrics.completedModules}
-          accent="success"
-        />
-        <SummaryCard
-          label="Modules In Progress"
-          value={summaryMetrics.modulesInProgress}
-          accent="progress"
-        />
-      </section>
-
       {/* INFO SECTION */}
       <section className="max-w-5xl mx-auto overflow-hidden rounded-xl border border-blue-200 bg-blue-50 text-sm text-gray-900">
         <button
@@ -524,12 +454,22 @@ export default function InstitutionAdminPage() {
       {/* FILTER BAR */}
       <section className="flex flex-col md:flex-row items-center justify-center gap-4 mb-3 w-full max-w-5xl mx-auto">
         {tab === "users" && (
-          <input
-            placeholder="Search by Name/Email…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full text-gray-900 placeholder:text-gray-600"
-          />
+          <>
+            <div className="flex w-full items-center justify-between gap-3 rounded-lg border border-gray-300 bg-white px-4 py-2 shadow-sm md:w-auto md:min-w-36">
+              <span className="text-xs font-semibold uppercase tracking-wide text-gray-700">
+                Total Users
+              </span>
+              <span className="text-xl font-bold tabular-nums text-semcmeBlue">
+                {users.length}
+              </span>
+            </div>
+            <input
+              placeholder="Search by Name/Email…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full text-gray-900 placeholder:text-gray-600"
+            />
+          </>
         )}
 
         {tab === "modules" && (
@@ -675,21 +615,15 @@ export default function InstitutionAdminPage() {
                   direction={userSort.direction}
                   onClick={() => toggleUserSort("name")}
                 />
-                <th className="p-3 text-left">Email</th>
+                <SortableHeader
+                  label="Email"
+                  active={userSort.key === "email"}
+                  direction={userSort.direction}
+                  onClick={() => toggleUserSort("email")}
+                />
                 <th className="p-3 text-left">Institution</th>
-                <SortableHeader
-                  label="Role"
-                  active={userSort.key === "role"}
-                  direction={userSort.direction}
-                  onClick={() => toggleUserSort("role")}
-                />
-                <SortableHeader
-                  label="Completed"
-                  active={userSort.key === "completedCount"}
-                  direction={userSort.direction}
-                  onClick={() => toggleUserSort("completedCount")}
-                  numeric
-                />
+                <th className="p-3 text-left">Role</th>
+                <th className="p-3 text-right">Completed</th>
                 <th className="p-3 text-right">In Progress</th>
               </tr>
             </thead>
@@ -762,26 +696,15 @@ export default function InstitutionAdminPage() {
           <table className="min-w-full text-sm text-gray-900">
             <thead className="bg-semcmeBlue text-white">
               <tr>
-                <SortableHeader
-                  label="Module"
-                  active={moduleSort.key === "title"}
-                  direction={moduleSort.direction}
-                  onClick={() => toggleModuleSort("title")}
-                />
+                <th className="p-3 text-left">Module</th>
                 <th className="p-3 text-left">Skill Level</th>
                 <th className="p-3 text-right">Not Started</th>
                 <th className="p-3 text-right">In Progress</th>
-                <SortableHeader
-                  label="Completed"
-                  active={moduleSort.key === "completed"}
-                  direction={moduleSort.direction}
-                  onClick={() => toggleModuleSort("completed")}
-                  numeric
-                />
+                <th className="p-3 text-right">Completed</th>
               </tr>
             </thead>
             <tbody>
-              {sortedModules.map((m: any, index: number) => (
+              {modules.map((m: any, index: number) => (
                 <React.Fragment key={m.id}>
                   {/* MAIN ROW */}
                   <tr
@@ -870,46 +793,16 @@ export default function InstitutionAdminPage() {
   );
 }
 
-function SummaryCard({
-  label,
-  value,
-  accent = "default",
-}: {
-  label: string;
-  value: number;
-  accent?: "default" | "success" | "progress";
-}) {
-  const valueColor =
-    accent === "success"
-      ? "text-emerald-700"
-      : accent === "progress"
-        ? "text-amber-700"
-        : "text-semcmeBlue";
-
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
-      <p className="text-xs font-semibold uppercase tracking-wide text-gray-700">
-        {label}
-      </p>
-      <p className={`mt-1 text-3xl font-bold tabular-nums ${valueColor}`}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
 function SortableHeader({
   label,
   active,
   direction,
   onClick,
-  numeric = false,
 }: {
   label: string;
   active: boolean;
   direction: SortDirection;
   onClick: () => void;
-  numeric?: boolean;
 }) {
   return (
     <th
@@ -922,7 +815,7 @@ function SortableHeader({
       <button
         type="button"
         onClick={onClick}
-        className={`flex w-full items-center gap-2 p-3 font-semibold transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white ${numeric ? "justify-end text-right" : "justify-start text-left"}`}
+        className="flex w-full items-center justify-start gap-2 p-3 text-left font-semibold transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white"
       >
         <span>{label}</span>
         {active ? (
