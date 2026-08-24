@@ -89,7 +89,8 @@ export async function GET() {
         )
       )
     `)
-    .eq("institution_id", profile.institution_id);
+    .eq("institution_id", profile.institution_id)
+    .neq("role", "Institution Administrator");
 
   if (joinErr) {
     console.error(joinErr);

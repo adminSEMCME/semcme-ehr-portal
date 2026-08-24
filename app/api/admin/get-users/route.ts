@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import { PRIMARY_ADMIN_EMAIL } from "@/lib/adminAccounts";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -54,6 +55,7 @@ export async function GET() {
         institutions(name)
       `,
       )
+      .neq("email", PRIMARY_ADMIN_EMAIL)
       .order("created_at", { ascending: false });
 
     if (error) {

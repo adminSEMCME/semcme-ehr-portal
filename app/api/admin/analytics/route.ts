@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { PRIMARY_ADMIN_EMAIL } from "@/lib/adminAccounts";
 
 export async function GET(request: Request) {
   const cookieStore = await cookies();
@@ -37,9 +38,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   // MAIN DATA (REPLACES VIEW)
-  const { data: profiles, error: joinErr } = await serviceSupabase.from(
-    "profiles",
-  ).select(`
+  const { data: profiles, error: joinErr } = await serviceSupabase
+    .from("profiles")
+    .select(`
       id,
       first_name,
       last_name,
@@ -62,7 +63,8 @@ export async function GET(request: Request) {
           skill_level
         )
       )
-    `);
+    `)
+    .neq("email", PRIMARY_ADMIN_EMAIL);
 
   if (joinErr) {
     console.error("join error:", joinErr);
