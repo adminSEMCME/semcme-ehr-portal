@@ -41,6 +41,8 @@ const ALLOWED_INSTITUTIONS = [
   "Wayne State University SOM",
 ];
 
+const MIN_PASSWORD_LENGTH = 8;
+
 /* ============================================================
    TYPE FIX — ALLOWS form[field] WITHOUT TS ERRORS
    ============================================================ */
@@ -293,6 +295,10 @@ export default function RegisterClient() {
     }
 
     if (showField("password")) {
+      if (form.password.length < MIN_PASSWORD_LENGTH) {
+        errors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`;
+      }
+
       if (!form.confirmPassword.trim()) {
         errors.confirmPassword = "Please retype your password.";
       } else if (form.password !== form.confirmPassword) {
@@ -544,6 +550,9 @@ export default function RegisterClient() {
                 onChange={handleChange}
                 inputClass={inputClass}
                 error={fieldErrors.password}
+                minLength={MIN_PASSWORD_LENGTH}
+                autoComplete="new-password"
+                hint={`Use at least ${MIN_PASSWORD_LENGTH} characters. Numbers and special characters are not required.`}
                 trailingButton={
                   <Button
                     type="button"
@@ -568,6 +577,8 @@ export default function RegisterClient() {
                 onChange={handleChange}
                 inputClass={inputClass}
                 error={fieldErrors.confirmPassword}
+                minLength={MIN_PASSWORD_LENGTH}
+                autoComplete="new-password"
                 trailingButton={
                   <Button
                     type="button"
@@ -822,6 +833,9 @@ function FieldInput({
   onChange,
   inputClass,
   error,
+  hint,
+  minLength,
+  autoComplete,
   trailingButton,
 }: any) {
   return (
@@ -836,11 +850,23 @@ function FieldInput({
           value={value}
           type={type}
           onChange={onChange}
+          minLength={minLength}
+          autoComplete={autoComplete}
+          aria-describedby={error || hint ? `${name}-message` : undefined}
+          aria-invalid={error ? true : undefined}
           className={`${inputClass} ${trailingButton ? "pr-10" : ""} ${error ? "border-red-500 focus:border-red-500" : ""}`}
         />
         {trailingButton}
       </div>
-      {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
+      {error ? (
+        <p id={`${name}-message`} className="mt-2 text-sm text-red-700">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={`${name}-message`} className="mt-2 text-sm text-gray-600">
+          {hint}
+        </p>
+      ) : null}
     </div>
   );
 }

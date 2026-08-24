@@ -8,6 +8,7 @@ import {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const MIN_PASSWORD_LENGTH = 8;
 
 // Creates a Supabase Auth user and stores the app profile fields.
 export async function POST(req: Request) {
@@ -63,6 +64,18 @@ export async function POST(req: Request) {
     if (!email || !password || !first_name || !last_name || !role) {
       return NextResponse.json(
         { error: "Missing required registration fields." },
+        { status: 400 },
+      );
+    }
+
+    if (
+      typeof password !== "string" ||
+      password.length < MIN_PASSWORD_LENGTH
+    ) {
+      return NextResponse.json(
+        {
+          error: `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`,
+        },
         { status: 400 },
       );
     }
@@ -156,10 +169,17 @@ export async function POST(req: Request) {
       console.error("Supabase createUser error:", authError);
       await cleanUpPartialRegistration();
 
+      const isWeakPassword = authError.code === "weak_password";
       const status =
-        authError.status === 400 ? 400 : authError.status === 409 ? 409 : 500;
+        isWeakPassword || authError.status === 400
+          ? 400
+          : authError.status === 409
+            ? 409
+            : 500;
       const message =
-        authError.status === 409
+        isWeakPassword
+          ? `Password must be at least ${MIN_PASSWORD_LENGTH} characters.`
+          : authError.status === 409
           ? "Email already registered."
           : authError.status === 400
             ? "Invalid signup data."
