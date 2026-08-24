@@ -589,7 +589,7 @@ export default function AdminDashboardPage() {
       return {
         module_title: m.title,
         skill_level: m.skill_level,
-        total_users_started: m.attempts,
+        total_not_started: m.usersNotStarted,
         total_in_progress: m.usersInProgress,
         total_completed: m.usersCompleted,
         avg_progress_percent: m.avgProgress,
@@ -925,7 +925,7 @@ export default function AdminDashboardPage() {
                 <tr>
                   <th className="p-3 text-left">Module</th>
                   <th className="p-3 text-left">Skill Level</th>
-                  <th className="p-3 text-left">Started</th>
+                  <th className="p-3 text-left">Not Started</th>
                   <th className="p-3 text-left">In Progress</th>
                   <th className="p-3 text-left">Completed</th>
                 </tr>
@@ -957,7 +957,7 @@ export default function AdminDashboardPage() {
                     >
                       <td className="p-3">{m.title}</td>
                       <td className="p-3">{m.skill_level ?? "—"}</td>
-                      <td className="p-3">{m.attempts}</td>
+                      <td className="p-3">{m.usersNotStarted}</td>
                       <td className="p-3">{m.usersInProgress}</td>
                       <td className="p-3">{m.usersCompleted}</td>
                     </tr>

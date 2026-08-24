@@ -5,11 +5,21 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
+import {
   focusFirstDescendant,
   handleDropdownKeyDown,
 } from "@/lib/keyboardNavigation";
 
 type Tab = "users" | "modules";
+type SortDirection = "asc" | "desc";
+type UserSortKey = "name" | "role" | "completedCount";
+type ModuleSortKey = "title" | "completed";
 
 export default function InstitutionAdminPage() {
   const [tab, setTab] = useState<Tab>("users");
@@ -23,6 +33,15 @@ export default function InstitutionAdminPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
   const [filterModuleId, setFilterModuleId] = useState<string>("all");
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
+  const [userSort, setUserSort] = useState<{
+    key: UserSortKey;
+    direction: SortDirection;
+  }>({ key: "name", direction: "asc" });
+  const [moduleSort, setModuleSort] = useState<{
+    key: ModuleSortKey;
+    direction: SortDirection;
+  }>({ key: "title", direction: "asc" });
 
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
 
@@ -142,6 +161,21 @@ export default function InstitutionAdminPage() {
     });
   }, [users, search, filterModuleId]);
 
+  const sortedUsers = useMemo(() => {
+    return [...filteredUsers].sort((a: any, b: any) => {
+      const comparison =
+        userSort.key === "completedCount"
+          ? a.completedCount - b.completedCount
+          : String(a[userSort.key] ?? "").localeCompare(
+              String(b[userSort.key] ?? ""),
+              undefined,
+              { sensitivity: "base" },
+            );
+
+      return userSort.direction === "asc" ? comparison : -comparison;
+    });
+  }, [filteredUsers, userSort]);
+
   /* ---------------- BUILD MODULES ---------------- */
   const modules = useMemo(() => {
     const allModules = analytics?.modules ?? [];
@@ -169,6 +203,62 @@ export default function InstitutionAdminPage() {
 
     return base;
   }, [analytics, userModuleRows, filterSelectedModules]);
+
+  const sortedModules = useMemo(() => {
+    return [...modules].sort((a: any, b: any) => {
+      const comparison =
+        moduleSort.key === "completed"
+          ? a.completed - b.completed
+          : String(a.title ?? "").localeCompare(String(b.title ?? ""), undefined, {
+              sensitivity: "base",
+            });
+
+      return moduleSort.direction === "asc" ? comparison : -comparison;
+    });
+  }, [modules, moduleSort]);
+
+  const summaryMetrics = useMemo(
+    () => ({
+      totalUsers: users.length,
+      completedModules: users.reduce(
+        (total: number, user: any) => total + user.completedCount,
+        0,
+      ),
+      modulesInProgress: users.reduce(
+        (total: number, user: any) => total + user.inProgressCount,
+        0,
+      ),
+    }),
+    [users],
+  );
+
+  const toggleUserSort = (key: UserSortKey) => {
+    setUserSort((current) => ({
+      key,
+      direction:
+        current.key === key
+          ? current.direction === "asc"
+            ? "desc"
+            : "asc"
+          : key === "completedCount"
+            ? "desc"
+            : "asc",
+    }));
+  };
+
+  const toggleModuleSort = (key: ModuleSortKey) => {
+    setModuleSort((current) => ({
+      key,
+      direction:
+        current.key === key
+          ? current.direction === "asc"
+            ? "desc"
+            : "asc"
+          : key === "completed"
+            ? "desc"
+            : "asc",
+    }));
+  };
 
   /* ---------------- ALL MODULES (FOR DETAIL PANEL) ---------------- */
   const allModules = analytics?.modules ?? [];
@@ -267,7 +357,7 @@ export default function InstitutionAdminPage() {
 
       return {
         module_title: m.title,
-        total_started: m.started,
+        total_not_started: Math.max(users.length - m.started, 0),
         total_in_progress: m.inProgress,
         total_completed: m.completed,
 
@@ -335,47 +425,84 @@ export default function InstitutionAdminPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-gray-900">
       {(loading || !analytics || !institution) && (
-        <div className="text-center py-10 text-gray-600">Loading...</div>
+        <div className="text-center py-10 text-gray-700">Loading...</div>
       )}
       {/* TITLE */}
       <h1 className="text-4xl font-bold text-semcmeBlue text-center">
         Institution Administrator Dashboard
       </h1>
 
+      {/* SUMMARY CARDS */}
+      <section
+        className="grid grid-cols-1 gap-4 sm:grid-cols-3"
+        aria-label="Institution progress summary"
+      >
+        <SummaryCard label="Total Users" value={summaryMetrics.totalUsers} />
+        <SummaryCard
+          label="Completed Modules"
+          value={summaryMetrics.completedModules}
+          accent="success"
+        />
+        <SummaryCard
+          label="Modules In Progress"
+          value={summaryMetrics.modulesInProgress}
+          accent="progress"
+        />
+      </section>
+
       {/* INFO SECTION */}
-      <div className="max-w-5xl mx-auto bg-blue-50 border border-blue-200 rounded-xl p-5 text-sm text-gray-700 space-y-3">
-        <h2 className="text-lg font-semibold text-semcmeBlue">
-          How to Use This Dashboard
-        </h2>
+      <section className="max-w-5xl mx-auto overflow-hidden rounded-xl border border-blue-200 bg-blue-50 text-sm text-gray-900">
+        <button
+          type="button"
+          onClick={() => setIsInstructionsOpen((current) => !current)}
+          className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-lg font-semibold text-semcmeBlue transition-colors hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-semcmeBlue"
+          aria-expanded={isInstructionsOpen}
+          aria-controls="ia-dashboard-instructions"
+        >
+          <span>How to Use This Dashboard</span>
+          {isInstructionsOpen ? (
+            <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
+          ) : (
+            <ChevronRight aria-hidden="true" className="h-5 w-5 shrink-0" />
+          )}
+        </button>
 
-        <p>
-          This dashboard allows you to monitor user progress within your
-          institution.
-        </p>
+        {isInstructionsOpen && (
+          <div
+            id="ia-dashboard-instructions"
+            className="space-y-3 border-t border-blue-200 px-5 py-4"
+          >
+            <p>
+              This dashboard allows you to monitor user progress within your
+              institution.
+            </p>
 
-        <div className="space-y-2">
-          <p>
-            <strong>Users Tab:</strong> View all users in your institution.
-            Click a user row to expand their full module history, including
-            completed, in-progress, and not started modules.
-          </p>
+            <div className="space-y-2">
+              <p>
+                <strong>Users Tab:</strong> View all users in your institution.
+                Click a user row to expand their full module history, including
+                completed, in-progress, and not started modules.
+              </p>
 
-          <p>
-            <strong>Modules Tab:</strong> View all modules and track how many
-            users have started, are in progress, or have completed each module.
-            Click a module row to expand and see detailed user breakdowns.
-          </p>
+              <p>
+                <strong>Modules Tab:</strong> View all modules and track how
+                many users are in progress, have completed, or have not started
+                each module. Click a module row to expand and see detailed user
+                breakdowns.
+              </p>
 
-          <p>
-            Use the search and filters to quickly find specific users or
-            modules, and export data as needed.
-          </p>
-        </div>
-      </div>
+              <p>
+                Use the search and filters to quickly find specific users or
+                modules, and export data as needed.
+              </p>
+            </div>
+          </div>
+        )}
+      </section>
 
-      <p className="text-center text-sm text-gray-600">
+      <p className="text-center text-sm text-gray-800">
         <strong>Your Institution:</strong> {institution}
       </p>
 
@@ -401,7 +528,7 @@ export default function InstitutionAdminPage() {
             placeholder="Search by Name/Email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full"
+            className="flex-1 px-3 py-2 rounded-md border border-gray-300 w-full text-gray-900 placeholder:text-gray-600"
           />
         )}
 
@@ -532,31 +659,47 @@ export default function InstitutionAdminPage() {
         </Button>
       </section>
 
-      <p className="text-center text-sm text-gray-500 mb-1">
+      <p className="text-center text-sm text-gray-700 mb-1">
         Click a row to expand details.
       </p>
 
       {/* TABLE */}
       <div className="overflow-x-auto border border-gray-300 rounded-xl shadow-sm bg-white">
         {tab === "users" ? (
-          <table className="min-w-full text-sm">
+          <table className="min-w-full text-sm text-gray-900">
             <thead className="bg-semcmeBlue text-white">
               <tr>
-                <th className="p-3 text-left">Name</th>
+                <SortableHeader
+                  label="Name"
+                  active={userSort.key === "name"}
+                  direction={userSort.direction}
+                  onClick={() => toggleUserSort("name")}
+                />
                 <th className="p-3 text-left">Email</th>
                 <th className="p-3 text-left">Institution</th>
-                <th className="p-3 text-left">Role</th>
-                <th className="p-3 text-left">Completed</th>
-                <th className="p-3 text-left">In Progress</th>
+                <SortableHeader
+                  label="Role"
+                  active={userSort.key === "role"}
+                  direction={userSort.direction}
+                  onClick={() => toggleUserSort("role")}
+                />
+                <SortableHeader
+                  label="Completed"
+                  active={userSort.key === "completedCount"}
+                  direction={userSort.direction}
+                  onClick={() => toggleUserSort("completedCount")}
+                  numeric
+                />
+                <th className="p-3 text-right">In Progress</th>
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((u: any) => {
+              {sortedUsers.map((u: any, index: number) => {
                 return (
                   <React.Fragment key={`user-${u.user_id}`}>
                     {/* MAIN ROW */}
                     <tr
-                      className="border-b cursor-pointer hover:bg-gray-100"
+                      className={`${index % 2 === 0 ? "bg-white" : "bg-slate-50"} cursor-pointer border-b border-gray-200 transition-colors hover:bg-blue-100 focus-visible:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-semcmeBlue`}
                       onClick={() =>
                         setSelectedUserId(
                           selectedUserId === u.user_id ? null : u.user_id,
@@ -572,19 +715,39 @@ export default function InstitutionAdminPage() {
                       }}
                       role="button"
                       tabIndex={0}
+                      aria-expanded={selectedUserId === u.user_id}
                       title={`View details for ${u.name}`}
                     >
-                      <td className="p-3">{u.name}</td>
-                      <td>{u.email}</td>
-                      <td>{u.institution}</td>
-                      <td>{u.role}</td>
-                      <td>{u.completedCount}</td>
-                      <td>{u.inProgressCount}</td>
+                      <td className="p-3 font-medium">
+                        <span className="flex items-center gap-2">
+                          {selectedUserId === u.user_id ? (
+                            <ChevronDown
+                              aria-hidden="true"
+                              className="h-4 w-4 shrink-0 text-semcmeBlue"
+                            />
+                          ) : (
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="h-4 w-4 shrink-0 text-gray-600"
+                            />
+                          )}
+                          {u.name}
+                        </span>
+                      </td>
+                      <td className="p-3">{u.email}</td>
+                      <td className="p-3">{u.institution}</td>
+                      <td className="p-3">{u.role}</td>
+                      <td className="p-3 text-right">
+                        <CompletionCount value={u.completedCount} />
+                      </td>
+                      <td className="p-3 text-right font-medium tabular-nums">
+                        {u.inProgressCount}
+                      </td>
                     </tr>
 
                     {/* EXPANDED ROW */}
                     {selectedUserId === u.user_id && (
-                      <tr className="bg-gray-50 border-b border-gray-200">
+                      <tr className="border-b border-blue-200 bg-blue-50">
                         <td colSpan={6} className="p-4">
                           <UserDetailPanel user={u} allModules={allModules} />
                         </td>
@@ -596,23 +759,34 @@ export default function InstitutionAdminPage() {
             </tbody>
           </table>
         ) : (
-          <table className="min-w-full text-sm">
+          <table className="min-w-full text-sm text-gray-900">
             <thead className="bg-semcmeBlue text-white">
               <tr>
-                <th className="p-3 text-left">Module</th>
+                <SortableHeader
+                  label="Module"
+                  active={moduleSort.key === "title"}
+                  direction={moduleSort.direction}
+                  onClick={() => toggleModuleSort("title")}
+                />
                 <th className="p-3 text-left">Skill Level</th>
-                <th className="p-3 text-left">Started</th>
-                <th className="p-3 text-left">In Progress</th>
-                <th className="p-3 text-left">Completed</th>
+                <th className="p-3 text-right">Not Started</th>
+                <th className="p-3 text-right">In Progress</th>
+                <SortableHeader
+                  label="Completed"
+                  active={moduleSort.key === "completed"}
+                  direction={moduleSort.direction}
+                  onClick={() => toggleModuleSort("completed")}
+                  numeric
+                />
               </tr>
             </thead>
             <tbody>
-              {modules.map((m: any) => (
+              {sortedModules.map((m: any, index: number) => (
                 <React.Fragment key={m.id}>
                   {/* MAIN ROW */}
                   <tr
                     key={m.id}
-                    className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-slate-50"} cursor-pointer border-b border-gray-200 transition-colors hover:bg-blue-100 focus-visible:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-semcmeBlue`}
                     onClick={() =>
                       setSelectedModuleId(
                         selectedModuleId === m.id ? null : m.id,
@@ -628,18 +802,40 @@ export default function InstitutionAdminPage() {
                     }}
                     role="button"
                     tabIndex={0}
+                    aria-expanded={selectedModuleId === m.id}
                     title={`View details for ${m.title}`}
                   >
-                    <td className="p-3">{m.title}</td>
+                    <td className="p-3 font-medium">
+                      <span className="flex items-center gap-2">
+                        {selectedModuleId === m.id ? (
+                          <ChevronDown
+                            aria-hidden="true"
+                            className="h-4 w-4 shrink-0 text-semcmeBlue"
+                          />
+                        ) : (
+                          <ChevronRight
+                            aria-hidden="true"
+                            className="h-4 w-4 shrink-0 text-gray-600"
+                          />
+                        )}
+                        {m.title}
+                      </span>
+                    </td>
                     <td className="p-3">{m.skill_level || "—"}</td>
-                    <td className="p-3">{m.started}</td>
-                    <td className="p-3">{m.inProgress}</td>
-                    <td className="p-3">{m.completed}</td>
+                    <td className="p-3 text-right font-medium tabular-nums">
+                      {Math.max(users.length - m.started, 0)}
+                    </td>
+                    <td className="p-3 text-right font-medium tabular-nums">
+                      {m.inProgress}
+                    </td>
+                    <td className="p-3 text-right">
+                      <CompletionCount value={m.completed} />
+                    </td>
                   </tr>
 
                   {/* EXPANDED ROW */}
                   {selectedModuleId === m.id && (
-                    <tr className="bg-gray-50 border-b border-gray-200">
+                    <tr className="border-b border-blue-200 bg-blue-50">
                       <td colSpan={5} className="p-4">
                         <ModuleDetailPanel module={m} users={users} />
                       </td>
@@ -652,7 +848,7 @@ export default function InstitutionAdminPage() {
         )}
       </div>
 
-      <p className="text-sm text-gray-600 text-center">
+      <p className="text-sm text-gray-800 text-center">
         <strong>Need Help?</strong>{" "}
         <a
           href="/support/program"
@@ -674,6 +870,83 @@ export default function InstitutionAdminPage() {
   );
 }
 
+function SummaryCard({
+  label,
+  value,
+  accent = "default",
+}: {
+  label: string;
+  value: number;
+  accent?: "default" | "success" | "progress";
+}) {
+  const valueColor =
+    accent === "success"
+      ? "text-emerald-700"
+      : accent === "progress"
+        ? "text-amber-700"
+        : "text-semcmeBlue";
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-700">
+        {label}
+      </p>
+      <p className={`mt-1 text-3xl font-bold tabular-nums ${valueColor}`}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function SortableHeader({
+  label,
+  active,
+  direction,
+  onClick,
+  numeric = false,
+}: {
+  label: string;
+  active: boolean;
+  direction: SortDirection;
+  onClick: () => void;
+  numeric?: boolean;
+}) {
+  return (
+    <th
+      scope="col"
+      aria-sort={
+        active ? (direction === "asc" ? "ascending" : "descending") : "none"
+      }
+      className="p-0 text-left"
+    >
+      <button
+        type="button"
+        onClick={onClick}
+        className={`flex w-full items-center gap-2 p-3 font-semibold transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white ${numeric ? "justify-end text-right" : "justify-start text-left"}`}
+      >
+        <span>{label}</span>
+        {active ? (
+          direction === "asc" ? (
+            <ArrowUp aria-hidden="true" className="h-4 w-4" />
+          ) : (
+            <ArrowDown aria-hidden="true" className="h-4 w-4" />
+          )
+        ) : (
+          <ArrowUpDown aria-hidden="true" className="h-4 w-4 opacity-70" />
+        )}
+      </button>
+    </th>
+  );
+}
+
+function CompletionCount({ value }: { value: number }) {
+  return (
+    <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-emerald-100 px-2.5 py-1 font-bold tabular-nums text-emerald-800">
+      {value}
+    </span>
+  );
+}
+
 function UserDetailPanel({
   user,
   allModules,
@@ -691,7 +964,7 @@ function UserDetailPanel({
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-900">
       {/* LEFT COLUMN */}
       <div className="space-y-3">
         <h2 className="text-xl font-semibold text-semcmeBlue">{user.name}</h2>
@@ -720,7 +993,7 @@ function UserDetailPanel({
           <h3 className="font-semibold text-semcmeBlue">Modules In Progress</h3>
 
           {inProgress.length === 0 ? (
-            <p className="text-xs text-gray-500">None.</p>
+            <p className="text-xs text-gray-700">None.</p>
           ) : (
             <ul className="text-xs">
               {inProgress.map((m: any, idx: number) => (
@@ -738,7 +1011,7 @@ function UserDetailPanel({
           <h3 className="font-semibold text-semcmeBlue">Modules Not Started</h3>
 
           {notStarted.length === 0 ? (
-            <p className="text-xs text-gray-500">None.</p>
+            <p className="text-xs text-gray-700">None.</p>
           ) : (
             <ul className="text-xs">
               {notStarted.map((m) => (
@@ -758,7 +1031,7 @@ function UserDetailPanel({
           </h3>
 
           {completed.length === 0 ? (
-            <p className="text-xs text-gray-500">None completed.</p>
+            <p className="text-xs text-gray-700">None completed.</p>
           ) : (
             <ul className="text-xs space-y-2">
               {completed.map((m: any, idx: number) => (
@@ -808,7 +1081,7 @@ function ModuleDetailPanel({ module, users }: { module: any; users: any[] }) {
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-700">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-900">
       {/* LEFT */}
       <div className="space-y-3">
         <h3 className="text-lg font-semibold text-semcmeBlue">
@@ -820,11 +1093,15 @@ function ModuleDetailPanel({ module, users }: { module: any; users: any[] }) {
         </p>
 
         <p>
-          <strong>Total Started:</strong> {module.started}
+          <strong>Total Not Started:</strong> {notStartedUsers.length}
         </p>
 
         <p>
-          <strong>Total Completed:</strong> {module.completed}
+          <strong>Total In Progress:</strong> {inProgressUsers.length}
+        </p>
+
+        <p>
+          <strong>Total Completed:</strong> {completedUsers.length}
         </p>
       </div>
 
@@ -835,7 +1112,7 @@ function ModuleDetailPanel({ module, users }: { module: any; users: any[] }) {
           <h4 className="font-semibold text-gray-800">Users Completed</h4>
 
           {completedUsers.length === 0 ? (
-            <p className="text-xs text-gray-500">None.</p>
+            <p className="text-xs text-gray-700">None.</p>
           ) : (
             <ul className="text-xs">
               {completedUsers.map((u: any) => (
@@ -852,7 +1129,7 @@ function ModuleDetailPanel({ module, users }: { module: any; users: any[] }) {
           <h4 className="font-semibold text-gray-800">Users In Progress</h4>
 
           {inProgressUsers.length === 0 ? (
-            <p className="text-xs text-gray-500">None.</p>
+            <p className="text-xs text-gray-700">None.</p>
           ) : (
             <ul className="text-xs">
               {inProgressUsers.map((u: any) => (
@@ -869,7 +1146,7 @@ function ModuleDetailPanel({ module, users }: { module: any; users: any[] }) {
           <h4 className="font-semibold text-gray-800">Users Not Started</h4>
 
           {notStartedUsers.length === 0 ? (
-            <p className="text-xs text-gray-500">None.</p>
+            <p className="text-xs text-gray-700">None.</p>
           ) : (
             <ul className="text-xs">
               {notStartedUsers.map((u: any) => (

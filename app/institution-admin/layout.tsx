@@ -54,7 +54,9 @@ export default async function InstitutionAdminLayout({
         <AppHeader action="logout" />
 
         {/* ✅ MATCH ADMIN PAGE SPACING */}
-        <main className="max-w-7xl mx-auto py-10 px-6">{children}</main>
+        <main className="max-w-7xl mx-auto px-6 pt-4 pb-10 sm:pt-6">
+          {children}
+        </main>
       </div>
     </>
   );
