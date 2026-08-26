@@ -80,10 +80,24 @@ const AUTHORS = [
   },
 
   {
+    name: "Kim Bruley",
+    title: "Clinical Coding Manager",
+    organization: "Corewell Health East",
+    bio: `Ms. Kim Bruley is the Clinical Coding Manager at Corewell Health East.`,
+  },
+
+  {
     name: "Nikhil Goyal, MD",
     title: "Physician",
     organization: "Henry Ford Health System",
     bio: `Dr. Goyal is board certified in Emergency Medicine, Internal Medicine and Clinical Informatics. He received his medical degree from Maulana Azad Medical College in India and completed his residency in Emergency Medicine and Internal Medicine at Henry Ford Hospital in Detroit, Michigan. Dr. Goyal was until recently the Director of Medical Education for Henry Ford Wyandotte Hospital, and he has served on various committees of the ACGME and the board of directors of the National Resident Matching Program. He has received multiple awards including the Distinguished Section Editor award from the Western Journal of Emergency Medicine (2019), “Top Docs” Emergency Medicine Listing, Hour Magazine (2012-2024), and Roger F. Smith, MD Outstanding Resident Award (Henry Ford Health System, 2006). Dr. Goyal's academic interests include medical education research, teaching evidence-based medicine and using technology to improve healthcare.`,
+  },
+
+  {
+    name: "John Joseph, MD",
+    title: "Emergency Medicine Physician",
+    organization: "Henry Ford Health",
+    bio: `Dr. John Joseph is an experienced emergency medicine physician at Henry Ford Health based in Detroit, Michigan. Dr. Joseph specializes in treating a variety of acute medical conditions, including trauma, heart attacks, strokes, and severe infections. He is known for his calm demeanor and patient-centered approach, ensuring that he listens to his patients and provides educational health information. He is certified by the American Board of Emergency Medicine. Dr. Joseph completed medical school at Wayne State University School of Medicine in Detroit, MI in 2016, and an internship and residency at the Department of Emergency Medicine at the University of Michigan in Ann Arbor, MI in 2020.`,
   },
 
   {
