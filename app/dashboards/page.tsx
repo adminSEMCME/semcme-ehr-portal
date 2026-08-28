@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
-import { Award, ChevronDown, Download } from "lucide-react";
+import { Award, ChevronDown, Download, X } from "lucide-react";
 import Footer from "@/components/Footer";
 import AppHeader from "@/components/AppHeader";
 import {
@@ -213,6 +213,8 @@ export default function DashboardPage() {
   const scrollTo = searchParams.get("scrollTo");
 
   const hasScrolledRef = useRef(false);
+  const modulesRef = useRef<Module[]>([]);
+  const completedModuleIdsRef = useRef<Set<string>>(new Set());
 
   const [modules, setModules] = useState<Module[]>([]);
   const [progress, setProgress] = useState<ModuleProgress[]>([]);
@@ -231,6 +233,10 @@ export default function DashboardPage() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showCEInfoModal, setShowCEInfoModal] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
+  const [showUmeCompletionPrompt, setShowUmeCompletionPrompt] =
+    useState(false);
+  const [hideUmeCompletionPrompt, setHideUmeCompletionPrompt] =
+    useState(false);
 
   /* ANNOUNCEMENTS */
   useEffect(() => {
@@ -337,7 +343,7 @@ export default function DashboardPage() {
 
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("role")
+          .select("role, hide_ume_completion_prompt")
           .eq("id", user.id)
           .single();
 
@@ -357,6 +363,7 @@ export default function DashboardPage() {
           .order("order_index", { ascending: true });
 
         if (modulesData?.length) {
+          modulesRef.current = modulesData;
           const thumbnailUrls = modulesData.map((m) =>
             m.url.replace("/story.html", "/story_content/thumbnail.jpg"),
           );
@@ -382,6 +389,14 @@ export default function DashboardPage() {
         setAssessments(assessmentData || []);
         setModules(modulesData || []);
         setProgress(progressData || []);
+        completedModuleIdsRef.current = new Set(
+          (progressData || [])
+            .filter((item) => item.status === "completed")
+            .map((item) => item.module_id),
+        );
+        setHideUmeCompletionPrompt(
+          profileData?.hide_ume_completion_prompt === true,
+        );
         setCertificates(certData || []);
         // 🔹 Show CE info modal ONLY on first completed module
         const role = profileData?.role?.toLowerCase();
@@ -446,11 +461,12 @@ export default function DashboardPage() {
 
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("role")
+        .select("role, hide_ume_completion_prompt")
         .eq("id", user.id)
         .single();
 
       const role = profileData?.role?.toLowerCase();
+      const isMedicalStudent = role === "medical student";
       const isCEUser =
         role === "practicing physician/faculty" || role === "nursing";
 
@@ -475,9 +491,40 @@ export default function DashboardPage() {
           .eq("user_id", user.id),
       ]);
 
-      setProgress(progressData || []);
+      const nextProgress = progressData || [];
+      const nextCompletedIds = new Set(
+        nextProgress
+          .filter((item) => item.status === "completed")
+          .map((item) => item.module_id),
+      );
+      const newlyCompletedUmeModule = nextProgress.some((item) => {
+        if (
+          item.status !== "completed" ||
+          completedModuleIdsRef.current.has(item.module_id)
+        ) {
+          return false;
+        }
+
+        const completedModule = modulesRef.current.find(
+          (module) => module.id === item.module_id,
+        );
+        return completedModule
+          ? moduleBelongsToPath(completedModule, "ume")
+          : false;
+      });
+
+      completedModuleIdsRef.current = nextCompletedIds;
+      setProgress(nextProgress);
       setCertificates(certData || []);
       setAssessments(assessmentData || []);
+
+      const promptIsHidden =
+        profileData?.hide_ume_completion_prompt === true;
+      setHideUmeCompletionPrompt(promptIsHidden);
+
+      if (isMedicalStudent && !promptIsHidden && newlyCompletedUmeModule) {
+        setShowUmeCompletionPrompt(true);
+      }
 
       // 🔹 Show CE info modal immediately after first completion
       const { data: cePref } = await supabase
@@ -646,6 +693,25 @@ export default function DashboardPage() {
       .replace(/[^a-z0-9]+/gi, "-")
       .replace(/^-+|-+$/g, "")
       .toLowerCase()}.pdf`;
+  };
+
+  const updateUmeCompletionPromptPreference = async (hidden: boolean) => {
+    setHideUmeCompletionPrompt(hidden);
+
+    try {
+      const response = await fetch("/api/preferences/ume-completion-prompt", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ hidden }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to save UME completion prompt preference");
+      }
+    } catch (error) {
+      console.error(error);
+      setHideUmeCompletionPrompt(!hidden);
+    }
   };
 
   const downloadCertificate = async (url: string, fileName: string) => {
@@ -1180,6 +1246,63 @@ export default function DashboardPage() {
             );
           })}
         </div>
+
+        {showUmeCompletionPrompt && (
+          <div
+            className="fixed inset-0 z-60 flex items-center justify-center bg-slate-950/65 p-4"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                setShowUmeCompletionPrompt(false);
+              }
+            }}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="ume-completion-prompt-title"
+              className="relative w-full max-w-lg rounded-2xl border border-blue-100 bg-white p-7 shadow-2xl"
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => setShowUmeCompletionPrompt(false)}
+                className="absolute right-4 top-4 rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-semcmeBlue"
+                aria-label="Close notification"
+              >
+                <X className="size-5" aria-hidden="true" />
+              </button>
+
+              <div className="pr-8">
+                <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-blue-100 text-semcmeBlue">
+                  <Award className="size-7" aria-hidden="true" />
+                </div>
+                <h2
+                  id="ume-completion-prompt-title"
+                  className="text-2xl font-bold text-slate-950"
+                >
+                  Found this module helpful?
+                </h2>
+                <p className="mt-3 leading-relaxed text-slate-700">
+                  Complete the full UME series to earn a certificate of
+                  completion that can be added to your CV.
+                </p>
+              </div>
+
+              <label className="mt-6 flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={hideUmeCompletionPrompt}
+                  onChange={(event) =>
+                    updateUmeCompletionPromptPreference(event.target.checked)
+                  }
+                  className="size-4 accent-semcmeBlue"
+                />
+                Don&apos;t show this notification again
+              </label>
+            </div>
+          </div>
+        )}
 
         {/* 🔹 CE FIRST-COMPLETION INFO MODAL */}
         {showCEInfoModal && (
