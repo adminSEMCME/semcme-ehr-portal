@@ -247,7 +247,7 @@ export default function InstructorGuideContent() {
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-3xl bg-linear-to-r from-blue-700 to-semcmeBlue p-8 text-center text-white shadow-xl md:p-12">
+          <section className="overflow-hidden rounded-3xl bg-linear-to-br from-slate-950 via-blue-950 to-[#02519c] p-8 text-center text-white shadow-xl md:p-12">
             <Mail className="mx-auto size-10 text-blue-100" aria-hidden="true" />
             <h2 className="mt-4 text-3xl font-bold">Ready to Learn More?</h2>
             <p className="mx-auto mt-4 max-w-3xl text-lg leading-relaxed text-blue-50">
@@ -260,7 +260,7 @@ export default function InstructorGuideContent() {
             </p>
             <a
               href="mailto:njuzych@semcme.org"
-              className="mt-6 inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 font-bold text-semcmeBlue shadow-sm transition hover:bg-blue-50"
+              className="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-100 px-6 py-3 font-bold text-blue-950 shadow-sm transition hover:bg-blue-200"
               title="Email SEMCME"
             >
               Contact SEMCME

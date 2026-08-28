@@ -68,7 +68,17 @@ export default async function EducatorPreviewPage({
       "id, title, description, objective_description, url, order_index, skill_level",
     )
     .order("order_index", { ascending: true });
-  const modules = getModulesForPath((data || []) as PreviewModule[], path);
+  const pathwayModules = getModulesForPath(
+    (data || []) as PreviewModule[],
+    path,
+  );
+  const modules =
+    path === "gme"
+      ? [
+          ...pathwayModules.filter((module) => module.id !== "mock-ehr"),
+          ...pathwayModules.filter((module) => module.id === "mock-ehr"),
+        ]
+      : pathwayModules;
 
   return (
     <>
@@ -100,33 +110,27 @@ export default async function EducatorPreviewPage({
             </div>
           </section>
 
-          <section className="my-7 grid gap-4 md:grid-cols-3">
-            <div className="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-              <Eye className="mt-0.5 size-5 shrink-0 text-blue-700" aria-hidden="true" />
-              <div>
-                <h2 className="font-bold text-slate-900">Full module review</h2>
-                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+          <section className="my-7 overflow-hidden rounded-2xl border border-white/40 bg-white shadow-sm">
+            <div className="flex flex-col gap-1 border-b border-blue-200 bg-blue-50 px-5 py-3 md:flex-row md:items-center md:gap-3">
+              <Eye className="size-5 shrink-0 text-blue-700" aria-hidden="true" />
+              <h2 className="shrink-0 font-bold text-slate-900">Full module review</h2>
+              <p className="text-sm text-slate-600 md:whitespace-nowrap">
                   Open module content directly in a separate browser tab.
-                </p>
-              </div>
+              </p>
             </div>
-            <div className="flex items-start gap-3 rounded-2xl border border-teal-200 bg-teal-50 p-5">
-              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-teal-700" aria-hidden="true" />
-              <div>
-                <h2 className="font-bold text-slate-900">No learner tracking</h2>
-                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+            <div className="flex flex-col gap-1 border-b border-teal-200 bg-teal-50 px-5 py-3 md:flex-row md:items-center md:gap-3">
+              <ShieldCheck className="size-5 shrink-0 text-teal-700" aria-hidden="true" />
+              <h2 className="shrink-0 font-bold text-slate-900">No learner tracking</h2>
+              <p className="text-sm text-slate-600 md:whitespace-nowrap">
                   Progress, assessments, certificates, and CE credit are not recorded.
-                </p>
-              </div>
+              </p>
             </div>
-            <div className="flex items-start gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-5">
-              <Info className="mt-0.5 size-5 shrink-0 text-orange-700" aria-hidden="true" />
-              <div>
-                <h2 className="font-bold text-slate-900">Educator access</h2>
-                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+            <div className="flex flex-col gap-1 bg-orange-50 px-5 py-3 md:flex-row md:items-center md:gap-3">
+              <Info className="size-5 shrink-0 text-orange-700" aria-hidden="true" />
+              <h2 className="shrink-0 font-bold text-slate-900">Educator access</h2>
+              <p className="text-sm text-slate-600 md:whitespace-nowrap">
                   This preview does not represent an enrolled learner account.
-                </p>
-              </div>
+              </p>
             </div>
           </section>
 

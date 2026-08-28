@@ -104,20 +104,15 @@ export default function DemoDashboard() {
       <main className="min-h-screen pb-20 flex flex-col items-center font-sans">
         <AppHeader action="register" />
 
-        {/* TITLE */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 text-center leading-tight px-4">
-          Demo Dashboard
-        </h1>
+        {/* DEMO DESCRIPTION SECTION */}
+        <WebsiteGuideContent />
 
         {/* NOTICE */}
-        <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 px-6 py-3 rounded-md mb-6 text-sm text-center max-w-2xl">
+        <div className="mb-6 max-w-2xl rounded-md border border-yellow-300 bg-yellow-100 px-6 py-3 text-center text-sm text-yellow-800">
           You are viewing a demo version of the EHR Learning Portal. Progress
           shown here is simulated. Register for full access to all 18 modules
           and features.
         </div>
-
-        {/* DEMO DESCRIPTION SECTION */}
-        <WebsiteGuideContent />
 
         {/* MODULE GRID */}
         <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 px-4">

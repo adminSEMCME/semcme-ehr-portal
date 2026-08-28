@@ -183,7 +183,7 @@ export default function WebsiteGuideContent({
           onClick={() => collapsible && setIsExpanded((current) => !current)}
           disabled={!collapsible}
           aria-expanded={collapsible ? isOpen : undefined}
-          className={`relative w-full overflow-hidden bg-linear-to-br from-slate-50 via-white to-blue-50 px-6 py-10 text-center md:px-12 md:py-14 ${
+          className={`relative w-full overflow-hidden bg-linear-to-br from-slate-100 via-blue-50 to-blue-100 px-6 py-10 text-center md:px-12 md:py-14 ${
             collapsible ? "cursor-pointer" : "cursor-default"
           }`}
           title={
@@ -472,48 +472,8 @@ export default function WebsiteGuideContent({
               </div>
             </section>
 
-            <section className="rounded-3xl border border-orange-200 bg-orange-50 p-7 md:p-10">
-              <div className="grid items-center gap-8 md:grid-cols-[auto_1fr]">
-                <div className="flex size-20 items-center justify-center rounded-2xl bg-orange-100 text-orange-700">
-                  <MonitorPlay className="size-10" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold uppercase tracking-[0.18em] text-orange-700">
-                    Explore the Educator Demo
-                  </p>
-                  <h2 className="mt-1 text-3xl font-bold text-slate-900">
-                    See the Curriculum in Action
-                  </h2>
-                  <p className="mt-4 leading-relaxed text-slate-700">
-                    The Educator Demo Site provides a sample of selected modules
-                    and allows educators and organizations to preview:
-                  </p>
-                  <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-                    {[
-                      "Module content",
-                      "Learning activities",
-                      "Case-based exercises",
-                      "Educational design",
-                      "The learner experience",
-                    ].map((item) => (
-                      <li
-                        key={item}
-                        className="flex gap-2 rounded-xl bg-white p-3 text-sm font-semibold text-slate-700 shadow-sm"
-                      >
-                        <Check
-                          className="mt-0.5 size-4 shrink-0 text-teal-600"
-                          aria-hidden="true"
-                        />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </section>
-
             {showFooterText && (
-              <section className="overflow-hidden rounded-3xl bg-linear-to-r from-blue-700 to-semcmeBlue p-8 text-center text-white shadow-xl md:p-12">
+              <section className="overflow-hidden rounded-3xl bg-linear-to-br from-slate-950 via-blue-950 to-[#02519c] p-8 text-center text-white shadow-xl md:p-12">
                 <Mail
                   className="mx-auto size-10 text-blue-100"
                   aria-hidden="true"
@@ -531,7 +491,7 @@ export default function WebsiteGuideContent({
                 </p>
                 <a
                   href="mailto:njuzych@semcme.org"
-                  className="mt-6 inline-flex items-center gap-2 rounded-md bg-white px-6 py-3 font-bold text-semcmeBlue shadow-sm transition hover:bg-blue-50"
+                  className="mt-6 inline-flex items-center gap-2 rounded-md bg-blue-100 px-6 py-3 font-bold text-blue-950 shadow-sm transition hover:bg-blue-200"
                   title="Email SEMCME"
                 >
                   Contact SEMCME
