@@ -55,13 +55,14 @@ export default function AppHeader({
               fill
               className="object-contain rounded-md"
               priority
+              unoptimized
             />
           </div>
         </div>
       </Link>
 
       {/* RIGHT SIDE */}
-      <div className="flex items-center gap-6 justify-center lg:justify-end mt-3 lg:mt-0">
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-3 sm:gap-5 lg:mt-0 lg:justify-end">
         {variant === "home" ? (
           <>
             <Link
@@ -70,6 +71,14 @@ export default function AppHeader({
               className="text-white font-semibold text-md hover:underline transition"
             >
               About The Authors
+            </Link>
+
+            <Link
+              href="/demo"
+              title="Open the User Guide and demo"
+              className="text-md font-semibold text-white transition hover:underline"
+            >
+              User Guide
             </Link>
 
             <div ref={guidesRef} className="relative cursor-pointer">
@@ -86,10 +95,10 @@ export default function AppHeader({
                   }
                 }}
                 variant="ghostInverted"
-                title="view website guides"
+                title="View educator information and module previews"
                 className="font-semibold text-md hover:underline"
               >
-                Website Guides
+                For Educators
                 <ChevronDown
                   className={`w-4 h-4 transition-transform ${
                     guidesOpen ? "rotate-180" : ""
@@ -100,30 +109,39 @@ export default function AppHeader({
               {guidesOpen && (
                 <div
                   data-dropdown-menu
-                  className="absolute right-0 top-full mt-2 bg-white rounded-sm shadow-lg w-34 overflow-hidden z-50"
+                  className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-md bg-white py-1 shadow-xl ring-1 ring-slate-200"
                   onKeyDown={(e) =>
                     handleDropdownKeyDown(e, () => setGuidesOpen(false))
                   }
                 >
-                  <a
-                    href="/demo"
-                    title="User Guide"
-                    target="_self"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
-                  >
-                    User Guide
-                  </a>
-
-                  <a
+                  <Link
                     href="/instructor-guide"
-                    target="_self"
-                    rel="noopener noreferrer"
-                    className="block px-4 py-2 text-sm text-semcmeBlue hover:bg-slate-200"
-                    title="Instructor Guide"
+                    className="block px-4 py-3 text-sm font-semibold text-semcmeBlue hover:bg-blue-50"
+                    title="Educator information"
                   >
-                    Instructor Guide
-                  </a>
+                    Educator Information
+                  </Link>
+                  <Link
+                    href="/educator-preview/ume"
+                    className="block border-t border-slate-100 px-4 py-3 text-sm text-slate-700 hover:bg-blue-50 hover:text-semcmeBlue"
+                    title="Preview UME modules"
+                  >
+                    Preview UME Modules
+                  </Link>
+                  <Link
+                    href="/educator-preview/gme"
+                    className="block border-t border-slate-100 px-4 py-3 text-sm text-slate-700 hover:bg-blue-50 hover:text-semcmeBlue"
+                    title="Preview GME modules"
+                  >
+                    Preview GME Modules
+                  </Link>
+                  <Link
+                    href="/educator-preview/cme"
+                    className="block border-t border-slate-100 px-4 py-3 text-sm text-slate-700 hover:bg-blue-50 hover:text-semcmeBlue"
+                    title="Preview CME modules"
+                  >
+                    Preview CME Modules
+                  </Link>
                 </div>
               )}
             </div>

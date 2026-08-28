@@ -1,5 +1,9 @@
 // public/modules/module-progress-tracker.js
 (function () {
+  // Educator previews are intentionally read-only. Exit before touching
+  // localStorage, observing the course, or calling the progress API.
+  if (new URLSearchParams(location.search).get("preview") === "1") return;
+
   // ————— helpers —————
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 

@@ -47,6 +47,17 @@ export default function Footer() {
               Meet the Team
             </a>
           </p>
+
+          <h3 className="mt-4 font-semibold text-white">For Educators</h3>
+          <p>
+            <a
+              href="/instructor-guide"
+              className="font-medium text-blue-500 underline hover:no-underline"
+              title="View educator information and module previews"
+            >
+              Educator Information &amp; Previews
+            </a>
+          </p>
         </div>
 
         {/* Organization */}
