@@ -1,105 +1,101 @@
 export default function Footer() {
   return (
-    <footer className="mt-16 border-t bg-slate-900 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+    <footer className="mt-12 border-t bg-slate-900 text-white">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-x-8 gap-y-6 px-6 py-7 text-sm sm:grid-cols-2 lg:grid-cols-5">
         {/* Contact Support */}
         <div>
-          <h3 className="text-white font-semibold">Contact Support</h3>
-
-          <p className="mb-1">
+          <h3 className="mb-2 font-semibold text-white">Contact Support</h3>
+          <div className="space-y-1.5">
             <a
               href="/support/technical"
-              className="text-blue-500 underline hover:no-underline font-medium"
+              className="block font-medium text-blue-400 underline hover:no-underline"
               title="go to technical support form"
             >
               Technical Support Form
             </a>
-          </p>
-
-          <p className="mb-4">
             <a
               href="/support/program"
-              className="text-blue-500 underline hover:no-underline font-medium"
+              className="block font-medium text-blue-400 underline hover:no-underline"
               title="Go to program support form"
             >
               Program Support Form
             </a>
-          </p>
+          </div>
+        </div>
 
-          <h3 className="text-white font-semibold">Simulated Demo</h3>
-          <p>
+        {/* Explore */}
+        <div>
+          <h3 className="mb-2 font-semibold text-white">Explore</h3>
+          <div className="space-y-1.5">
             <a
               href="/demo"
-              className="text-blue-500 underline hover:no-underline font-medium"
+              className="block font-medium text-blue-400 underline hover:no-underline"
               title="View the simulated demo"
             >
-              View Demo
+              Simulated Demo
             </a>
-          </p>
-
-          <h3 className="text-white font-semibold mt-4">About The Authors</h3>
-          <p>
             <a
               href="/about-authors"
-              className="text-blue-500 underline hover:no-underline font-medium"
+              className="block font-medium text-blue-400 underline hover:no-underline"
               title="Learn more about the authors"
             >
               Meet the Team
             </a>
-          </p>
+          </div>
+        </div>
 
-          <h3 className="mt-4 font-semibold text-white">For Educators</h3>
-          <p>
-            <a
-              href="/instructor-guide"
-              className="font-medium text-blue-500 underline hover:no-underline"
-              title="View educator information and module previews"
-            >
-              Educator Information &amp; Previews
-            </a>
-          </p>
+        {/* Educators */}
+        <div>
+          <h3 className="mb-2 font-semibold text-white">For Educators</h3>
+          <a
+            href="/instructor-guide"
+            className="font-medium text-blue-400 underline hover:no-underline"
+            title="View educator information and module previews"
+          >
+            Information &amp; Previews
+          </a>
         </div>
 
         {/* Organization */}
         <div>
-          <h3 className="text-white font-semibold mb-3">Organization</h3>
-          <p>Southeast Michigan Center for Medical Education</p>
-          <p>EHR Learning Portal</p>
-
-          <p className="font-normal mt-4">Phone</p>
-          <p>(866) - 2SEMCME</p>
+          <h3 className="mb-2 font-semibold text-white">Organization</h3>
+          <p className="leading-relaxed text-slate-200">
+            Southeast Michigan Center for Medical Education
+            <br />
+            EHR Learning Portal
+          </p>
+          <p className="mt-2 text-slate-200">(866) - 2SEMCME</p>
         </div>
 
         {/* Help */}
         <div>
-          <h3 className="text-white font-semibold mb-3">Help</h3>
-          <p className="mb-3">
+          <h3 className="mb-2 font-semibold text-white">Help</h3>
+          <p className="leading-relaxed text-slate-200">
             If you experience issues with modules, completion or certificates,
             please fill out the technical support form.
           </p>
-          <p>
+          <p className="mt-2 leading-relaxed text-slate-200">
             If you need help with program issues or have questions, please fill
             out the program support form.
           </p>
 
-          <h3 className="text-white font-semibold mb-3 mt-3">Learn More</h3>
-          <p>
-            Want to learn more about SEMCME and our mission? Visit{" "}
+          <p className="mt-2 leading-relaxed text-slate-200">
+            Learn more about SEMCME and our mission at{" "}
             <a
               href="https://www.semcme.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline"
+              className="font-medium text-white underline hover:no-underline"
               title="Visit the SEMCME website"
             >
               semcme.org
-            </a>{" "}
-            for more information about us.
+            </a>
+            .
           </p>
         </div>
       </div>
 
-      <div className="border-t border-slate-700 text-center text-xs py-4">
+      <div className="border-t border-slate-700 py-3 text-center text-xs text-slate-300">
         © {new Date().getFullYear()} SEMCME
       </div>
     </footer>
