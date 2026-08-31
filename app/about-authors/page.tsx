@@ -264,7 +264,7 @@ export default function AboutPage() {
         </div>
 
         {/* INTRO */}
-        <div className="max-w-4xl text-center mb-10 bg-white/90 rounded-sm p-6 shadow-md mx-4">
+        <div className="mx-4 mb-10 max-w-4xl rounded-sm border border-slate-200 bg-slate-50 p-6 text-center">
           <p className="text-gray-700 text-sm md:text-base leading-relaxed">
             The "Improving EHR Use for Better Outcomes" curriculum is supported
             by a team of experienced educators, clinicians, and healthcare
@@ -285,20 +285,19 @@ export default function AboutPage() {
             Project Leadership
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid gap-4">
             {PROJECT_LEADS.map((author, index) => {
               return (
                 <div
                   key={index}
-                  className="bg-white/90 rounded-sm shadow-md border border-gray-200 p-7 flex flex-col h-full"
+                  className="grid items-start gap-5 rounded-sm border border-slate-200 bg-slate-50 p-6 md:grid-cols-[minmax(210px,0.3fr)_minmax(0,1fr)] md:gap-8"
                 >
-                  <h3 className="text-lg font-bold text-semcmeBlue mb-1">
-                    {author.name}
-                  </h3>
-
-                  <p className="text-sm text-gray-600 mb-2">{author.title}</p>
-
-                  <hr className="my-3 border-gray-300" />
+                  <div className="min-w-0 border-b border-slate-300 pb-4 md:border-b-0 md:border-r md:pb-0 md:pr-8">
+                    <h3 className="mb-1 text-lg font-bold text-semcmeBlue">
+                      {author.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">{author.title}</p>
+                  </div>
 
                   <div className="space-y-3 text-[0.9rem] leading-relaxed text-gray-800">
                     {author.bio.split("\n\n").map((p, i) => (
@@ -330,7 +329,7 @@ export default function AboutPage() {
             .map((author, index) => (
               <div
                 key={index}
-                className="bg-white/90 rounded-sm shadow-md border border-gray-200 p-8"
+                className="rounded-sm border border-slate-200 bg-slate-50 p-8"
               >
                 <div className="mb-2">
                   <h2 className="text-xl font-bold text-semcmeBlue mb-2">
