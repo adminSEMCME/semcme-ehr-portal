@@ -261,7 +261,7 @@ export default function InstructorGuideContent() {
                   Available dashboard data and reports
                 </h3>
                 <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-                  <IconBullet icon={Users}>learner name, email, role, and account date</IconBullet>
+                  <IconBullet icon={Users}>learner name, email, role, and account created date</IconBullet>
                   <IconBullet icon={BookOpenCheck}>modules completed, in progress, and not started</IconBullet>
                   <IconBullet icon={ClipboardCheck}>completion counts and in-progress percentages</IconBullet>
                   <IconBullet icon={Award}>completion dates and certificate status</IconBullet>
