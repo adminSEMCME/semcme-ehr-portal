@@ -48,7 +48,7 @@ const pathwayDetails = [
     title: "FUNDAMENTAL CONCEPTS | UME",
     lead: "Build a strong foundation in effective EHR use.",
     icon: GraduationCap,
-    gradient: "from-sky-600 to-blue-800",
+    gradient: "from-emerald-600 to-green-800",
     points: [
       "EHR fundamentals and terminology",
       "Effective clinical documentation",
@@ -66,7 +66,7 @@ const pathwayDetails = [
     title: "INTERMEDIATE LEARNING | GME",
     lead: "Move from foundational skills to real-world clinical workflow.",
     icon: Stethoscope,
-    gradient: "from-violet-600 to-indigo-800",
+    gradient: "from-sky-600 to-blue-800",
     points: [
       "High-yield clinical notes",
       "Advanced documentation practices",
@@ -85,7 +85,7 @@ const pathwayDetails = [
     title: "ADVANCED LEARNING | CME",
     lead: "Optimize documentation, quality, efficiency, and outcomes.",
     icon: BriefcaseMedical,
-    gradient: "from-teal-600 to-cyan-800",
+    gradient: "from-violet-600 to-purple-800",
     points: [
       "Social determinants of health",
       "Transitions of care",
