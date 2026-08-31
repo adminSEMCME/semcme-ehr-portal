@@ -1,8 +1,273 @@
 // public/modules/module-progress-tracker.js
 (function () {
-  // Educator previews are intentionally read-only. Exit before touching
-  // localStorage, observing the course, or calling the progress API.
-  if (new URLSearchParams(location.search).get("preview") === "1") return;
+  const query = new URLSearchParams(location.search);
+
+  // Educator previews are intentionally read-only and limited to the first
+  // two slides. This branch exits before touching localStorage or progress APIs.
+  if (query.get("preview") === "1") {
+    startEducatorPreviewLimit(2);
+    return;
+  }
+
+  function startEducatorPreviewLimit(slideLimit) {
+    let currentSlide = 0;
+    let gate = null;
+    let returnAttempted = false;
+
+    function getPlayer() {
+      try {
+        return window.GetPlayer?.();
+      } catch {
+        return null;
+      }
+    }
+
+    function readSlideNumber() {
+      const player = getPlayer();
+      if (!player?.GetVar) return 0;
+
+      for (const variable of [
+        "projectSlideNumber",
+        "menuSlideNumber",
+        "sceneSlideNumber",
+      ]) {
+        try {
+          const value = Number(player.GetVar(variable));
+          if (Number.isFinite(value) && value > 0) return value;
+        } catch {
+          // Storyline may not have initialized this variable yet.
+        }
+      }
+
+      const slideItems = getSlideMenuItems();
+      const selectedIndex = slideItems.findIndex((item) =>
+        item.classList.contains("cs-selected"),
+      );
+
+      if (selectedIndex >= 0) return selectedIndex + 1;
+
+      return 0;
+    }
+
+    function getSlideMenuItems() {
+      return Array.from(
+        document.querySelectorAll(".cs-listitem[data-ref]"),
+      ).filter((item) =>
+        (item.getAttribute("data-ref") || "").startsWith("_player."),
+      );
+    }
+
+    function closePreview() {
+      window.close();
+
+      window.setTimeout(() => {
+        if (gate) {
+          const message = gate.querySelector("[data-preview-close-message]");
+          if (message) {
+            message.textContent =
+              "You may now close this browser tab to return to the educator preview.";
+          }
+        }
+      }, 150);
+    }
+
+    function showGate() {
+      if (gate) return;
+
+      gate = document.createElement("div");
+      gate.id = "educator-preview-slide-limit";
+      gate.setAttribute("role", "dialog");
+      gate.setAttribute("aria-modal", "true");
+      gate.setAttribute("aria-labelledby", "educator-preview-limit-title");
+      gate.innerHTML = `
+        <div class="educator-preview-limit-card">
+          <div class="educator-preview-limit-icon" aria-hidden="true">✓</div>
+          <p class="educator-preview-limit-label">Educator Preview</p>
+          <h1 id="educator-preview-limit-title">Preview complete</h1>
+          <p data-preview-close-message>
+            This preview includes the first two slides of the module. Enrolled
+            learners receive access to the complete module experience.
+          </p>
+          <button type="button" data-preview-close>Close Preview</button>
+        </div>
+      `;
+
+      const style = document.createElement("style");
+      style.id = "educator-preview-slide-limit-styles";
+      style.textContent = `
+        #educator-preview-slide-limit {
+          position: fixed;
+          inset: 0;
+          z-index: 2147483647;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          padding: 24px;
+          background: rgba(2, 35, 70, 0.88);
+          font-family: Arial, sans-serif;
+        }
+        .educator-preview-limit-card {
+          box-sizing: border-box;
+          width: min(520px, 100%);
+          padding: 34px;
+          border: 1px solid #bfdbfe;
+          border-radius: 18px;
+          background: #ffffff;
+          color: #1e293b;
+          text-align: center;
+          box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+        }
+        .educator-preview-limit-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 52px;
+          height: 52px;
+          margin: 0 auto 16px;
+          border-radius: 14px;
+          background: #dbeafe;
+          color: #02519c;
+          font-size: 28px;
+          font-weight: 700;
+        }
+        .educator-preview-limit-label {
+          margin: 0 0 8px;
+          color: #02519c;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+        }
+        .educator-preview-limit-card h1 {
+          margin: 0;
+          color: #0f172a;
+          font-size: 28px;
+          line-height: 1.2;
+        }
+        .educator-preview-limit-card p[data-preview-close-message] {
+          margin: 16px 0 24px;
+          color: #475569;
+          font-size: 16px;
+          line-height: 1.6;
+        }
+        .educator-preview-limit-card button {
+          min-width: 170px;
+          padding: 12px 20px;
+          border: 0;
+          border-radius: 8px;
+          background: #02519c;
+          color: #ffffff;
+          font-size: 16px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .educator-preview-limit-card button:hover,
+        .educator-preview-limit-card button:focus-visible {
+          background: #013e7a;
+        }
+        .educator-preview-limit-card button:focus-visible {
+          outline: 3px solid #93c5fd;
+          outline-offset: 3px;
+        }
+      `;
+
+      document.head.appendChild(style);
+      document.body.appendChild(gate);
+      gate
+        .querySelector("[data-preview-close]")
+        ?.addEventListener("click", closePreview);
+      gate.querySelector("button")?.focus();
+    }
+
+    function isNextControl(target) {
+      return Boolean(
+        target?.closest?.(
+          "#next, [data-ref='next'], [aria-label='Next'], [title='Next']",
+        ),
+      );
+    }
+
+    function menuItemExceedsLimit(target) {
+      const item = target?.closest?.(".cs-listitem[data-ref]");
+      if (!item) return false;
+
+      const items = getSlideMenuItems();
+      return items.indexOf(item) >= slideLimit;
+    }
+
+    function blockAdvance(event) {
+      if (
+        menuItemExceedsLimit(event.target) ||
+        (currentSlide >= slideLimit && isNextControl(event.target))
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        showGate();
+      }
+    }
+
+    function blockAdvanceKey(event) {
+      if (
+        currentSlide >= slideLimit &&
+        ["ArrowRight", "PageDown", "Enter"].includes(event.key)
+      ) {
+        const active = document.activeElement;
+        if (event.key !== "Enter" || isNextControl(active)) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          showGate();
+        }
+      }
+    }
+
+    function updateControls() {
+      currentSlide = readSlideNumber() || currentSlide;
+
+      const next = document.querySelector("#next");
+      if (next) {
+        const locked = currentSlide >= slideLimit;
+        next.setAttribute("aria-disabled", locked ? "true" : "false");
+        next.style.opacity = locked ? "0.45" : "";
+        next.style.cursor = locked ? "not-allowed" : "";
+      }
+
+      const menuItems = getSlideMenuItems();
+      menuItems.forEach((item, index) => {
+        if (index >= slideLimit) {
+          item.setAttribute("aria-disabled", "true");
+          item.style.opacity = "0.5";
+          item.style.cursor = "not-allowed";
+        }
+      });
+
+      if (currentSlide > slideLimit) {
+        showGate();
+
+        if (!returnAttempted) {
+          returnAttempted = true;
+          document.querySelector("#prev")?.click();
+        }
+      } else {
+        returnAttempted = false;
+      }
+    }
+
+    document.addEventListener("click", blockAdvance, true);
+    document.addEventListener("keydown", blockAdvanceKey, true);
+
+    const observer = new MutationObserver(updateControls);
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["class", "aria-selected", "data-ref"],
+    });
+
+    window.setInterval(updateControls, 200);
+  }
 
   // ————— helpers —————
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
