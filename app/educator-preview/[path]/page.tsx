@@ -113,9 +113,9 @@ export default async function EducatorPreviewPage({
           <section className="my-7 overflow-hidden rounded-2xl border border-white/40 bg-white shadow-sm">
             <div className="flex flex-col gap-1 border-b border-blue-200 bg-blue-50 px-5 py-3 md:flex-row md:items-center md:gap-3">
               <Eye className="size-5 shrink-0 text-blue-700" aria-hidden="true" />
-              <h2 className="shrink-0 font-bold text-slate-900">Full module review</h2>
+              <h2 className="shrink-0 font-bold text-slate-900">Limited module preview</h2>
               <p className="text-sm text-slate-600 md:whitespace-nowrap">
-                  Open module content directly in a separate browser tab.
+                  Preview the first two slides of each module. Register for full access.
               </p>
             </div>
             <div className="flex flex-col gap-1 border-b border-teal-200 bg-teal-50 px-5 py-3 md:flex-row md:items-center md:gap-3">
@@ -131,6 +131,18 @@ export default async function EducatorPreviewPage({
               <p className="text-sm text-slate-600 md:whitespace-nowrap">
                   This preview does not represent an enrolled learner account.
               </p>
+            </div>
+            <div className="flex flex-col items-center justify-between gap-3 border-t border-blue-200 bg-slate-50 px-5 py-4 text-center sm:flex-row sm:text-left">
+              <p className="text-sm font-semibold text-slate-700">
+                Registration is required to access complete modules and the
+                program&apos;s learner features.
+              </p>
+              <Link
+                href="/register"
+                className="shrink-0 rounded-md bg-semcmeBlue px-5 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800"
+              >
+                Register for Full Access
+              </Link>
             </div>
           </section>
 

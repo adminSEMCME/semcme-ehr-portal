@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   Award,
@@ -72,8 +73,14 @@ export default function InstructorGuideContent() {
           <div className="absolute -right-16 -top-20 size-64 rounded-full bg-blue-200/30 blur-3xl" />
           <div className="absolute -bottom-24 -left-16 size-64 rounded-full bg-orange-200/30 blur-3xl" />
           <div className="relative mx-auto max-w-4xl">
-            <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-orange-100 text-orange-700 shadow-sm">
-              <Stethoscope className="size-9" aria-hidden="true" />
+            <div className="relative mx-auto mb-5 h-[60px] w-[220px] overflow-hidden rounded-md bg-white shadow-sm">
+              <Image
+                src="/logos/semcmeLogo.png"
+                alt="Southeast Michigan Center for Medical Education"
+                fill
+                className="object-contain"
+                unoptimized
+              />
             </div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-semcmeBlue">
               Information for Faculty and Instructors
@@ -221,6 +228,61 @@ export default function InstructorGuideContent() {
                     </p>
                   </div>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="overflow-hidden rounded-3xl border border-blue-200 bg-blue-50/70">
+            <div className="grid gap-8 p-7 md:p-10 lg:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <div className="flex size-14 items-center justify-center rounded-2xl bg-semcmeBlue text-white shadow-sm">
+                  <Building2 className="size-7" aria-hidden="true" />
+                </div>
+                <p className="mt-5 text-sm font-bold uppercase tracking-[0.18em] text-semcmeBlue">
+                  Institutional reporting
+                </p>
+                <h2 className="mt-2 text-3xl font-bold text-slate-950">
+                  Institutional Administrator Access
+                </h2>
+                <p className="mt-4 leading-relaxed text-slate-700">
+                  Need learner participation data for your institution? An
+                  approved Institutional Administrator can monitor learners and
+                  export reports from a dedicated dashboard.
+                </p>
+                <p className="mt-4 rounded-xl border border-blue-200 bg-white p-4 text-sm font-semibold leading-relaxed text-slate-700">
+                  Institutions may request a designated administrator. This is
+                  an optional, fee-based service and access must be approved by
+                  SEMCME.
+                </p>
+              </div>
+
+              <div className="rounded-2xl bg-white p-6 shadow-sm md:p-7">
+                <h3 className="text-xl font-bold text-slate-900">
+                  Available dashboard data and reports
+                </h3>
+                <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <IconBullet icon={Users}>learner name, email, role, and account date</IconBullet>
+                  <IconBullet icon={BookOpenCheck}>modules completed, in progress, and not started</IconBullet>
+                  <IconBullet icon={ClipboardCheck}>completion counts and in-progress percentages</IconBullet>
+                  <IconBullet icon={Award}>completion dates and certificate status</IconBullet>
+                  <IconBullet icon={Presentation}>module-level participation and status breakdowns</IconBullet>
+                  <IconBullet icon={ShieldCheck}>downloadable user and module CSV reports</IconBullet>
+                </ul>
+                <p className="mt-6 text-sm leading-relaxed text-slate-600">
+                  To find out whether your institution already has an
+                  administrator or to request access, contact Dr. Nadia Juzych.
+                </p>
+                <a
+                  href="mailto:njuzych@semcme.org?subject=Institutional%20Administrator%20Access%20Request"
+                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-semcmeBlue px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800"
+                  title="Request Institutional Administrator access"
+                >
+                  Request Institutional Administrator Access
+                  <Mail className="size-4" aria-hidden="true" />
+                </a>
+                <p className="mt-3 text-sm font-semibold text-semcmeBlue">
+                  njuzych@semcme.org
+                </p>
               </div>
             </div>
           </section>

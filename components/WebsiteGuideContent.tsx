@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import {
   Activity,
@@ -197,8 +198,14 @@ export default function WebsiteGuideContent({
           <div className="absolute -right-16 -top-20 size-64 rounded-full bg-blue-200/30 blur-3xl" />
           <div className="absolute -bottom-24 -left-16 size-64 rounded-full bg-orange-200/30 blur-3xl" />
           <div className="relative mx-auto max-w-4xl">
-            <div className="mx-auto mb-5 flex size-16 items-center justify-center rounded-2xl bg-orange-100 text-orange-700 shadow-sm">
-              <Stethoscope className="size-9" aria-hidden="true" />
+            <div className="relative mx-auto mb-5 h-[60px] w-[220px] overflow-hidden rounded-md bg-white shadow-sm">
+              <Image
+                src="/logos/semcmeLogo.png"
+                alt="Southeast Michigan Center for Medical Education"
+                fill
+                className="object-contain"
+                unoptimized
+              />
             </div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-semcmeBlue">
               User Guide &amp; Demo

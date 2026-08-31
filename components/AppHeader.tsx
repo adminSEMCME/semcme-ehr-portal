@@ -47,8 +47,8 @@ export default function AppHeader({
         className="flex justify-center lg:justify-start"
         title="go to homepage"
       >
-        <div className="bg-white rounded-md shadow-sm px-3 py-2 hover:bg-gray-300 transition">
-          <div className="relative w-[170px] h-[45px]">
+        <div className="rounded-md bg-white px-3 py-2 shadow-sm transition hover:bg-gray-300">
+          <div className="relative h-[60px] w-[220px]">
             <Image
               src="/logos/semcmeLogo.png"
               alt="SEMCME Logo"
