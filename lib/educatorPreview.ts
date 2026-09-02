@@ -29,7 +29,7 @@ export const EDUCATOR_PATHS: Record<
     summary:
       "Build confidence with the foundations of EHR navigation, note writing, coding basics, and order entry.",
     levels: ["novice", "all"],
-    accent: "from-emerald-600 to-green-800",
+    accent: "from-teal-600 to-cyan-800",
     order: [
       "Introduction to EHR Educational Series",
       "Electronic Health Records: An Introduction",
@@ -66,7 +66,7 @@ export const EDUCATOR_PATHS: Record<
     summary:
       "Refine documentation strategies to improve transitions of care, chronic disease performance measures, and quality reporting.",
     levels: ["advanced", "all"],
-    accent: "from-violet-600 to-purple-800",
+    accent: "from-violet-600 to-indigo-800",
     order: [
       "Introduction to EHR Educational Series",
       "Improving Efficiency and Effectiveness in the Use of EHRs",

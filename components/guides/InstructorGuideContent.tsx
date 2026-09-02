@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowRight,
   Award,
@@ -73,15 +72,6 @@ export default function InstructorGuideContent() {
           <div className="absolute -right-16 -top-20 size-64 rounded-full bg-blue-200/30 blur-3xl" />
           <div className="absolute -bottom-24 -left-16 size-64 rounded-full bg-orange-200/30 blur-3xl" />
           <div className="relative mx-auto max-w-4xl">
-            <div className="relative mx-auto mb-5 h-[60px] w-[220px] overflow-hidden rounded-md bg-white shadow-sm">
-              <Image
-                src="/logos/semcmeLogo.png"
-                alt="Southeast Michigan Center for Medical Education"
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-semcmeBlue">
               Information for Faculty and Instructors
             </p>

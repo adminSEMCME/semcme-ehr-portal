@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import {
   Activity,
@@ -48,7 +47,7 @@ const pathwayDetails = [
     title: "FUNDAMENTAL CONCEPTS | UME",
     lead: "Build a strong foundation in effective EHR use.",
     icon: GraduationCap,
-    gradient: "from-emerald-600 to-green-800",
+    gradient: "from-teal-600 to-cyan-800",
     points: [
       "EHR fundamentals and terminology",
       "Effective clinical documentation",
@@ -85,7 +84,7 @@ const pathwayDetails = [
     title: "ADVANCED LEARNING | CME",
     lead: "Optimize documentation, quality, efficiency, and outcomes.",
     icon: BriefcaseMedical,
-    gradient: "from-violet-600 to-purple-800",
+    gradient: "from-violet-600 to-indigo-800",
     points: [
       "Social determinants of health",
       "Transitions of care",
@@ -198,15 +197,6 @@ export default function WebsiteGuideContent({
           <div className="absolute -right-16 -top-20 size-64 rounded-full bg-blue-200/30 blur-3xl" />
           <div className="absolute -bottom-24 -left-16 size-64 rounded-full bg-orange-200/30 blur-3xl" />
           <div className="relative mx-auto max-w-4xl">
-            <div className="relative mx-auto mb-5 h-[60px] w-[220px] overflow-hidden rounded-md bg-white shadow-sm">
-              <Image
-                src="/logos/semcmeLogo.png"
-                alt="Southeast Michigan Center for Medical Education"
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </div>
             <p className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-semcmeBlue">
               User Guide &amp; Demo
             </p>
