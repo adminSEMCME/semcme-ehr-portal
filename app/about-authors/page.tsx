@@ -140,10 +140,10 @@ const AUTHORS = [
   },
 
   {
-    name: "John Joseph, MD",
+    name: "John R. Joseph, MD",
     title: "Emergency Medicine Physician",
     organization: "Henry Ford Health",
-    bio: `Dr. John Joseph is an experienced emergency medicine physician at Henry Ford Health based in Detroit, Michigan. Dr. Joseph specializes in treating a variety of acute medical conditions, including trauma, heart attacks, strokes, and severe infections. He is known for his calm demeanor and patient-centered approach, ensuring that he listens to his patients and provides educational health information. He is certified by the American Board of Emergency Medicine. Dr. Joseph completed Medical School at Wayne State University School of Medicine in Detroit, MI in 2016, and an internship and residency at the Department of Emergency Medicine at the University of Michigan in Ann Arbor, MI in 2020.`,
+    bio: `Dr. Joseph is a graduate of the Wayne State University School of Medicine and completed his residency in Emergency Medicine at the University of Michigan in 2020 with a focus in critical care and point-of-care ultrasound. He has an interest in medical education, point-of-care ultrasound, and medical informatics. He serves as the Henry Ford emergency medicine EHR lead overseeing implementation and optimization across 20 system emergency departments. Dr. Joseph practices full time in the emergency department at Henry Ford Hospital in Detroit.`,
   },
 
   {
