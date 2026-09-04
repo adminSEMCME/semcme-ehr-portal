@@ -83,7 +83,13 @@ const AUTHORS = [
     name: "Cathy Barrett",
     title: "President and Chief Executive Officer",
     organization: "Optysuite",
-    bio: `Ms. Barrett received her BSN from the University of Michigan, an MHA from Central Michigan University, and her MSN from Michigan State University. She currently serves as the President and CEO of Optysuite. She has years of experience managing health care organizations, physician group practices, and EMS organizations. Additionally, she has done extensive speaking and consulting throughout the nation. Cathy has extensive experience in nearly all components of the healthcare revenue cycle. She has been involved in turn-around projects and pulling organizations out of bank defaults. As a nurse practitioner and leader, Ms. Barrett was involved in the original 30-minute ER guarantee initiatives that later became a national benchmark. Ms. Barrett has extensive experience in workflow evaluation and design.`,
+    bio: `Cathy is a nationally recognized healthcare leader with deep expertise in revenue cycle management, group practice operations, process improvement, and quality and incentive payment programs. She currently serves as Chief Executive Officer of Optysuite, where she oversees a comprehensive suite of services including revenue cycle management, consulting, office management, auditing, and charge capture solutions.
+
+    With a strong clinical foundation in Emergency Medicine, Cathy has trained and mentored numerous nurse practitioners and physician assistants, shaping clinical practice standards and advancing provider competency across care settings. Her clinical excellence has been honored with the Nurse Practitioner of the Year Award from both the Michigan Council of Nurse Practitioners and the American Academy of Nurse Practitioners.
+
+    Cathy is a past President of the Michigan Council of Nurse Practitioners and continues to be an influential voice in healthcare operations, clinical leadership, and organizational performance improvement.
+
+    She holds degrees from Schoolcraft Community College, the University of Michigan, Michigan State University, and Central Michigan University, reflecting her commitment to lifelong learning and professional advancement.`,
   },
 
   {
