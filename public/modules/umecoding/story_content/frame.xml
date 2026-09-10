@@ -1899,7 +1899,7 @@
     &lt;/Block&gt;
     &lt;Block&gt;
       &lt;Style /&gt;
-      &lt;Span Text="The clinician also  selects  codes to indicate the services provided for the identified diagnosis, symptoms and signs. This records WHAT was done. This is recorded using CPT codes. For the sore throat example, a rapid strep test was given – coded as 87880.  Additionally, to code the complexity of the visit, the evaluation and management code may be used.  The E and M codes are a subset of the CPT codes.  In this example, the patient with a sore throat was a new patient. Decision making was straight forward – code 99203.&amp;#xA;"&gt;
+      &lt;Span Text="The clinician also  selects  codes to indicate the services provided for the identified diagnosis, symptoms and signs. This records WHAT was done. This is recorded using CPT codes. For the sore throat example, a rapid strep test was given – coded as 87880.  Additionally, to code the complexity of the visit, the evaluation and management code may be used.  The E and M codes are a subset of the CPT codes.  In this example, the patient with a sore throat was a new patient. Decision making was straight forward – code 99202.&amp;#xA;"&gt;
         &lt;Style FontSize="12" /&gt;
       &lt;/Span&gt;
     &lt;/Block&gt;
