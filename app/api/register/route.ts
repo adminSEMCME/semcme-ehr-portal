@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { notifyInstitutionAdminRegistration } from "@/lib/institutionAdminNotification";
 import {
   hasAtLeastTwoWords,
   normalizeInstitutionName,
@@ -241,6 +242,27 @@ export async function POST(req: Request) {
         { error: "Unable to save profile." },
         { status: 500 },
       );
+    }
+
+    if (isInstitutionAdmin) {
+      // Keep notification work isolated from registration cleanup on failure.
+      try {
+        const { data: institution } = await admin
+          .from("institutions")
+          .select("name")
+          .eq("id", resolvedInstitutionId)
+          .maybeSingle();
+
+        await notifyInstitutionAdminRegistration({
+          userId: user_id,
+          firstName: first_name,
+          lastName: last_name,
+          email,
+          institution: institution?.name || normalizedCustomInstitution || "See admin dashboard",
+        });
+      } catch (error) {
+        console.error("IA notification could not be prepared; request remains pending:", user_id, error);
+      }
     }
 
     return NextResponse.json({ success: true, user_id });

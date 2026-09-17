@@ -167,6 +167,12 @@ export default function AdminDashboardPage() {
     | "userManagement"
   >("users");
 
+  useEffect(() => {
+    if (window.location.hash === "#adminApprovals") {
+      setTab("adminApprovals");
+    }
+  }, []);
+
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
