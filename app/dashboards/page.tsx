@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
+import { startModuleProgress } from "@/lib/startModuleProgress";
 import { Button } from "@/components/ui/button";
 import { Award, ChevronDown, Download, X } from "lucide-react";
 import Footer from "@/components/Footer";
@@ -596,14 +597,7 @@ export default function DashboardPage() {
       }
 
       // 🔹 Continue with your original logic
-      await supabase.from("module_progress").upsert({
-        user_id: user.id,
-        module_id: module.id,
-        status: "in_progress",
-        progress_percent: getProgress(module.id),
-        date_started: new Date().toISOString(),
-        last_accessed: new Date().toISOString(),
-      });
+      await startModuleProgress(supabase, user.id, module.id);
 
       // ✅ MOCK-EHR MODULE
       if (module.url.includes("mock-ehr")) {
@@ -624,57 +618,56 @@ export default function DashboardPage() {
       window.open(module.url, "_blank", "noopener,noreferrer");
     } catch (err) {
       console.error("Error starting module:", err);
+      alert("Unable to save module progress. Please try again before starting the module.");
     }
   };
 
   const handleConfirmAccreditation = async () => {
     if (!activeAccredModule) return;
 
-    const { data: sessionData } = await supabase.auth.getSession();
-    const user = sessionData?.session?.user;
-    if (!user) return;
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData?.session?.user;
+      if (!user) return;
 
-    // Save preference if checked
-    if (dontShowAgain) {
-      await supabase.from("module_accreditation_views").upsert({
-        user_id: user.id,
-        module_id: activeAccredModule.id,
-        dont_show_again: true,
-      });
+      // Save preference if checked
+      if (dontShowAgain) {
+        await supabase.from("module_accreditation_views").upsert({
+          user_id: user.id,
+          module_id: activeAccredModule.id,
+          dont_show_again: true,
+        });
+      }
+
+      // Continue normal start logic
+      await startModuleProgress(supabase, user.id, activeAccredModule.id);
+
+      if (activeAccredModule.url.includes("mock-ehr")) {
+        const payload = {
+          sub: user.id,
+          email: user.email,
+        };
+
+        const token = btoa(JSON.stringify(payload));
+        const safeToken = encodeURIComponent(token);
+
+        window.open(
+          `https://mock-ehr.semcme.org/?sso=${safeToken}`,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      } else {
+        window.open(activeAccredModule.url, "_blank", "noopener,noreferrer");
+      }
+
+      // Reset modal state
+      setShowAccredModal(false);
+      setActiveAccredModule(null);
+      setDontShowAgain(false);
+    } catch (error) {
+      console.error("Error starting module after accreditation:", error);
+      alert("Unable to save module progress. Please try again before starting the module.");
     }
-
-    // Continue normal start logic
-    await supabase.from("module_progress").upsert({
-      user_id: user.id,
-      module_id: activeAccredModule.id,
-      status: "in_progress",
-      progress_percent: getProgress(activeAccredModule.id),
-      date_started: new Date().toISOString(),
-      last_accessed: new Date().toISOString(),
-    });
-
-    if (activeAccredModule.url.includes("mock-ehr")) {
-      const payload = {
-        sub: user.id,
-        email: user.email,
-      };
-
-      const token = btoa(JSON.stringify(payload));
-      const safeToken = encodeURIComponent(token);
-
-      window.open(
-        `https://mock-ehr.semcme.org/?sso=${safeToken}`,
-        "_blank",
-        "noopener,noreferrer",
-      );
-    } else {
-      window.open(activeAccredModule.url, "_blank", "noopener,noreferrer");
-    }
-
-    // Reset modal state
-    setShowAccredModal(false);
-    setActiveAccredModule(null);
-    setDontShowAgain(false);
   };
 
   const getCertificateDownloadName = (moduleId: string) => {

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
 
 export async function GET(request: Request) {
   try {
@@ -73,12 +72,14 @@ export async function POST(request: Request) {
     const { data: userData } = await supabase.auth.getUser();
 
     if (userData?.user) {
-      const { data: existing } = await supabase
+      const { data: existing, error: readError } = await supabase
         .from("module_progress")
         .select("progress_percent,status")
         .eq("user_id", userData.user.id)
         .eq("module_id", module_id)
-        .single();
+        .maybeSingle();
+
+      if (readError) throw readError;
 
       if (existing) {
         if (existing.status === "completed") {
@@ -90,7 +91,7 @@ export async function POST(request: Request) {
         }
       }
 
-      await supabase.from("module_progress").upsert(
+      const { error: saveError } = await supabase.from("module_progress").upsert(
         {
           user_id: userData.user.id,
           module_id,
@@ -102,31 +103,12 @@ export async function POST(request: Request) {
         { onConflict: "user_id,module_id" },
       );
 
+      if (saveError) throw saveError;
       return NextResponse.json({ success: true });
     }
 
-    // ✅ Fallback path (Storyline exit / keepalive / unload)
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
-
-    await admin.from("module_progress").upsert(
-      {
-        module_id,
-        status,
-        progress_percent,
-        date_completed: status === "completed" ? date_completed : null,
-        last_accessed: new Date().toISOString(),
-      },
-      { onConflict: "user_id,module_id" },
-    );
-
-    return NextResponse.json({ success: true });
+    // A progress write must always belong to an authenticated student.
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   } catch (err) {
     console.error("Progress update failed:", err);
     return NextResponse.json(

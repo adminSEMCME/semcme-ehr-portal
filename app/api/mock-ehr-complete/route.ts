@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
     );
 
-    await admin.from("module_progress").upsert(
+    const { error } = await admin.from("module_progress").upsert(
       {
         user_id: sub,
         module_id,
@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       { onConflict: "user_id,module_id" },
     );
 
+    if (error) throw error;
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Mock EHR completion failed:", err);
