@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import InstitutionSelect from "./InstitutionSelect";
@@ -26,6 +26,7 @@ export default function UserManagementTab({ institutions, onInstitutionUpdated }
   const [confirmEmail, setConfirmEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const tableContainer = useRef<HTMLDivElement>(null);
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   const [institutionId, setInstitutionId] = useState("");
   const [saving, setSaving] = useState(false);
@@ -134,15 +135,21 @@ export default function UserManagementTab({ institutions, onInstitutionUpdated }
           placeholder="Search by name or email..."
           aria-label="Search users by name or email"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (tableContainer.current) tableContainer.current.scrollTop = 0;
+          }}
           className="w-full md:w-1/2 border border-gray-300 rounded-md p-2 text-sm"
         />
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto">
+      {/* Approximately 30 standard-height rows plus the column headings. */}
+      <div ref={tableContainer}
+        className="max-h-[92.5rem] overflow-auto rounded-lg border border-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        role="region" aria-label="User management list" tabIndex={0}>
         <table className="w-full text-sm">
-          <thead className="border-b text-gray-800 text-base font-bold">
+          <thead className="sticky top-0 z-10 border-b bg-white text-gray-800 text-base font-bold shadow-sm">
             <tr>
               <th className="py-2 text-left">Name</th>
               <th className="text-left">Email</th>
@@ -156,7 +163,7 @@ export default function UserManagementTab({ institutions, onInstitutionUpdated }
             {filteredUsers.map((user) => (
               <tr
                 key={user.id}
-                className="border-b hover:bg-gray-50 transition"
+                className="h-12 border-b hover:bg-gray-50 transition"
               >
                 <td className="py-2">
                   {user.first_name} {user.last_name}
