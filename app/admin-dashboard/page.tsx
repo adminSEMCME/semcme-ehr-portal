@@ -1076,7 +1076,9 @@ export default function AdminDashboardPage() {
       {tab === "adminApprovals" && <AdminApprovalsTab />}
       {tab === "announcements" && <AnnouncementsTab />}
       {tab === "userManagement" && <UserManagementTab
-        institutions={analytics?.institutions ?? []}
+        institutions={(analytics?.institutions ?? []).filter((institution) =>
+          ALLOWED_INSTITUTIONS.includes(institution.name),
+        )}
         onInstitutionUpdated={(userId, institution) => {
           setAnalytics((previous) => previous ? {
             ...previous,

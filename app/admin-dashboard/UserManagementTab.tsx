@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import InstitutionSelect from "./InstitutionSelect";
 
 interface UserRow {
   id: string;
@@ -171,7 +172,8 @@ export default function UserManagementTab({ institutions, onInstitutionUpdated }
                     aria-label={`Edit institution for ${user.email}`}
                     onClick={() => {
                       setEditingUser(user);
-                      setInstitutionId(user.institution_id || "");
+                      setInstitutionId(institutions.some((institution) => institution.id === user.institution_id)
+                        ? user.institution_id! : "");
                       setError("");
                       setNotice("");
                     }}>
@@ -204,14 +206,8 @@ export default function UserManagementTab({ institutions, onInstitutionUpdated }
           </DialogDescription>
           <p className="text-sm">Current institution: <strong>{editingUser?.institution || "None"}</strong></p>
           <label htmlFor="user-institution" className="text-sm font-medium">New institution</label>
-          <select id="user-institution" value={institutionId} disabled={saving}
-            onChange={(event) => setInstitutionId(event.target.value)}
-            className="w-full border border-gray-300 rounded-md p-2 text-sm">
-            <option value="" disabled>Select an institution</option>
-            {[...institutions].sort((a, b) => a.name.localeCompare(b.name)).map((institution) => (
-              <option key={institution.id} value={institution.id}>{institution.name}</option>
-            ))}
-          </select>
+          <InstitutionSelect institutions={institutions} value={institutionId}
+            disabled={saving} onChange={setInstitutionId} />
           {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
           <div className="flex justify-end gap-3">
             <Button variant="outline" disabled={saving} onClick={() => { setEditingUser(null); setError(""); }}>Cancel</Button>
