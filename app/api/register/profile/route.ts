@@ -1,73 +1,10 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-
-    const {
-      user_id,
-      external_id,
-      role,
-      email,
-      first_name,
-      last_name,
-      degree,
-      institution_id,
-      department,
-      title,
-      profession,
-      medical_id,
-      pgy_level,
-      medical_school_year,
-    } = body;
-
-    if (!user_id || !first_name || !last_name) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 },
-      );
-    }
-
-    const admin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    );
-
-    const isInstitutionAdmin = role === "Institution Administrator";
-
-    const { error } = await admin.from("profiles").upsert({
-      id: user_id,
-      external_id: external_id ?? user_id,
-      role,
-      email,
-      first_name,
-      last_name,
-      degree,
-      institution_id,
-      department,
-      title,
-      profession,
-      medical_id,
-      pgy_level,
-      medical_school_year,
-      is_approved: isInstitutionAdmin ? false : true,
-    });
-
-    if (error) {
-      console.error("SUPABASE PROFILE ERROR:", error);
-      return NextResponse.json(
-        { error: error.message, details: error },
-        { status: 500 },
-      );
-    }
-
-    return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error("Profile creation failed:", err);
-    return NextResponse.json(
-      { error: "Failed to create profile" },
-      { status: 500 },
-    );
-  }
+// /api/register creates profiles. Retire the unused anonymous profile upsert
+// so it cannot bypass admin-only institution editing.
+export async function POST() {
+  return NextResponse.json(
+    { error: "This endpoint is no longer available. Use the registration form." },
+    { status: 410 },
+  );
 }

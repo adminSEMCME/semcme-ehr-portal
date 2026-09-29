@@ -1075,7 +1075,16 @@ export default function AdminDashboardPage() {
       )}
       {tab === "adminApprovals" && <AdminApprovalsTab />}
       {tab === "announcements" && <AnnouncementsTab />}
-      {tab === "userManagement" && <UserManagementTab />}
+      {tab === "userManagement" && <UserManagementTab
+        institutions={analytics?.institutions ?? []}
+        onInstitutionUpdated={(userId, institution) => {
+          setAnalytics((previous) => previous ? {
+            ...previous,
+            userModules: previous.userModules.map((row) => row.user_id === userId
+              ? { ...row, institution } : row),
+          } : previous);
+        }}
+      />}
     </div>
   );
 }

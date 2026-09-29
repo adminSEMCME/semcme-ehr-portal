@@ -52,6 +52,7 @@ export async function GET() {
         first_name,
         last_name,
         role,
+        institution_id,
         institutions(name)
       `,
       )
@@ -68,6 +69,7 @@ export async function GET() {
       first_name: u.first_name,
       last_name: u.last_name,
       role: u.role,
+      institution_id: u.institution_id,
       institution: u.institutions?.name || null,
     }));
 

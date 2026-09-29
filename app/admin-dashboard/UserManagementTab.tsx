@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface UserRow {
   id: string;
@@ -12,21 +13,38 @@ interface UserRow {
   last_name: string;
   role: string;
   institution: string | null;
+  institution_id: string | null;
 }
 
-export default function UserManagementTab() {
+export default function UserManagementTab({ institutions, onInstitutionUpdated }: {
+  institutions: { id: string; name: string }[];
+  onInstitutionUpdated: (userId: string, institution: string) => void;
+}) {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserRow | null>(null);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+  const [institutionId, setInstitutionId] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   // Fetch users
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("/api/admin/get-users");
-      const data = await res.json();
-      setUsers(data || []);
+      try {
+        const res = await fetch("/api/admin/get-users");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unable to load users.");
+        setUsers(data || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unable to load users.");
+      } finally {
+        setLoadingUsers(false);
+      }
     };
 
     fetchUsers();
@@ -39,6 +57,31 @@ export default function UserManagementTab() {
 
     return fullName.includes(query) || email.includes(query);
   });
+
+  const handleInstitutionUpdate = async () => {
+    if (!editingUser || !institutionId || saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/update-user-institution", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: editingUser.id, institutionId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Unable to update institution.");
+      setUsers((previous) => previous.map((user) => user.id === editingUser.id
+        ? { ...user, institution_id: data.institution_id, institution: data.institution }
+        : user));
+      onInstitutionUpdated(editingUser.id, data.institution);
+      setNotice(`Institution updated for ${editingUser.email} to ${data.institution}.`);
+      setEditingUser(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to update institution. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleDelete = async () => {
     if (!selectedUser) return;
@@ -77,11 +120,18 @@ export default function UserManagementTab() {
       <h2 className="text-xl font-semibold text-semcmeBlue mb-4 text-center">
         User Management
       </h2>
+      <p className="text-sm text-gray-600 text-center mb-4">
+        Website admins can correct a user’s institution or remove an account.
+      </p>
+      {notice && <p role="status" className="mb-4 text-green-800">{notice}</p>}
+      {error && !editingUser && <p role="alert" className="mb-4 text-red-700">{error}</p>}
+      {loadingUsers && <p role="status">Loading users...</p>}
 
       <div className="mb-4 text-center">
         <input
           type="text"
           placeholder="Search by name or email..."
+          aria-label="Search users by name or email"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full md:w-1/2 border border-gray-300 rounded-md p-2 text-sm"
@@ -97,7 +147,7 @@ export default function UserManagementTab() {
               <th className="text-left">Email</th>
               <th className="text-left">Institution</th>
               <th className="text-left">Role</th>
-              <th>Delete</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
@@ -116,6 +166,17 @@ export default function UserManagementTab() {
 
                 {/* DELETE BUTTON */}
                 <td className="text-center">
+                  <Button variant="outline" size="sm" className="mr-2"
+                    disabled={!institutions.length}
+                    aria-label={`Edit institution for ${user.email}`}
+                    onClick={() => {
+                      setEditingUser(user);
+                      setInstitutionId(user.institution_id || "");
+                      setError("");
+                      setNotice("");
+                    }}>
+                    Edit institution
+                  </Button>
                   <Button
                     onClick={() => setSelectedUser(user)}
                     variant="ghost"
@@ -131,6 +192,34 @@ export default function UserManagementTab() {
           </tbody>
         </table>
       </div>
+
+      <Dialog open={!!editingUser} onOpenChange={(open) => {
+        if (!open && !saving) { setEditingUser(null); setError(""); }
+      }}>
+        <DialogContent showCloseButton={!saving} className="bg-white">
+          <DialogTitle>Edit institution</DialogTitle>
+          <DialogDescription>
+            Update the institution for {editingUser?.first_name} {editingUser?.last_name} ({editingUser?.email}).
+            Module progress and certificates will be preserved. This changes which institution administrator can see the user.
+          </DialogDescription>
+          <p className="text-sm">Current institution: <strong>{editingUser?.institution || "None"}</strong></p>
+          <label htmlFor="user-institution" className="text-sm font-medium">New institution</label>
+          <select id="user-institution" value={institutionId} disabled={saving}
+            onChange={(event) => setInstitutionId(event.target.value)}
+            className="w-full border border-gray-300 rounded-md p-2 text-sm">
+            <option value="" disabled>Select an institution</option>
+            {[...institutions].sort((a, b) => a.name.localeCompare(b.name)).map((institution) => (
+              <option key={institution.id} value={institution.id}>{institution.name}</option>
+            ))}
+          </select>
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" disabled={saving} onClick={() => { setEditingUser(null); setError(""); }}>Cancel</Button>
+            <Button disabled={saving || !institutionId || institutionId === editingUser?.institution_id}
+              onClick={handleInstitutionUpdate}>{saving ? "Saving..." : "Save institution"}</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* MODAL */}
       {selectedUser && (
