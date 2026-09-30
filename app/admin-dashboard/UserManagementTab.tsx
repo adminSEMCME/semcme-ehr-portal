@@ -153,7 +153,7 @@ export default function UserManagementTab({ institutions, onUserUpdated }: {
         <table className="w-full text-sm">
           <thead className="sticky top-0 z-10 border-b bg-white text-gray-800 text-base font-bold shadow-sm">
             <tr>
-              <th className="py-2 text-left">Name</th>
+              <th className="py-2 pl-3 text-left">Name</th>
               <th className="text-left">Email</th>
               <th className="text-left">Institution</th>
               <th className="text-left">Role</th>
@@ -167,7 +167,7 @@ export default function UserManagementTab({ institutions, onUserUpdated }: {
                 key={user.id}
                 className="h-12 border-b hover:bg-gray-50 transition"
               >
-                <td className="py-2">
+                <td className="py-2 pl-3">
                   {user.first_name} {user.last_name}
                 </td>
                 <td>{user.email}</td>
