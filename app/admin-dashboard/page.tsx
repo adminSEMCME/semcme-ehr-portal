@@ -1076,14 +1076,12 @@ export default function AdminDashboardPage() {
       {tab === "adminApprovals" && <AdminApprovalsTab />}
       {tab === "announcements" && <AnnouncementsTab />}
       {tab === "userManagement" && <UserManagementTab
-        institutions={(analytics?.institutions ?? []).filter((institution) =>
-          ALLOWED_INSTITUTIONS.includes(institution.name),
-        )}
-        onInstitutionUpdated={(userId, institution) => {
+        institutions={analytics?.institutions ?? []}
+        onUserUpdated={(user) => {
           setAnalytics((previous) => previous ? {
             ...previous,
-            userModules: previous.userModules.map((row) => row.user_id === userId
-              ? { ...row, institution } : row),
+            userModules: previous.userModules.map((row) => row.user_id === user.id
+              ? { ...row, institution: user.institution, first_name: user.first_name, last_name: user.last_name, email: user.email, role: user.role } : row),
           } : previous);
         }}
       />}

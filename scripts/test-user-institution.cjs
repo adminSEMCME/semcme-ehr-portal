@@ -37,17 +37,18 @@ async function main() {
   } };
   const { POST } = load('app/api/admin/update-user-institution/route.ts', {
     'next/server': next,
+    '@/lib/adminAccounts': load('lib/adminAccounts.ts', {}),
     '@/lib/supabaseServer': { createClient: async () => ({ auth: { getUser: async () => ({ data: { user } }) } }) },
     '@supabase/supabase-js': { createClient: () => { serviceCalls++; return admin; } },
   });
   const req = (body = { userId, institutionId }) => ({ json: async () => body });
   assert.equal((await POST(req())).status, 401);
-  for (const role of ['Medical Student', 'Institution Administrator', undefined]) {
+  for (const role of ['Medical Student', 'Institution Administrator', 'admin', undefined]) {
     user = { id: 'caller', user_metadata: { role } };
     assert.equal((await POST(req())).status, 403);
   }
   assert.equal(serviceCalls, 0);
-  user = { id: 'caller', user_metadata: { role: 'admin' } };
+  user = { id: 'caller', email: 'admin@semcme.org', email_confirmed_at: '2026-01-01', user_metadata: { role: 'admin' } };
   for (const body of [null, {}, { userId, institutionId: '' }, { userId: {}, institutionId }, { userId, institutionId: 'invalid' }]) {
     assert.equal((await POST(req(body))).status, 400);
   }

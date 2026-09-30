@@ -7,19 +7,20 @@ export default function Footer() {
           <section>
             <h3 className="mb-2 font-semibold text-white">Contact Support</h3>
             <div className="space-y-1.5">
+              <a href="/support/account" className="block font-medium text-blue-400 underline hover:no-underline">User Account Changes</a>
               <a
                 href="/support/technical"
                 className="block font-medium text-blue-400 underline hover:no-underline"
                 title="go to technical support form"
               >
-                Technical Support Form
+                Technical Help
               </a>
               <a
                 href="/support/program"
                 className="block font-medium text-blue-400 underline hover:no-underline"
-                title="Go to program support form"
+                title="Share module feedback and suggestions"
               >
-                Program Support Form
+                Module Feedback &amp; Suggestions
               </a>
             </div>
           </section>
@@ -74,11 +75,10 @@ export default function Footer() {
           <h3 className="mb-2 font-semibold text-white">Help</h3>
           <p className="leading-relaxed text-slate-200">
             If you experience issues with modules, completion or certificates,
-            please fill out the technical support form.
+            please use Technical Help.
           </p>
           <p className="mt-2 leading-relaxed text-slate-200">
-            If you need help with program issues or have questions, please fill
-            out the program support form.
+            Institution administrators can request name, email, institution, or role corrections through User Account Changes. Share module reviews and recommendations through Module Feedback &amp; Suggestions.
           </p>
 
           <p className="mt-2 leading-relaxed text-slate-200">

@@ -773,12 +773,13 @@ export default function InstitutionAdminPage() {
 
       <p className="text-sm text-gray-800 text-center">
         <strong>Need Help?</strong>{" "}
+        <a href="/support/account" className="text-semcmeBlue hover:underline font-medium">User Account Changes</a>{" "}|{" "}
         <a
           href="/support/program"
           className="text-semcmeBlue hover:underline font-medium"
-          title="Go to program support form"
+          title="Share module feedback and suggestions"
         >
-          Program Support
+          Module Feedback &amp; Suggestions
         </a>{" "}
         |{" "}
         <a
@@ -786,7 +787,7 @@ export default function InstitutionAdminPage() {
           className="text-semcmeBlue hover:underline font-medium"
           title="Go to technical support form"
         >
-          Technical Support
+          Technical Help
         </a>
       </p>
     </div>

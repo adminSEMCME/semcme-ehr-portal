@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabaseServer";
+import { canManageUsers } from "@/lib/adminAccounts";
 
 export async function POST(request: Request) {
   try {
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     // Use the website-admin role, never the Institution Administrator role.
-    if (user.user_metadata?.role !== "admin") {
+    if (!canManageUsers(user)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
