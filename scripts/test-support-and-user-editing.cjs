@@ -28,6 +28,7 @@ async function testSupport() {
   }
   const { sendSupportRequest: send } = load('lib/sendSupportRequest.ts', {
     'next/server': next, resend: { Resend }, '@/lib/supportForms': config,
+    '@/lib/defaultInstitutions': load('lib/defaultInstitutions.ts'),
   });
   function request(kind, changes = {}) {
     const form = new FormData();
@@ -54,6 +55,15 @@ async function testSupport() {
     assert.equal(message.attachments[0].content.toString(), 'screenshot details');
     if (kind === 'account') assert.ok(message.text.includes('learner@example.org'));
   }
+  const { DEFAULT_INSTITUTIONS } = load('lib/defaultInstitutions.ts');
+  for (const category of ['Institution', 'Multiple account details']) {
+    assert.equal((await send(request('account', { category, newInstitution: DEFAULT_INSTITUTIONS[0] }), 'account')).status, 200);
+    assert.ok(sends.at(-1).text.includes(`User's new institution: ${DEFAULT_INSTITUTIONS[0]}`));
+    assert.ok(sends.at(-1).text.includes('IA institution (requester): Example Hospital'));
+    assert.equal((await send(request('account', { category, newInstitution: 'Custom institution' }), 'account')).status, 400);
+  }
+  assert.equal((await send(request('account', { category: 'Institution' }), 'account')).status, 400);
+  assert.equal((await send(request('account', { category: 'Multiple account details' }), 'account')).status, 200);
   const count = sends.length;
   for (const changes of [{ email: 'invalid' }, { name: '  ' }, { category: 'made up' }, { message: '' }]) {
     assert.equal((await send(request('technical', changes), 'technical')).status, 400);

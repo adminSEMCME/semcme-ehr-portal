@@ -7,11 +7,14 @@ import AppHeader from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
 import { attachmentTypes, MAX_ATTACHMENT_BYTES, MAX_ATTACHMENTS, supportForms, type SupportKind } from "@/lib/supportForms";
 
+import { DEFAULT_INSTITUTIONS } from "@/lib/defaultInstitutions";
+
 const fieldClass = "mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-base text-slate-900 transition focus:border-blue-500 focus:bg-white";
 
 export default function SupportForm({ kind }: { kind: SupportKind }) {
   const config = supportForms[kind];
   const Icon = kind === "account" ? UserRoundPen : kind === "technical" ? Wrench : MessageSquare;
+  const [category, setCategory] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,6 +37,7 @@ export default function SupportForm({ kind }: { kind: SupportKind }) {
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.error || "Unable to send your request. Please try again.");
       form.reset();
+      setCategory("");
       setFiles([]);
       setSuccess(true);
     } catch (err) {
@@ -49,28 +53,41 @@ export default function SupportForm({ kind }: { kind: SupportKind }) {
       <AppHeader action="back" />
       <div className="mx-auto mt-6 max-w-3xl px-4 sm:mt-10 sm:px-6">
         <div className="overflow-hidden rounded-2xl border border-white/40 bg-white shadow-xl">
-          <div className="border-b border-slate-200 border-t-4 border-t-teal-600 bg-slate-50 px-6 py-7 sm:px-9">
+          <div className="border-b border-slate-200 bg-slate-50 px-6 py-7 sm:px-9">
             <div className="mb-4 flex items-center gap-3 text-sm font-bold tracking-wide text-semcmeBlue"><Icon aria-hidden="true" className="h-5 w-5" /> SEMCME SUPPORT</div>
             <h1 className="text-2xl font-bold text-semcmeBlue sm:text-3xl">{config.title}</h1>
             <p className="mt-3 text-slate-600">{config.description}</p>
           </div>
           <div className="px-6 py-7 sm:px-9">
-            <p className="mb-6 flex gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900"><Mail aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0" />Your submission goes to Shane and Nadia at SEMCME. We will reply to the email address you provide.</p>
-            {success && <p role="status" className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">Thank you! Your submission has been sent to Shane and Nadia.</p>}
+            <p className="mb-6 flex gap-3 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900"><Mail aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0" />Your submission goes to SEMCME team members. We will reply to the email address you provide.</p>
+            {success && <p role="status" className="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">Thank you! Your submission has been sent to SEMCME team members.</p>}
             {error && <p role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">{error}</p>}
             <form onSubmit={submit}>
               <fieldset disabled={loading} className="space-y-6 disabled:opacity-70">
                 <legend className="mb-4 text-sm text-slate-500">All fields are required unless marked optional.</legend>
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <label className="text-sm font-bold text-slate-700" htmlFor="support-name">Your name<input id="support-name" name="name" autoComplete="name" required maxLength={150} className={fieldClass} /></label>
-                  <label className="text-sm font-bold text-slate-700" htmlFor="support-email">Your email<input id="support-email" name="email" type="email" autoComplete="email" required maxLength={254} className={fieldClass} /></label>
+                <div className={kind === "account" ? "space-y-5 rounded-xl border border-slate-200 p-5" : "space-y-5"}>
+                  {kind === "account" && <div><h2 className="font-bold text-semcmeBlue">Institution Administrator submitting this request</h2><p className="mt-1 text-sm text-slate-500">Enter your contact details here so our team can follow up with you.</p></div>}
+                  <div className="grid gap-5 sm:grid-cols-2">
+                  <label className="text-sm font-bold text-slate-700" htmlFor="support-name">{kind === "account" ? "IA name (your name)" : "Your name"}<input id="support-name" name="name" autoComplete="name" required maxLength={150} className={fieldClass} /></label>
+                  <label className="text-sm font-bold text-slate-700" htmlFor="support-email">{kind === "account" ? "IA email (your email)" : "Your email"}<input id="support-email" name="email" type="email" autoComplete="email" required maxLength={254} className={fieldClass} /></label>
+                  </div>
+                  {kind === "account" && <label className="block text-sm font-bold text-slate-700" htmlFor="requester-institution">IA institution (your institution)<input id="requester-institution" name="institution" required maxLength={200} className={fieldClass} /></label>}
                 </div>
-                <label className="block text-sm font-bold text-slate-700" htmlFor="support-category">{config.categoryLabel}<select id="support-category" name="category" required defaultValue="" className={fieldClass}><option value="" disabled>Select an option</option>{config.categories.map((category) => <option key={category}>{category}</option>)}</select></label>
+                <label className="block text-sm font-bold text-slate-700" htmlFor="support-category">{config.categoryLabel}<select id="support-category" name="category" required value={category} onChange={(event) => setCategory(event.target.value)} className={fieldClass}><option value="" disabled>Select an option</option>{config.categories.map((category) => <option key={category}>{category}</option>)}</select></label>
                 {kind === "account" ? <div className="space-y-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
-                  <h2 className="font-bold text-semcmeBlue">Account to update</h2>
+                  <h2 className="font-bold text-semcmeBlue">User whose account needs updating</h2>
+                  <p className="text-sm text-slate-500">Enter the current details of the user you are requesting changes for.</p>
                   <label className="block text-sm font-bold text-slate-700" htmlFor="account-name">User&apos;s current name<input id="account-name" name="accountName" required maxLength={150} className={fieldClass} /></label>
                   <label className="block text-sm font-bold text-slate-700" htmlFor="account-email">User&apos;s current account email<input id="account-email" name="accountEmail" type="email" required maxLength={254} className={fieldClass} /></label>
-                  <label className="block text-sm font-bold text-slate-700" htmlFor="account-institution">Your institution<input id="account-institution" name="institution" required maxLength={200} className={fieldClass} /></label>
+                  {(category === "Institution" || category === "Multiple account details") && <div>
+                    <label className="block text-sm font-bold text-slate-700" htmlFor="new-institution">User&apos;s new institution{category === "Multiple account details" ? " (optional)" : ""}
+                      <select id="new-institution" name="newInstitution" required={category === "Institution"} defaultValue="" className={fieldClass}>
+                        <option value="">{category === "Institution" ? "Select the user's new institution" : "No institution change"}</option>
+                        {DEFAULT_INSTITUTIONS.map((institution) => <option key={institution} value={institution}>{institution}</option>)}
+                      </select>
+                    </label>
+                    <p className="mt-2 text-sm text-slate-500">Select the institution the user should belong to. Only SEMCME default institutions are listed.</p>
+                  </div>}
                 </div> : <label className="block text-sm font-bold text-slate-700" htmlFor="support-module">Module or page (optional)<input id="support-module" name="module" maxLength={300} placeholder="Module title, number, or page address" className={fieldClass} /></label>}
                 <div><label className="text-sm font-bold text-slate-700" htmlFor="support-message">{config.messageLabel}</label><p id="message-hint" className="mt-1 text-sm text-slate-500">{config.messageHint}</p><textarea id="support-message" name="message" required maxLength={10000} rows={6} aria-describedby="message-hint" className={`${fieldClass} resize-y`} /></div>
                 <div className="rounded-xl border border-dashed border-slate-300 p-5">

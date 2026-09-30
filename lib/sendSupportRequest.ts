@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { DEFAULT_INSTITUTIONS } from "@/lib/defaultInstitutions";
 import { attachmentTypes, MAX_ATTACHMENT_BYTES, MAX_ATTACHMENTS, supportForms, type SupportKind } from "@/lib/supportForms";
 
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!);
@@ -13,10 +14,16 @@ export async function sendSupportRequest(request: Request, kind: SupportKind) {
     const name = read("name"), email = read("email"), category = read("category"), message = read("message");
     const accountName = read("accountName"), accountEmail = read("accountEmail"), institution = read("institution"), moduleName = read("module");
     const config = supportForms[kind];
+    const institutionChange = kind === "account" && (category === "Institution" || category === "Multiple account details");
+    const newInstitution = institutionChange ? read("newInstitution") : "";
     if (!name || name.length > 150 || !emailPattern.test(email) || email.length > 254 ||
       !(config.categories as readonly string[]).includes(category) || !message || message.length > 10000 || moduleName.length > 300 ||
       (kind === "account" && (!accountName || accountName.length > 150 || !emailPattern.test(accountEmail) || accountEmail.length > 254 || !institution || institution.length > 200))) {
       return NextResponse.json({ error: "Please complete all required fields and select a valid category." }, { status: 400 });
+    }
+    if (institutionChange && ((category === "Institution" && !newInstitution) ||
+      (newInstitution && !DEFAULT_INSTITUTIONS.includes(newInstitution)))) {
+      return NextResponse.json({ error: "Select the user's new institution from the SEMCME default institutions." }, { status: 400 });
     }
     const files = form.getAll("attachments");
     if (files.length > MAX_ATTACHMENTS || files.some((file) => typeof file === "string" || !attachmentTypes.includes(file.type)) ||
@@ -25,8 +32,8 @@ export async function sendSupportRequest(request: Request, kind: SupportKind) {
     }
     const attachments = await Promise.all((files as File[]).map(async (file) => ({ filename: file.name, content: Buffer.from(await file.arrayBuffer()), contentType: file.type })));
     const details = [
-      ["Submitted by", name], ["Reply email", email], ["Category", category],
-      ...(kind === "account" ? [["User's current name", accountName], ["User's current email", accountEmail], ["Requester's institution", institution]] : [["Module or page", moduleName || "Not specified"]]),
+      [kind === "account" ? "IA name (requester)" : "Submitted by", name], [kind === "account" ? "IA email (reply to)" : "Reply email", email], ["Category", category],
+      ...(kind === "account" ? [["IA institution (requester)", institution], ["User's current name", accountName], ["User's current email", accountEmail], ...(newInstitution ? [["User's new institution", newInstitution]] : [])] : [["Module or page", moduleName || "Not specified"]]),
       [config.messageLabel, message],
     ];
     const resend = new Resend(process.env.RESEND_API_KEY);

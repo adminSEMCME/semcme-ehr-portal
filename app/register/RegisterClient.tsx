@@ -20,26 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-const ALLOWED_INSTITUTIONS = [
-  "CMU Med Ed Partners",
-  "Corewell Health Dearborn",
-  "Corewell Health Farmington Hills",
-  "Corewell Health Royal Oak",
-  "Detroit Medical Center",
-  "Garden City Hospital",
-  "Henry Ford Health",
-  "Henry Ford Providence",
-  "Henry Ford Rochester",
-  "Henry Ford St. John",
-  "McLaren Health Care",
-  "Michigan State University CHM",
-  "Oakland University William Beaumont SOM",
-  "Southeast Michigan Center for Medical Education",
-  "Trinity Health Ann Arbor",
-  "Trinity Health Livonia",
-  "Trinity Health Oakland",
-  "Wayne State University SOM",
-];
+import { DEFAULT_INSTITUTIONS as ALLOWED_INSTITUTIONS } from "@/lib/defaultInstitutions";
 
 const MIN_PASSWORD_LENGTH = 8;
 

@@ -12,7 +12,7 @@ export const supportForms = {
     title: "Technical Help",
     description: "Having trouble using the EHR Learning Portal? Tell us what happened so we can help you get back to learning.",
     categoryLabel: "What are you having trouble with?",
-    categories: ["Sign-in or password reset", "Registration or email confirmation", "Modules missing or unavailable", "Module content or video not loading", "Progress or completion not saving", "Assessment or evaluation not submitting", "Certificate not generating or downloading", "Continuing education credit", "Simulated EHR activity", "Institution dashboard or learner reports", "Other"],
+    categories: ["Sign-in or password reset", "Registration or email confirmation", "Modules missing or unavailable", "Module content or video not loading", "Progress or completion not saving", "Assessment or evaluation not submitting", "Certificate not generating or downloading", "Continuing education credit", "Simulated EHR activity", "Institution Administrator Dashboard or learner reports", "Other"],
     messageLabel: "Describe the issue",
     messageHint: "Tell us what you were trying to do, what happened, and any error message. Include your browser and device if relevant.",
     button: "Send technical help request",
