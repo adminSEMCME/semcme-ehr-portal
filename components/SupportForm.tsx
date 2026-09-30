@@ -11,6 +11,14 @@ import { DEFAULT_INSTITUTIONS } from "@/lib/defaultInstitutions";
 
 const fieldClass = "mt-2 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-base text-slate-900 transition focus:border-blue-500 focus:bg-white";
 
+const accountChangeExamples: Record<string, string> = {
+  Name: "Current name: Jhn Doe\nUpdated name: John Doe",
+  "Email address": "Current email: Jdo@gmail.com\nUpdated email: JDoe@gmail.com",
+  Institution: "Current institution: Henry Ford Health\nUpdated institution: Corewell Health Royal Oak",
+  "Role / learner group": "Current role: Medical Student\nUpdated role: Resident / Fellow",
+};
+const defaultAccountExample = "Current name: Jhn Doe\nUpdated name: John Doe\n\nCurrent email: Jdo@gmail.com\nUpdated email: JDoe@gmail.com";
+
 export default function SupportForm({ kind }: { kind: SupportKind }) {
   const config = supportForms[kind];
   const Icon = kind === "account" ? UserRoundPen : kind === "technical" ? Wrench : MessageSquare;
@@ -89,7 +97,7 @@ export default function SupportForm({ kind }: { kind: SupportKind }) {
                     <p className="mt-2 text-sm text-slate-500">Select the institution the user should belong to. Only SEMCME default institutions are listed.</p>
                   </div>}
                 </div> : <label className="block text-sm font-bold text-slate-700" htmlFor="support-module">Module or page (optional)<input id="support-module" name="module" maxLength={300} placeholder="Module title, number, or page address" className={fieldClass} /></label>}
-                <div><label className="text-sm font-bold text-slate-700" htmlFor="support-message">{config.messageLabel}</label><p id="message-hint" className="mt-1 text-sm text-slate-500">{config.messageHint}</p><textarea id="support-message" name="message" required maxLength={10000} rows={6} aria-describedby="message-hint" className={`${fieldClass} resize-y`} /></div>
+                <div><label className="text-sm font-bold text-slate-700" htmlFor="support-message">{config.messageLabel}</label><p id="message-hint" className="mt-1 text-sm text-slate-500">{config.messageHint}</p><textarea id="support-message" name="message" placeholder={kind === "account" ? (accountChangeExamples[category] ?? defaultAccountExample) : undefined} required maxLength={10000} rows={6} aria-describedby="message-hint" className={`${fieldClass} resize-y`} /></div>
                 <div className="rounded-xl border border-dashed border-slate-300 p-5">
                   <label htmlFor="support-files" className="text-sm font-bold text-slate-700">Attachments (optional)</label>
                   <p id="attachment-hint" className="mt-1 text-sm text-slate-500">PNG, JPG, PDF, or TXT. Up to 3 files, 3 MB total. Please omit passwords and patient information.</p>
