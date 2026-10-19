@@ -89,6 +89,7 @@ function Button({
   return (
     <Comp
       data-slot="button"
+      data-dropdown-trigger={variant === "dropdown" ? "" : undefined}
       className={cn(buttonVariants({ variant, size, className }))}
       title={fallbackTitle || undefined}
       {...props}

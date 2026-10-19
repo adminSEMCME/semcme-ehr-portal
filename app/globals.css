@@ -41,6 +41,7 @@
    ============================================================ */
 :root {
   --radius: 0.625rem;
+  --dropdown-radius: 0.75rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
@@ -134,6 +135,65 @@
   select option {
     white-space: normal;
     word-wrap: break-word;
+  }
+}
+
+/* Keep dropdown controls and menus consistent across public, admin, and IA pages.
+   Unlayered rules also override older per-page Tailwind corner utilities. */
+select,
+[data-dropdown-trigger],
+[data-dropdown-menu],
+button[aria-haspopup="listbox"] {
+  border-radius: var(--dropdown-radius);
+}
+
+/* Native selects retain their keyboard, validation, and form behavior. Browsers
+   without customizable-select support keep their platform-native popup. */
+@supports (appearance: base-select) {
+  select:not([multiple]):not([size]),
+  select:not([multiple]):not([size])::picker(select) {
+    appearance: base-select;
+  }
+
+  select:not([multiple]):not([size]) {
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  select::picker(select) {
+    border: 1px solid #cbd5e1;
+    border-radius: var(--dropdown-radius);
+    background: #fff;
+    color: #1e293b;
+    padding: 0.375rem;
+    margin-block: 0.375rem;
+    max-block-size: min(20rem, 60dvh);
+    max-inline-size: calc(100vw - 2rem);
+    overflow: auto;
+    box-shadow: 0 10px 25px rgb(15 23 42 / 15%);
+  }
+
+  select::picker-icon {
+    flex-shrink: 0;
+    margin-inline-start: auto;
+  }
+
+  select option {
+    border-radius: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  select option:checked {
+    background: #eff6ff;
+    color: #02519c;
+    font-weight: 700;
+  }
+
+  select option:enabled:hover,
+  select option:enabled:focus {
+    background: #dbeafe;
+    color: #013e7a;
   }
 }
 

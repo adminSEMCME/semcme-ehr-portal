@@ -442,6 +442,7 @@ export default function ModuleListClient({ modules }: { modules: any[] }) {
                 <div
                   className="flex items-center gap-2 bg-white rounded-sm shadow-sm px-3 py-3 h-11 hover:bg-slate-100 transition"
                   title="Search for a specific module"
+                  data-dropdown-trigger
                 >
                   <Search className="w-4 h-4 text-semcmeBlue" />
                   <input
