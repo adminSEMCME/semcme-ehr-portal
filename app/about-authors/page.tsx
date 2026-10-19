@@ -47,21 +47,10 @@ const PROJECT_LEADS = [
 
     She also organizes committee meetings and follows up with action items that are to be completed by her and the committee. Veronica graduated from Oakland University with a Bachelor in Integrative Studies. A majority of her coursework focused on organization and administration within the healthcare industry. Her previous experience includes two summer internships at an assisted living/memory care center and a homecare nursing agency working under the administration and human resource directors.`,
   },
-];
-
-const AUTHORS = [
-  {
-    name: "Nelia Afonso, MBBS, MD, MRCP",
-    title: "Professor - Foundational Medical Studies",
-    organization: "Oakland University William Beaumont School of Medicine",
-    bio: `Dr. Afonso received her M.B.B.S. and M.D. degrees from the University of Mumbai in India and received her M.R.C.P. degree from the Royal College of Physicians in the United Kingdom.
-
-    She is a professor in the Department of Foundational Medical Studies at the Oakland University William Beaumont School of Medicine (OUWB) and a founding faculty member of the institution. In June 2024, she was awarded the distinguished title of Dean's Distinguished Professor in recognition of her achievements in teaching, scholarship, and service. Dr. Afonso is widely regarded for her contributions to medical education, particularly in curriculum development and innovation, including her work on the Art and Practice of Medicine course. Her scholarly efforts span medical education, clinical skills, women's health, and vaccine hesitancy, and she has served as principal investigator on externally funded research such as the Merck-supported project “Promoting Vaccine Confidence in Medical and Dental Students.” In addition to her academic accomplishments, Dr. Afonso has demonstrated a strong commitment to community engagement and professional service, including leadership roles with organizations like the Southeast Michigan Center for Medical Education. Her career reflects a sustained dedication to advancing medical education, fostering student development, and improving community health outcomes.`,
-  },
 
   {
     name: "Leland Babitch, MD, MBA",
-    title: "President and Chief Executive Officer",
+    title: "Chair of the Project Steering Committee",
     organization: "IMPROve Health",
     bio: `Dr. Babitch, is the President and CEO of IMPROve Health, a healthcare quality improvement organization with nation-wide activity. With more than twenty-five years of experience in healthcare, Dr. Babitch brings a demonstrated expertise in quality improvement, electronic health record technology, health information exchange, population health, and hospital/medical group governance. 
 
@@ -71,6 +60,36 @@ const AUTHORS = [
 
     Dr. Babitch holds a Doctor of Medicine degree from Wayne State University School of Medicine, a Master of Business Administration from Michigan State University, and a Bachelor of Arts in genetics and developmental biology from Northwestern University. He is a Certified Medical Practice Executive, and a Fellow of the American College of Healthcare Executives. Dr. Babitch is board certified in Pediatrics as well as Medical Informatics.`,
   },
+
+  {
+    name: "Nelia Afonso, MBBS, MD, MRCP",
+    title: "Chair of the UME Committee",
+    organization: "Oakland University William Beaumont School of Medicine",
+    bio: `Dr. Afonso received her M.B.B.S. and M.D. degrees from the University of Mumbai in India and received her M.R.C.P. degree from the Royal College of Physicians in the United Kingdom.
+
+    She is a professor in the Department of Foundational Medical Studies at the Oakland University William Beaumont School of Medicine (OUWB) and a founding faculty member of the institution. In June 2024, she was awarded the distinguished title of Dean's Distinguished Professor in recognition of her achievements in teaching, scholarship, and service. Dr. Afonso is widely regarded for her contributions to medical education, particularly in curriculum development and innovation, including her work on the Art and Practice of Medicine course. Her scholarly efforts span medical education, clinical skills, women's health, and vaccine hesitancy, and she has served as principal investigator on externally funded research such as the Merck-supported project “Promoting Vaccine Confidence in Medical and Dental Students.” In addition to her academic accomplishments, Dr. Afonso has demonstrated a strong commitment to community engagement and professional service, including leadership roles with organizations like the Southeast Michigan Center for Medical Education. Her career reflects a sustained dedication to advancing medical education, fostering student development, and improving community health outcomes.`,
+  },
+
+  {
+    name: "Nikhil Goyal, MD",
+    title: "Chair of the GME Committee (resigned after 2nd year)",
+    organization: "Henry Ford Health System",
+    bio: `Dr. Goyal is board certified in Emergency Medicine, Internal Medicine and Clinical Informatics. He received his medical degree from Maulana Azad Medical College in India and completed his residency in Emergency Medicine and Internal Medicine at Henry Ford Hospital in Detroit, Michigan. Dr. Goyal has served in several GME leadership positions within Henry Ford Health and with national organizations such as the ACGME and the National Resident Matching Program. He has received multiple awards including the Distinguished Section Editor award from the Western Journal of Emergency Medicine (2019), “Top Docs” Emergency Medicine Listing, Hour Magazine (2012-2025), and Roger F. Smith, MD Outstanding Resident Award (Henry Ford Health System, 2006). Dr. Goyal’s academic interests include medical education research, teaching evidence-based medicine and using technology to improve healthcare.`,
+  },
+
+  {
+    name: "Arthur L. Riba, MD, FACC",
+    title: "Chair of the CME Committee",
+    organization: "Corewell Health East",
+    bio: `Dr. Riba completed an Internal Medicine Residency at the University of Pennsylvania and a Cardiology Fellowship at Yale. He came to Dearborn Hospital and Medical Center in 1993, where he served as Medical Director of the Coronary Care Unit and Cardiovascular Quality Management, Medical Director of Quality, Patient Safety and Experience for the Oakwood Legacy System and other leadership positions in the Department of Cardiology and the Cardiology Fellowship Program. He also served as Clinical Professor of Medicine through Wayne State University and is presently Clinical Professor of Medicine at Oakland University William Beaumont School of Medicine, where he serves on a number of curriculum committees.
+
+    Dr. Riba served as site director for many multicenter clinical research trials and has won many awards for teaching and been recognized for his leadership roles in Quality Improvement. He graduated from the Patient Safety Executive Development Program at the Institute for Healthcare Improvement and the Patient Safety Certificate Program at Johns Hopkins. From 2016 to 2017, he was Medical Director for the Beaumont Health Clinical Documentation Improvement Program.
+
+    In 2017, he left Beaumont to pursue a two-year Advanced Fellowship in Patient Safety at the VA National Center for Patient Safety in Ann Arbor. After serving as Chief of Medicine and Associate Chief of Staff at the Bath NY VAMC, he returned to Beaumont to take on the role of Graduate Medical Education Director of Quality Improvement and Patient Safety, a position he presently holds for Corewell Health East. He has served as Chair of the Quality Committee of the Michigan ACC, an active member of a number of National ACC QI initiatives and is presently Chair of the Quality Committee of Southeast Michigan Center for Medical Education. He also co-chairs the BCBSM/SEMCME EHR CME Subcommittee. His major interests are educating, training and engaging residents in QI and Patient Safety and experiential learning and supporting health care providers to optimize their documentation for quality performance.`,
+  },
+];
+
+const AUTHORS = [
 
   {
     name: "Michael Barnes, MD",
@@ -130,13 +149,6 @@ const AUTHORS = [
       "Research Professor and Director, New York Physicians Against Cancer",
     organization: "University of Michigan and NYPAC",
     bio: `Dr. Sheinfeld Gorin has held positions of leadership in cancer prevention and control both nationally and internationally. She has emphasized the rigorous examination of intervention approaches that can be implemented in primary care settings to improve population health. Her more than 250 publications and presentations have led to policy and practice changes that have enhanced value and reduced health care costs. Among her honors, Dr. Sheinfeld Gorin recently received the prestigious Fulbright Distinguished Scholar Award for her studies on HPV vaccine hesitancy in diverse sub-populations. Dr. Sheinfeld Gorin is a frequent invited scientific contributor to NIH study sections and other important grant review groups. Dr. Sheinfeld Gorin's most recent position was Research Professor, Department of Family Medicine, Michigan Medicine, University of Michigan and the School of Public Health. She is also the Director of the New York Physicians Against Cancer (NYPAC), a grant-funded research and training group that works with primary care physicians to implement state-of-the-art interventions in cancer prevention and screening. She was the founding director of an endowed Office of Cancer Health Disparities Research at the Mayo Clinic Cancer Center.`,
-  },
-
-  {
-    name: "Nikhil Goyal, MD",
-    title: "Physician",
-    organization: "Henry Ford Health System",
-    bio: `Dr. Goyal is board certified in Emergency Medicine, Internal Medicine and Clinical Informatics. He received his medical degree from Maulana Azad Medical College in India and completed his residency in Emergency Medicine and Internal Medicine at Henry Ford Hospital in Detroit, Michigan. Dr. Goyal has served in several GME leadership positions within Henry Ford Health and with national organizations such as the ACGME and the National Resident Matching Program. He has received multiple awards including the Distinguished Section Editor award from the Western Journal of Emergency Medicine (2019), “Top Docs” Emergency Medicine Listing, Hour Magazine (2012-2025), and Roger F. Smith, MD Outstanding Resident Award (Henry Ford Health System, 2006). Dr. Goyal’s academic interests include medical education research, teaching evidence-based medicine and using technology to improve healthcare.`,
   },
 
   {
@@ -214,18 +226,6 @@ const AUTHORS = [
       "Senior Associate Dean for Curricular Affairs and Undergraduate Medical Education",
     organization: "Wayne State University School of Medicine",
     bio: `Dr. Rajasekaran is Senior Associate Dean for Curricular Affairs and Undergraduate Medical Education for the Wayne State University School of Medicine. He provides leadership and has the primary responsibility for the design, continuing development and implementation of the curriculum leading to the medical degree. A professor of Pharmacology, he served as Associate Dean for Academic Affairs at Eastern Virginia Medical School where he led a major curriculum reform that demonstrated improved learning outcomes and won national recognition for its innovative design and focus on social determinants of health and chronic disease prevention and management. Dr. Rajasekaran was a founding co-director of the Center of Excellence in Medical Education at Oakland University William Beaumont School of Medicine and was instrumental in establishing the fellowship in Medical Education and Residents as Teachers programs. Dr. Rajasekaran has written and co-written multiple publications and serves as a deputy editor of the Teaching and Learning in Medicine Journal.`,
-  },
-
-  {
-    name: "Arthur L. Riba, MD, FACC",
-    title:
-      "Graduate Medical Education Director of Quality Improvement and Patient Safety",
-    organization: "Corewell Health East",
-    bio: `Dr. Riba completed an Internal Medicine Residency at the University of Pennsylvania and a Cardiology Fellowship at Yale. He came to Dearborn Hospital and Medical Center in 1993, where he served as Medical Director of the Coronary Care Unit and Cardiovascular Quality Management, Medical Director of Quality, Patient Safety and Experience for the Oakwood Legacy System and other leadership positions in the Department of Cardiology and the Cardiology Fellowship Program. He also served as Clinical Professor of Medicine through Wayne State University and is presently Clinical Professor of Medicine at Oakland University William Beaumont School of Medicine, where he serves on a number of curriculum committees.
-
-    Dr. Riba served as site director for many multicenter clinical research trials and has won many awards for teaching and been recognized for his leadership roles in Quality Improvement. He graduated from the Patient Safety Executive Development Program at the Institute for Healthcare Improvement and the Patient Safety Certificate Program at Johns Hopkins. From 2016 to 2017, he was Medical Director for the Beaumont Health Clinical Documentation Improvement Program.
-
-    In 2017, he left Beaumont to pursue a two-year Advanced Fellowship in Patient Safety at the VA National Center for Patient Safety in Ann Arbor. After serving as Chief of Medicine and Associate Chief of Staff at the Bath NY VAMC, he returned to Beaumont to take on the role of Graduate Medical Education Director of Quality Improvement and Patient Safety, a position he presently holds for Corewell Health East. He has served as Chair of the Quality Committee of the Michigan ACC, an active member of a number of National ACC QI initiatives and is presently Chair of the Quality Committee of Southeast Michigan Center for Medical Education. He also co-chairs the BCBSM/SEMCME EHR CME Subcommittee. His major interests are educating, training and engaging residents in QI and Patient Safety and experiential learning and supporting health care providers to optimize their documentation for quality performance.`,
   },
 
   {
